@@ -183,7 +183,9 @@ function progressView() {
   return `<section class="section-shell page">${pageHeader("A gentle record", "Progress", "Planning patterns, not calorie targets. MyFitnessPal remains the home for actual food logging.")}<div class="progress-grid"><article class="progress-feature"><p class="eyebrow">Week 1 intention</p><h2>Cook five flexible dinners and use the good leftovers.</h2><div class="progress-stats"><div><strong>5</strong><span>planned dinners</span></div><div><strong>2</strong><span>open evenings</span></div><div><strong>1</strong><span>use-it-up night</span></div></div></article><article class="detail-card"><p class="tiny-label">Coming later</p><h3>Useful, low-pressure trends</h3><ul class="clean-list"><li>Recipes cooked and repeated</li><li>Weekly planning consistency</li><li>Pantry ingredients used first</li><li>Personal notes on what worked</li></ul></article></div><div class="empty-progress"><span class="icon-disc">${icons.leaf}</span><h2>Your kitchen history starts here.</h2><p>Future weeks can add a simple reflection without turning dinner into a score.</p></div></section>`;
 }
 
-function render() {
+function render(options = {}) {
+  const preserveScroll = options.preserveScroll === true;
+  const scrollY = window.scrollY;
   const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
   const route = parts[0] || "home";
   const recipe = route === "recipes" && parts[1] ? getRecipe(parts[1]) : null;
@@ -192,7 +194,7 @@ function render() {
   document.title = `${recipe?.name || ({ home: "Home", week: "This Week", "past-weeks": "Past Weeks", recipes: "Recipes", shopping: "Shopping", pantry: "Pantry", progress: "Progress" }[route] || "Home")} · Family Kitchen`;
   updateShoppingCount();
   nav.classList.remove("open"); menuButton.setAttribute("aria-expanded", "false");
-  window.scrollTo(0, 0);
+  if (preserveScroll) window.scrollTo(0, scrollY); else window.scrollTo(0, 0);
 }
 
 function updateShoppingCount() { const count = consolidateShoppingList(activeWeek(), pantry, extras).length; const badge = document.querySelector("#shopping-count"); badge.textContent = count; badge.hidden = !count; }
@@ -211,9 +213,9 @@ document.addEventListener("click", async (event) => {
   const chip = event.target.closest("[data-filter]"); if (chip) { document.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c === chip)); document.querySelectorAll(".recipe-card").forEach((card) => { card.hidden = chip.dataset.filter !== "all" && card.dataset.kind !== chip.dataset.filter; }); }
 });
 document.addEventListener("change", (event) => {
-  if (event.target.matches("[data-sauce-date]")) { preparedSauces = preparedSauces.map((item) => item.key === event.target.dataset.sauceDate ? { ...item, madeOn: event.target.value } : item); store.set("fk-prepared-sauces", preparedSauces); render(); return; }
-  if (event.target.matches("[data-sauce-key]")) { preparedSauces = preparedSauces.map((item) => item.key === event.target.dataset.sauceKey ? { ...item, status: event.target.value, madeOn: event.target.value === "In Fridge" ? item.madeOn : "" } : item); store.set("fk-prepared-sauces", preparedSauces); showToast(`${event.target.value}: prepared sauce updated`); render(); return; }
-  if (event.target.matches("[data-pantry-key]")) { pantry = pantry.map((item) => item.key === event.target.dataset.pantryKey ? { ...item, status: event.target.value } : item); store.set("fk-pantry", pantry); showToast(`${event.target.value}: pantry updated`); render(); }
+  if (event.target.matches("[data-sauce-date]")) { preparedSauces = preparedSauces.map((item) => item.key === event.target.dataset.sauceDate ? { ...item, madeOn: event.target.value } : item); store.set("fk-prepared-sauces", preparedSauces); render({ preserveScroll: true }); return; }
+  if (event.target.matches("[data-sauce-key]")) { preparedSauces = preparedSauces.map((item) => item.key === event.target.dataset.sauceKey ? { ...item, status: event.target.value, madeOn: event.target.value === "In Fridge" ? item.madeOn : "" } : item); store.set("fk-prepared-sauces", preparedSauces); showToast(`${event.target.value}: prepared sauce updated`); render({ preserveScroll: true }); return; }
+  if (event.target.matches("[data-pantry-key]")) { pantry = pantry.map((item) => item.key === event.target.dataset.pantryKey ? { ...item, status: event.target.value } : item); store.set("fk-pantry", pantry); showToast(`${event.target.value}: pantry updated`); render({ preserveScroll: true }); }
   if (event.target.matches("[data-grocery]")) { const id = event.target.dataset.grocery; checked = event.target.checked ? [...new Set([...checked, id])] : checked.filter((item) => item !== id); store.set("fk-shopping-checked", checked); event.target.closest(".check-row").classList.toggle("checked", event.target.checked); }
 });
 menuButton.addEventListener("click", () => { const open = nav.classList.toggle("open"); menuButton.setAttribute("aria-expanded", String(open)); });

@@ -148,11 +148,14 @@ export const pantryStatuses = ["Have", "Low", "Buy"];
 export const freshnessPolicy = {
   purpose: "Prioritize perishable food in weekly planning before it spoils without treating freshness as a pantry inventory status.",
   planningRules: [
+    "Before selecting new sauces or dressings, review prepared batches marked In Fridge with a Made On date and calculate their planning use-by dates.",
+    "Schedule compatible In Fridge prepared sauces in use-by order, prioritizing Use First batches before making a new sauce or dressing.",
+    "If an existing prepared sauce can serve a planned meal, use that batch before scheduling Make for another compatible sauce.",
     "Use the most perishable purchased ingredients in the earliest compatible meals.",
     "Carry leftover fresh ingredients into the next compatible meal before planning a duplicate purchase.",
     "Wednesday pickup ingredients should be scheduled from Wednesday onward unless their storage life safely supports later use.",
     "Friday use-it-up meals should preferentially consume remaining fresh produce, herbs, cooked proteins, rice, and opened sauces that are still safe to eat.",
-    "When generating a new week, review carryover perishables before adding new ingredients to the shopping list."
+    "When generating a new week, review carryover prepared sauces and perishables before adding new ingredients to the shopping list."
   ]
 };
 

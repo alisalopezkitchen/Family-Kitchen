@@ -67,3 +67,7 @@ footer { min-height:78px; padding:0 max(1.5rem,calc((100vw - 1180px)/2)); border
 .fit { display:block; margin-top:.15rem; font-size:8px; text-transform:uppercase; letter-spacing:.06em; }
 .fit.on-target { color:#58735e; } .fit.low,.fit.high { color:var(--rust); }
 @media(max-width:620px){.nutrition-row{grid-template-columns:1fr 1fr 1fr}.nutrition-row>*:nth-child(4),.nutrition-row>*:nth-child(5){border-top:1px solid var(--line)}}
+
+.nutrition-source-note { margin:-1.5rem 0 1.7rem; color:var(--muted); font-size:11px; }
+.nutrition-source-note strong { color:var(--ink); font-weight:600; }
+.nutrition-provenance { margin:.4rem 0 1rem; color:var(--muted); font-size:10px; line-height:1.5; }

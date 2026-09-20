@@ -1,7 +1,8 @@
 import { getActiveWeek, getPastWeeks, getRecipe, initialPantry, initialPreparedSauces, preparedSauceStatuses, nutritionSource, nutritionTargets, pantryStatuses, recipes, recipeStandardizationStatus } from "./data.js";
 import { consolidateShoppingList, formatAmount, groupShoppingList } from "./shopping.js";
 import { optimizeDayPortions } from "./portion-optimizer.js";
-import { bestVerifiedGroceryPrice } from "./grocery-pricing.js";
+import { bestVerifiedGroceryPrice, groceryPriceObservations } from "./grocery-pricing.js";
+import { optimizeShoppingTrips } from "./shopping-trip-optimizer.js";
 import { loadUserProfile, saveUserProfile } from "./user-profile.js";
 import { supportedRetailers, exactStoreFor, normalizeDiscoveredStore, selectExactStore } from "./store-discovery.js";
 
@@ -20,6 +21,8 @@ let mealMoves = store.get("fk-meal-moves", []);
 let foodLog = store.get("fk-food-log", []);
 let pantryFilter = "all";
 let shoppingStoreFilter = "all";
+let shoppingOptimizationMode = store.get("fk-shopping-optimization-mode", "fewest-trips");
+let meaningfulSavings = store.get("fk-shopping-meaningful-savings", 5);
 let recipeFilter = "all";
 let recipeCategoryFilter = "all";
 let recipeReadinessFilter = "all";
@@ -226,8 +229,18 @@ function shoppingView() {
   const items = consolidateShoppingList(activeWeek(), pantry, extras);
   const stores = [{ id: "all", label: "All" }, { id: "ralphs", label: "Ralphs" }, { id: "sprouts", label: "Sprouts" }, { id: "seafood-city", label: "Seafood City" }];
   const groups = groupShoppingList(items);
+  const pricedItems = items.map((item) => ({
+    ...item,
+    offers: groceryPriceObservations
+      .filter((offer) => offer.ingredientKey === item.key && offer.verified === true)
+      .map((offer) => ({ ...offer, storeId: offer.store, totalPrice: Number(offer.salePrice ?? offer.price) }))
+      .filter((offer) => Number.isFinite(offer.totalPrice)),
+  }));
+  const optimized = optimizeShoppingTrips(pricedItems, { mode: shoppingOptimizationMode, meaningfulSavings });
+  const modeLabels = { "fewest-trips": "Fewest trips", "balanced": "Balanced", "lowest-price": "Lowest price" };
+  const optimizerPanel = `<article class="detail-card shopping-optimizer"><p class="eyebrow">Preferred shopping plan</p><h2>${modeLabels[shoppingOptimizationMode]}</h2><div class="filter-row" role="group" aria-label="Shopping optimization mode">${Object.entries(modeLabels).map(([id,label]) => `<button class="chip ${shoppingOptimizationMode === id ? "active" : ""}" data-shopping-mode="${id}">${label}</button>`).join("")}</div><label class="helper-text">Only add another store when it saves at least $<input type="number" min="0" step="1" value="${meaningfulSavings}" data-meaningful-savings> <span>(used by Balanced)</span></label>${optimized.plan ? `<p><strong>${optimized.plan.tripCount} stop${optimized.plan.tripCount === 1 ? "" : "s"} · ${optimized.plan.total.toFixed(2)} verified total</strong></p><p class="muted">Based only on currently verified local-store offers. ${optimized.unpriced.length ? `${optimized.unpriced.length} item${optimized.unpriced.length === 1 ? "" : "s"} still need fresh prices and are excluded from this total.` : "All listed items are priced."}</p>` : `<p class="muted">The optimizer is connected. A preferred route will appear after fresh verified prices are loaded for the shopping list.</p>`}</article>`;
   const shopSection = (shop, title, subtitle) => `<section class="shop-section"><div class="shop-heading"><div><p class="eyebrow">${subtitle}</p><h2>${title}</h2></div><span>${Object.values(groups[shop]).flat().length} items</span></div>${Object.keys(groups[shop]).length ? Object.entries(groups[shop]).map(([category, categoryItems]) => `<article class="grocery-category"><h3>${category}</h3>${categoryItems.map((item) => { const id = `${shop}:${item.key}:${item.unitGroup ?? item.unit}`; return `<label class="check-row ${checked.includes(id) ? "checked" : ""}"><input type="checkbox" data-grocery="${id}" ${checked.includes(id) ? "checked" : ""}><span class="custom-check"></span><span>${item.item}${(() => { const price = bestVerifiedGroceryPrice(item.key); if (price.status !== "verified") return `<small class="muted">Price check pending</small>`; const best = [...price.winners].sort((a,b) => a.unitPrice - b.unitPrice)[0]; return `<small>Best verified: ${best.store} · ${Number(best.price).toFixed(2)}${best.loyaltyRequired ? " with loyalty" : ""}</small>`; })()}</span><strong>${item.displayAmount ?? `${formatAmount(item.amount)} ${item.unit}`}</strong></label>`; }).join("")}</article>`).join("") : `<div class="empty-state">Nothing on this list yet.</div>`}</section>`;
-  return `<section class="section-shell page">${pageHeader("This week’s groceries", "Shopping", "One consolidated list, split around how you actually shop. Pantry staples you have are already filtered out.")}<div class="store-filter" role="group" aria-label="Filter shopping list by store">${stores.map((store) => `<button class="chip ${shoppingStoreFilter === store.id ? "active" : ""}" data-store-filter="${store.id}">${store.label}</button>`).join("")}</div><p class="helper-text store-filter-note">${shoppingStoreFilter === "all" ? "Showing the complete list. Each ingredient shows the lowest verified store listing when current comparable price data is available." : `Store view ready for ${stores.find((store) => store.id === shoppingStoreFilter)?.label}. This store view will use verified current price observations; unverified prices are never presented as the best price.`}</p><div class="shopping-toolbar"><span>${icons.cart} <strong>${items.length}</strong> ingredients to pick up</span>${checked.length ? `<button class="button text" data-clear-checked>Clear checked items</button>` : ""}</div><div class="shopping-layout">${shopSection("sunday", "Sunday main shop", "Stock the week")}${shopSection("wednesday", "Wednesday fresh pickup", "Small and fresh")}</div>${extras.length ? `<div class="extras-note"><span>Extra recipe${extras.length > 1 ? "s" : ""} added manually: ${extras.map((id) => getRecipe(id).name).join(", ")}</span><button data-clear-extras>Remove extras</button></div>` : ""}</section>`;
+  return `<section class="section-shell page">${pageHeader("This week’s groceries", "Shopping", "One consolidated list, split around how you actually shop. Pantry staples you have are already filtered out.")}<div class="store-filter" role="group" aria-label="Filter shopping list by store">${stores.map((store) => `<button class="chip ${shoppingStoreFilter === store.id ? "active" : ""}" data-store-filter="${store.id}">${store.label}</button>`).join("")}</div><p class="helper-text store-filter-note">${shoppingStoreFilter === "all" ? "Showing the complete list. Each ingredient shows the lowest verified store listing when current comparable price data is available." : `Store view ready for ${stores.find((store) => store.id === shoppingStoreFilter)?.label}. This store view will use verified current price observations; unverified prices are never presented as the best price.`}</p>${optimizerPanel}<div class="shopping-toolbar"><span>${icons.cart} <strong>${items.length}</strong> ingredients to pick up</span>${checked.length ? `<button class="button text" data-clear-checked>Clear checked items</button>` : ""}</div><div class="shopping-layout">${shopSection("sunday", "Sunday main shop", "Stock the week")}${shopSection("wednesday", "Wednesday fresh pickup", "Small and fresh")}</div>${extras.length ? `<div class="extras-note"><span>Extra recipe${extras.length > 1 ? "s" : ""} added manually: ${extras.map((id) => getRecipe(id).name).join(", ")}</span><button data-clear-extras>Remove extras</button></div>` : ""}</section>`;
 }
 
 function pantryCategory(item) {
@@ -334,6 +347,8 @@ function updateShoppingCount() { const count = consolidateShoppingList(activeWee
 function ingredientsText(recipe) { return `${recipe.name}\n${recipe.servings} servings\n\n${recipe.ingredients.map((i) => `${formatAmount(i.amount)} ${i.unit} ${i.item}`.replace(/\s+/g, " ").trim()).join("\n")}`; }
 
 document.addEventListener("click", async (event) => {
+  const shoppingMode = event.target.closest("[data-shopping-mode]");
+  if (shoppingMode) { shoppingOptimizationMode = shoppingMode.dataset.shoppingMode; store.set("fk-shopping-optimization-mode", shoppingOptimizationMode); render({ preserveScroll: true }); return; }
   const saveStore = event.target.closest("[data-save-store]");
   if (saveStore) {
     const retailerKey = saveStore.dataset.saveStore;
@@ -430,6 +445,7 @@ document.addEventListener("submit", (event) => {
   showToast(`${person === "alisa" ? "Alisa" : "Mom"}'s nutrition targets saved`);
 });
 document.addEventListener("change", (event) => {
+  if (event.target.matches("[data-meaningful-savings]")) { meaningfulSavings = Math.max(0, Number(event.target.value) || 0); store.set("fk-shopping-meaningful-savings", meaningfulSavings); render({ preserveScroll: true }); return; }
   if (event.target.matches("[data-sauce-date]")) { preparedSauces = preparedSauces.map((item) => item.key === event.target.dataset.sauceDate ? { ...item, madeOn: event.target.value } : item); store.set("fk-prepared-sauces", preparedSauces); render({ preserveScroll: true }); return; }
   if (event.target.matches("[data-sauce-key]")) { preparedSauces = preparedSauces.map((item) => item.key === event.target.dataset.sauceKey ? { ...item, status: event.target.value, madeOn: event.target.value === "In Fridge" ? item.madeOn : "" } : item); store.set("fk-prepared-sauces", preparedSauces); showToast(`${event.target.value}: prepared sauce updated`); render({ preserveScroll: true }); return; }
   if (event.target.matches("[data-pantry-key]")) { pantry = pantry.map((item) => item.key === event.target.dataset.pantryKey ? { ...item, status: event.target.value } : item); store.set("fk-pantry", pantry); showToast(`${event.target.value}: pantry updated`); render({ preserveScroll: true }); }

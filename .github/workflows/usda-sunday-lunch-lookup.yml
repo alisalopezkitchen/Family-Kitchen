@@ -106,14 +106,16 @@ jobs:
               ("extra-virgin olive oil", 748608, 13.5),
           ]
 
-          wanted = {
-              "protein": {"Protein"},
-              "carbs": {"Carbohydrate, by difference"},
-              "fat": {"Total lipid (fat)"},
-              "fiber": {"Fiber, total dietary"},
-              "saturatedFat": {"Fatty acids, total saturated"},
-              "sugar": {"Sugars, Total NLEA", "Sugars, total including NLEA"},
-              "sodium": {"Sodium, Na"},
+          # FDC nutrient IDs are more stable than nutrient display names across
+          # Foundation, SR Legacy, and FNDDS records.
+          nutrient_ids = {
+              1003: "protein",
+              1004: "fat",
+              1005: "carbs",
+              1079: "fiber",
+              1093: "sodium",
+              1258: "saturatedFat",
+              2000: "sugar",
           }
 
           def details(fdc_id):
@@ -123,25 +125,31 @@ jobs:
 
           def nutrient_map(food):
               out = {}
-              energy_candidates = []
+              energy_kj = None
               for entry in food.get("foodNutrients", []):
                   nutrient = entry.get("nutrient", {})
+                  nutrient_id = nutrient.get("id")
                   name = nutrient.get("name")
-                  unit = nutrient.get("unitName")
+                  unit = (nutrient.get("unitName") or "").upper()
                   amount = entry.get("amount")
                   if amount is None:
                       continue
-                  if name == "Energy" and unit == "kcal":
-                      energy_candidates.append(float(amount))
-                  for key, names in wanted.items():
-                      if name in names:
-                          out[key] = float(amount)
-              if energy_candidates:
-                  out["calories"] = energy_candidates[0]
+                  amount = float(amount)
+                  if nutrient_id in nutrient_ids:
+                      out[nutrient_ids[nutrient_id]] = amount
+                  if nutrient_id == 1008 or (name == "Energy" and unit == "KCAL"):
+                      out["calories"] = amount
+                  elif nutrient_id == 1062 or (name == "Energy" and unit == "KJ"):
+                      energy_kj = amount
+              # Some Foundation records report energy only in kJ. Convert only
+              # when an explicit kcal value is absent.
+              if "calories" not in out and energy_kj is not None:
+                  out["calories"] = energy_kj / 4.184
               return out
 
           metrics = ["calories", "protein", "carbs", "fat", "fiber", "saturatedFat", "sugar", "sodium"]
           totals = {m: 0.0 for m in metrics}
+          missing_required = []
           print("SUNDAY LUNCH — USDA REVIEW SUBTOTAL")
           print("Values below are calculated from the reviewed USDA records and recipe gram weights.")
           print("")
@@ -152,6 +160,8 @@ jobs:
               for m, value in scaled.items():
                   if value is not None:
                       totals[m] += value
+                  else:
+                      missing_required.append(f"{label}: {m}")
               print(f"{label.upper()} | FDC {fdc_id} | {grams:g} g")
               print("  " + " | ".join(f"{m}: {scaled[m]:.2f}" if scaled[m] is not None else f"{m}: MISSING" for m in metrics))
 
@@ -163,8 +173,13 @@ jobs:
           print("  " + " | ".join(f"{m}: {izzio[m]:.2f}" for m in metrics))
 
           print("")
-          print("REVIEW SUBTOTAL (USDA foods + Izzio bread; Dijon NOT INCLUDED)")
-          print("  " + " | ".join(f"{m}: {totals[m]:.2f}" for m in metrics))
+          if missing_required:
+              print("SUBTOTAL WITHHELD — required USDA nutrients are missing:")
+              for item in missing_required:
+                  print("  - " + item)
+          else:
+              print("REVIEW SUBTOTAL (USDA foods + Izzio bread; Dijon NOT INCLUDED)")
+              print("  " + " | ".join(f"{m}: {totals[m]:.2f}" for m in metrics))
           print("")
           print("BLOCKER: Dijon mustard still needs a reviewed nutrition source and standardized gram weight.")
           print("No recipe nutrition values were written by this workflow.")

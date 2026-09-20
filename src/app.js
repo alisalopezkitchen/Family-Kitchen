@@ -15,6 +15,13 @@ let checked = store.get("fk-shopping-checked", []);
 let mealMoves = store.get("fk-meal-moves", []);
 let pantryFilter = "all";
 let shoppingStoreFilter = "all";
+let recipeFilter = "all";
+let recipePreferences = store.get("fk-recipe-preferences", { alisa: {}, mom: {} });
+function recipePreference(recipeId, person = "alisa") { return recipePreferences[person]?.[recipeId] || "want-to-try"; }
+function setRecipePreference(recipeId, status, person = "alisa") {
+  recipePreferences = { ...recipePreferences, [person]: { ...(recipePreferences[person] || {}), [recipeId]: status } };
+  store.set("fk-recipe-preferences", recipePreferences);
+}
 let preparedSauces = store.get("fk-prepared-sauces", initialPreparedSauces).map((item) => ({ ...item, madeOn: item.madeOn || "" }));
 
 const icons = {
@@ -165,18 +172,28 @@ function pastWeeksView() {
 }
 
 function recipesView() {
-  return `<section class="section-shell page">${pageHeader("The recipe box", "Permanent favorites", "Recipes live here once and can be reused in every weekly plan.")}
-    <div class="filter-row" role="group" aria-label="Filter recipes"><button class="chip active" data-filter="all">All recipes</button><button class="chip" data-filter="main">Mains</button><button class="chip" data-filter="sauce">Sauces</button><button class="chip" data-filter="fresh">Fresh sides</button></div>
-    <div class="recipe-grid">${recipes.map((recipe, index) => `<article class="recipe-card" data-tags="${recipe.tags.join(" ").toLowerCase()}" data-kind="${recipe.tags.includes("Sauce") ? "sauce" : recipe.tags.some((tag) => ["Fresh", "Salad", "Vegetarian"].includes(tag)) ? "fresh" : "main"}"><div class="recipe-card-art tone-${index % 4 + 1}"><span>${String(index + 1).padStart(2, "0")}</span><span class="tag">${recipe.tags[0]}</span></div><div class="recipe-card-body"><h2><a href="#/recipes/${recipe.id}">${recipe.name}</a></h2><p>${recipe.description}</p><div class="recipe-meta"><span>${recipe.prepTime} prep</span><span>${recipe.servings} servings</span></div>${recipeLink(recipe, true)}</div></article>`).join("")}</div></section>`;
+  const visible = recipes.filter((recipe) => recipeFilter === "all" || recipePreference(recipe.id) === recipeFilter);
+  const filters = [
+    ["all", "All"],
+    ["favorite", "Favorites"],
+    ["want-to-try", "Want to Try"],
+    ["not-for-me", "Not for Me"],
+  ];
+  return `<section class="section-shell page">${pageHeader("The recipe box", "Recipes & preferences", "Heart what you love, keep new ideas in Want to Try, and mark recipes Not for Me without deleting them.")}
+    <div class="filter-row" role="group" aria-label="Filter recipes">${filters.map(([id,label]) => `<button class="chip ${recipeFilter === id ? "active" : ""}" data-recipe-filter="${id}">${label}</button>`).join("")}</div>
+    <div class="recipe-grid">${visible.map((recipe, index) => {
+      const pref = recipePreference(recipe.id);
+      return `<article class="recipe-card" data-preference="${pref}"><div class="recipe-card-art tone-${index % 4 + 1}"><span>${String(index + 1).padStart(2, "0")}</span><span class="tag">${recipe.tags[0]}</span></div><div class="recipe-card-body"><div class="recipe-title-row"><h2><a href="#/recipes/${recipe.id}">${recipe.name}</a></h2><button class="favorite-button ${pref === "favorite" ? "active" : ""}" data-favorite-recipe="${recipe.id}" aria-label="${pref === "favorite" ? "Remove from favorites" : "Add to favorites"}" title="${pref === "favorite" ? "Favorite" : "Add to favorites"}">${pref === "favorite" ? "♥" : "♡"}</button></div><p>${recipe.description}</p><div class="recipe-meta"><span>${recipe.prepTime} prep</span><span>${recipe.servings} servings</span></div><div class="recipe-preference-row"><span class="preference-label">${pref === "favorite" ? "Favorite" : pref === "not-for-me" ? "Not for Me" : "Want to Try"}</span><button class="text-button" data-not-for-me="${recipe.id}">${pref === "not-for-me" ? "Move back to Want to Try" : "Not for Me"}</button></div>${recipeLink(recipe, true)}</div></article>`;
+    }).join("") || `<div class="empty-progress"><h2>No recipes here yet.</h2><p>Change the filter to see the rest of the recipe box.</p></div>`}</div></section>`;
 }
-
 function recipeSchema(recipe) {
   return JSON.stringify({ "@context": "https://schema.org", "@type": "Recipe", name: recipe.name, description: recipe.description, recipeYield: `${recipe.servings} servings`, prepTime: `PT${parseInt(recipe.prepTime)}M`, cookTime: `PT${parseInt(recipe.cookTime)}M`, recipeIngredient: recipe.ingredients.map((i) => `${formatAmount(i.amount)} ${i.unit} ${i.item}`.replace(/\s+/g, " ").trim()), recipeInstructions: recipe.instructions.map((text) => ({ "@type": "HowToStep", text })), recipeCategory: "Dinner", recipeCuisine: recipe.tags[0], nutrition: { "@type": "NutritionInformation", servingSize: recipe.servingSize } }).replace(/</g, "\\u003c");
 }
 
 function recipeDetailView(recipe) {
   const inExtras = extras.includes(recipe.id);
-  return `<section class="section-shell page recipe-detail"><a class="back-link" href="#/recipes">← All recipes</a><div class="recipe-hero"><div><p class="eyebrow">${recipe.tags.join(" · ")}</p><h1>${recipe.name}</h1><p class="lede">${recipe.description}</p><div class="recipe-actions"><button class="button primary" data-copy-ingredients="${recipe.id}">Copy for MyFitnessPal</button><a class="button secondary" href="https://www.myfitnesspal.com/recipe_parser" target="_blank" rel="noopener">Open MyFitnessPal</a><button class="button secondary" data-add-recipe="${recipe.id}" ${inExtras ? "disabled" : ""}>${inExtras ? "Added to shopping list" : "Add to shopping list"}</button></div></div><dl class="recipe-facts"><div><dt>Servings</dt><dd>${recipe.servings}</dd></div><div><dt>Serving size</dt><dd>${recipe.servingSize}</dd></div><div><dt>Prep</dt><dd>${recipe.prepTime}</dd></div><div><dt>Cook</dt><dd>${recipe.cookTime}</dd></div></dl></div>
+  const pref = recipePreference(recipe.id);
+  return `<section class="section-shell page recipe-detail"><a class="back-link" href="#/recipes">← All recipes</a><div class="recipe-hero"><div><p class="eyebrow">${recipe.tags.join(" · ")}</p><div class="recipe-detail-title"><h1>${recipe.name}</h1><button class="favorite-button large ${pref === "favorite" ? "active" : ""}" data-favorite-recipe="${recipe.id}" aria-label="${pref === "favorite" ? "Remove from favorites" : "Add to favorites"}">${pref === "favorite" ? "♥" : "♡"}</button></div><p class="lede">${recipe.description}</p><div class="recipe-preference-detail"><span class="preference-label">${pref === "favorite" ? "Favorite" : pref === "not-for-me" ? "Not for Me" : "Want to Try"}</span><button class="text-button" data-not-for-me="${recipe.id}">${pref === "not-for-me" ? "Move back to Want to Try" : "Not for Me"}</button></div><div class="recipe-actions"><button class="button primary" data-copy-ingredients="${recipe.id}">Copy for MyFitnessPal</button><a class="button secondary" href="https://www.myfitnesspal.com/recipe_parser" target="_blank" rel="noopener">Open MyFitnessPal</a><button class="button secondary" data-add-recipe="${recipe.id}" ${inExtras ? "disabled" : ""}>${inExtras ? "Added to shopping list" : "Add to shopping list"}</button></div></div><dl class="recipe-facts"><div><dt>Servings</dt><dd>${recipe.servings}</dd></div><div><dt>Serving size</dt><dd>${recipe.servingSize}</dd></div><div><dt>Prep</dt><dd>${recipe.prepTime}</dd></div><div><dt>Cook</dt><dd>${recipe.cookTime}</dd></div></dl></div>
     <div class="recipe-content"><article><p class="eyebrow">What you’ll need</p><h2>Ingredients</h2><ul class="ingredient-list">${recipe.ingredients.map((i) => `<li><strong>${formatAmount(i.amount)} ${i.unit}</strong><span>${i.item}${i.optional ? " (as available)" : ""}</span></li>`).join("")}</ul></article><article><p class="eyebrow">At the stove</p><h2>Method</h2><ol class="method-list">${recipe.instructions.map((step) => `<li><span>${step}</span></li>`).join("")}</ol></article></div>
     <div class="detail-grid"><article class="detail-card"><p class="tiny-label">Portions</p><h3>At our table</h3><dl><dt>Alisa</dt><dd>${recipe.portions.alisa}</dd><dt>Mom</dt><dd>${recipe.portions.mom}</dd></dl></article><article class="detail-card"><p class="tiny-label">Nutrition per serving</p><h3>${typeof recipe.nutrition.calories === "number" ? "Calculated" : "Calculation pending"}</h3><dl class="nutrition-list"><dt>Calories</dt><dd>${recipe.nutrition.calories}</dd><dt>Protein</dt><dd>${recipe.nutrition.protein}</dd><dt>Fiber</dt><dd>${recipe.nutrition.fiber}</dd><dt>Saturated fat</dt><dd>${recipe.nutrition.saturatedFat}</dd></dl></article><article class="detail-card"><p class="tiny-label">Keep it well</p><h3>Storage</h3><p>${recipe.storage}</p></article></div><script type="application/ld+json">${recipeSchema(recipe)}</script></section>`;
 }
@@ -267,6 +284,24 @@ document.addEventListener("click", async (event) => {
   const clearChecked = event.target.closest("[data-clear-checked]"); if (clearChecked) { checked = []; store.set("fk-shopping-checked", checked); render(); }
   const storeFilterButton = event.target.closest("[data-store-filter]"); if (storeFilterButton) { shoppingStoreFilter = storeFilterButton.dataset.storeFilter; render({ preserveScroll: true }); return; }
   const pantryFilterButton = event.target.closest("[data-pantry-filter]"); if (pantryFilterButton) { pantryFilter = pantryFilterButton.dataset.pantryFilter; render(); return; }
+  const favorite = event.target.closest("[data-favorite-recipe]");
+  if (favorite) {
+    const id = favorite.dataset.favoriteRecipe;
+    setRecipePreference(id, recipePreference(id) === "favorite" ? "want-to-try" : "favorite");
+    render({ preserveScroll: true });
+    showToast(recipePreference(id) === "favorite" ? "Added to favorites" : "Moved to Want to Try");
+    return;
+  }
+  const notForMe = event.target.closest("[data-not-for-me]");
+  if (notForMe) {
+    const id = notForMe.dataset.notForMe;
+    setRecipePreference(id, recipePreference(id) === "not-for-me" ? "want-to-try" : "not-for-me");
+    render({ preserveScroll: true });
+    showToast(recipePreference(id) === "not-for-me" ? "Marked Not for Me" : "Moved to Want to Try");
+    return;
+  }
+  const recipeFilterButton = event.target.closest("[data-recipe-filter]");
+  if (recipeFilterButton) { recipeFilter = recipeFilterButton.dataset.recipeFilter; render({ preserveScroll: true }); return; }
   const chip = event.target.closest("[data-filter]"); if (chip) { document.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c === chip)); document.querySelectorAll(".recipe-card").forEach((card) => { card.hidden = chip.dataset.filter !== "all" && card.dataset.kind !== chip.dataset.filter; }); }
 });
 document.addEventListener("change", (event) => {

@@ -110,3 +110,15 @@ footer { min-height:78px; padding:0 max(1.5rem,calc((100vw - 1180px)/2)); border
 
 .store-filter { display:flex; flex-wrap:wrap; gap:.6rem; margin:0 0 .75rem; }
 .store-filter-note { margin-top:0; margin-bottom:1.5rem; }
+
+.recipe-title-row,.recipe-detail-title{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.recipe-detail-title{align-items:center}
+.recipe-detail-title h1,.recipe-title-row h2{margin-right:auto}
+.favorite-button{border:0;background:transparent;font:inherit;font-size:1.8rem;line-height:1;cursor:pointer;padding:.15rem;color:inherit;opacity:.65}
+.favorite-button:hover,.favorite-button:focus-visible,.favorite-button.active{opacity:1}
+.favorite-button.active{color:#8a3d43}
+.favorite-button.large{font-size:2.25rem}
+.recipe-preference-row,.recipe-preference-detail{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:.75rem 0}
+.recipe-preference-detail{justify-content:flex-start;margin:.65rem 0 1rem}
+.preference-label{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;font-weight:700}
+.text-button{border:0;background:transparent;padding:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;color:inherit;font:inherit;font-size:.85rem}

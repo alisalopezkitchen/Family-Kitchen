@@ -10,15 +10,15 @@ export const recipes = [
     servings: 1, servingSize: "1 breakfast", prepTime: "5 minutes", cookTime: "8 minutes",
     tags: ["Breakfast", "Protein", "Savory"],
     ingredients: [
-      { key: "egg", item: "large eggs", amount: 2, unit: "", grams: 100, category: "Protein", nutritionLookup: { source: "USDA FoodData Central", status: "pending-match" } },
-      { key: "sourdough", item: "sourdough bread", amount: 2, unit: "slices", grams: 70, category: "Bakery", nutritionLookup: { source: "USDA FoodData Central", status: "pending-match" } },
-      { key: "avocado", item: "avocado", amount: 0.5, unit: "medium", grams: 75, category: "Produce", nutritionLookup: { source: "USDA FoodData Central", status: "pending-match" } }
+      { key: "egg", item: "large eggs", amount: 2, unit: "", grams: 100, category: "Protein", nutritionLookup: { source: "USDA FoodData Central", query: "Egg, whole, raw, fresh", status: "pending-match" } },
+      { key: "sourdough", item: "sourdough bread", amount: 2, unit: "slices", grams: 70, category: "Bakery", nutritionLookup: { source: "USDA FoodData Central", query: "Bread, sourdough", status: "pending-match" } },
+      { key: "avocado", item: "avocado", amount: 0.5, unit: "medium", grams: 75, category: "Produce", nutritionLookup: { source: "USDA FoodData Central", query: "Avocados, raw, all commercial varieties", status: "pending-match" } }
     ],
     instructions: ["Cook the eggs until the whites are set and the yolks remain jammy.", "Toast the sourdough.", "Serve with measured avocado; season to taste."],
     portions: { alisa: "2 large eggs + 2 slices (70 g) sourdough + 75 g avocado", mom: "Adjust separately when planned" },
     storage: "Best prepared fresh.",
     nutrition: nutritionPending,
-    quantification: { status: "portion-defined", note: "Weights are defined; nutrition remains pending until the selected USDA food records are matched and calculated." }
+    quantification: { status: "usda-match-ready", calculationBasis: "grams", requiredNutrients: ["calories","protein","carbs","fat","fiber","saturatedFat","sugar","sodium"], note: "Ingredient weights and USDA search identities are defined. Nutrition remains pending until each search identity is resolved to a reviewed FDC ID; the engine will then calculate nutrients from grams." }
   },
   {
     id: "greek-chicken-feta-meatballs", name: "Greek chicken-feta meatballs",

@@ -13,6 +13,7 @@ let pantry = store.get("fk-pantry", initialPantry);
 let extras = store.get("fk-shopping-extras", []);
 let checked = store.get("fk-shopping-checked", []);
 let mealMoves = store.get("fk-meal-moves", []);
+let pantryFilter = "all";
 
 const icons = {
   arrow: `<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>`,
@@ -133,9 +134,24 @@ function shoppingView() {
   return `<section class="section-shell page">${pageHeader("This week’s groceries", "Shopping", "One consolidated list, split around how you actually shop. Pantry staples you have are already filtered out.")}<div class="shopping-toolbar"><span>${icons.cart} <strong>${items.length}</strong> ingredients to pick up</span>${checked.length ? `<button class="button text" data-clear-checked>Clear checked items</button>` : ""}</div><div class="shopping-layout">${shopSection("sunday", "Sunday main shop", "Stock the week")}${shopSection("wednesday", "Wednesday fresh pickup", "Small and fresh")}</div>${extras.length ? `<div class="extras-note"><span>Extra recipe${extras.length > 1 ? "s" : ""} added manually: ${extras.map((id) => getRecipe(id).name).join(", ")}</span><button data-clear-extras>Remove extras</button></div>` : ""}</section>`;
 }
 
+function pantryCategory(item) {
+  if (["jasmine-rice","basmati-rice","sushi-rice"].includes(item.key)) return "Rice & grains";
+  if (["olive-oil","garlic-oil","rice-vinegar","red-wine-vinegar","sesame-oil"].includes(item.key)) return "Oils & vinegars";
+  if (["tamari","fish-sauce","dijon","tahini","brown-sugar"].includes(item.key)) return "Sauces & condiments";
+  if (["sesame-seeds"].includes(item.key)) return "Seeds & specialty";
+  return "Spices & seasonings";
+}
 function pantryView() {
+  const normalizedPantry = pantry.map((item) => item.status === "Use First" ? { ...item, status: "Have" } : item);
+  if (normalizedPantry.some((item, i) => item.status !== pantry[i].status)) { pantry = normalizedPantry; store.set("fk-pantry", pantry); }
   const statusCounts = pantryStatuses.map((status) => [status, pantry.filter((item) => item.status === status).length]);
-  return `<section class="section-shell page">${pageHeader("Know what you have", "Pantry", "Keep staples visible and prevent repeat buys. Changes are saved on this device.")}<div class="pantry-summary">${statusCounts.map(([status, count]) => `<div><strong>${count}</strong><span>${status}</span></div>`).join("")}</div><div class="pantry-list"><div class="pantry-list-head"><span>Staple</span><span>Status</span></div>${pantry.map((item) => `<div class="pantry-row"><div><span class="pantry-dot status-${item.status.toLowerCase().replace(" ", "-")}"></span><strong>${item.name}</strong></div><label><span class="sr-only">Status for ${item.name}</span><select data-pantry-key="${item.key}">${pantryStatuses.map((status) => `<option ${status === item.status ? "selected" : ""}>${status}</option>`).join("")}</select></label></div>`).join("")}</div><p class="helper-text"><strong>Have</strong> means it is already in the house. <strong>Low</strong> adds it to Shopping when this week needs it. <strong>Buy</strong> always adds it to Shopping. Fresh-food priority is handled by the weekly meal plan, not as a Pantry status.</p></section>`;
+  const visible = pantryFilter === "all" ? pantry : pantry.filter((item) => item.status === pantryFilter);
+  const groups = visible.reduce((out,item) => { const category=pantryCategory(item); (out[category] ??= []).push(item); return out; }, {});
+  const row = (item) => `<div class="pantry-row"><div><span class="pantry-dot status-${item.status.toLowerCase()}"></span><strong>${item.name}</strong></div><label><span class="sr-only">Status for ${item.name}</span><select data-pantry-key="${item.key}">${pantryStatuses.map((status) => `<option ${status === item.status ? "selected" : ""}>${status}</option>`).join("")}</select></label></div>`;
+  return `<section class="section-shell page pantry-page">${pageHeader("Know what you have", "Pantry", "Keep staples visible and prevent repeat buys. Changes are saved on this device.")}
+    <div class="pantry-filter-bar"><button class="pantry-all ${pantryFilter === "all" ? "active" : ""}" data-pantry-filter="all">All <span>${pantry.length}</span></button><div class="pantry-summary">${statusCounts.map(([status,count])=>`<button class="${pantryFilter === status ? "active" : ""}" data-pantry-filter="${status}"><strong>${count}</strong><span>${status}</span></button>`).join("")}</div></div>
+    <div class="pantry-groups">${Object.entries(groups).map(([category,items])=>`<section class="pantry-group"><div class="pantry-category"><h2>${category}</h2><span>${items.length} item${items.length===1?"":"s"}</span></div><div class="pantry-list"><div class="pantry-list-head"><span>Staple</span><span>Status</span></div>${items.map(row).join("")}</div></section>`).join("") || '<div class="empty-state">No pantry items in this filter.</div>'}</div>
+    <p class="helper-text"><strong>Have</strong> means it is already in the house. <strong>Low</strong> adds it to Shopping when this week needs it. <strong>Buy</strong> always adds it to Shopping. Fresh-food priority is handled by the weekly meal plan, not as a Pantry status.</p></section>`;
 }
 
 function progressView() {
@@ -166,6 +182,7 @@ document.addEventListener("click", async (event) => {
   if (add && !extras.includes(add.dataset.addRecipe)) { extras.push(add.dataset.addRecipe); store.set("fk-shopping-extras", extras); add.disabled = true; add.textContent = "Added to shopping list"; updateShoppingCount(); showToast("Recipe added to shopping list"); }
   const clearExtras = event.target.closest("[data-clear-extras]"); if (clearExtras) { extras = []; store.set("fk-shopping-extras", extras); render(); }
   const clearChecked = event.target.closest("[data-clear-checked]"); if (clearChecked) { checked = []; store.set("fk-shopping-checked", checked); render(); }
+  const pantryFilterButton = event.target.closest("[data-pantry-filter]"); if (pantryFilterButton) { pantryFilter = pantryFilterButton.dataset.pantryFilter; render(); return; }
   const chip = event.target.closest("[data-filter]"); if (chip) { document.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c === chip)); document.querySelectorAll(".recipe-card").forEach((card) => { card.hidden = chip.dataset.filter !== "all" && card.dataset.kind !== chip.dataset.filter; }); }
 });
 document.addEventListener("change", (event) => {

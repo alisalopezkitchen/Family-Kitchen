@@ -30,6 +30,47 @@ export const mealGenerationPolicy = {
 
 const nutritionPending = { calories:"To be calculated", protein:"To be calculated", carbs:"To be calculated", fat:"To be calculated", fiber:"To be calculated", saturatedFat:"To be calculated", sugar:"To be calculated", sodium:"To be calculated", status:"pending", source:"USDA FoodData Central", mfpStatus:"not checked" };
 
+
+export const recipeStandardizationPolicy = {
+  version: 1,
+  purpose: "Convert saved/source recipes into calculation-ready Family Kitchen recipes without changing their intended flavor.",
+  stages: [
+    { id: "source", label: "Source saved", requires: ["recipe name", "source or provenance"] },
+    { id: "ingredients", label: "Ingredients standardized", requires: ["ingredient identity", "amount", "unit", "gram equivalent or measurable basis"] },
+    { id: "nutrition", label: "USDA matched", requires: ["USDA record or documented product source for each material ingredient", "all required nutrients calculated"] },
+    { id: "portioning", label: "Portion ready", requires: ["flavor-locked components identified", "independent sides identified", "scalable serving basis"] },
+    { id: "validated", label: "Planning ready", requires: ["complete nutrition", "portion strategy", "Prep/Shopping quantities can be derived"] },
+  ],
+  requiredNutrients: ["calories", "protein", "carbs", "fat", "fiber", "saturatedFat", "sugar", "sodium"],
+  ingredientRules: {
+    identity: "Use the specific food or product needed for nutrition matching; do not silently substitute a generic ingredient when the recipe depends on a specific form.",
+    quantities: "Keep familiar kitchen measures for display and store gram-equivalent or otherwise measurable quantities for calculation.",
+    variants: "Protein leanness, chicken breast vs thigh, yogurt fat percentage, and similar allowed variants remain optimization choices when the recipe still works as intended.",
+    unknowns: "Never guess an unknown amount, package size, yield, or nutrition value. Keep the recipe pending until it is measured or confirmed.",
+  },
+  flavorRules: {
+    contract: "Sauce, dressing, marinade, seasoning, and toppings that define the recipe scale with the food they season.",
+    independent: "Only genuine separate sides or separately portionable components may be scaled independently.",
+    substitutions: "Automatic substitutions are allowed only when they preserve the recipe's intended flavor and structure.",
+  },
+  nutritionRules: {
+    primarySource: "USDA FoodData Central",
+    brandedException: "Use a documented manufacturer value when a branded ingredient materially differs from a generic USDA food.",
+    mfpRole: "MyFitnessPal is a reconciliation check after Family Kitchen calculation, not the primary source.",
+    incomplete: "A recipe with any material unquantified component must remain pending and cannot supply exact day/week totals.",
+  },
+  outputs: ["recipe nutrition", "scalable component nutrition", "person-specific portions", "Prep quantities", "Shopping quantities", "MyFitnessPal import-ready recipe"],
+};
+
+export const recipeStandardizationStatus = (recipe) => {
+  const status = recipe?.quantification?.status || recipe?.nutrition?.status || "candidate";
+  if (["usda-calculated", "validated", "complete"].includes(status)) return "validated";
+  if (status.includes("portion")) return "portioning";
+  if (status.includes("usda") || status.includes("nutrition")) return "nutrition";
+  if (status.includes("standard") || (recipe?.ingredients?.length && recipe.ingredients.every((ingredient) => ingredient.amount !== null && ingredient.amount !== undefined))) return "ingredients";
+  return "source";
+};
+
 export const nutritionComponents = {
   "basmati-rice": {
     id: "basmati-rice", name: "Basmati rice", category: "Grain",

@@ -35,7 +35,7 @@ export const recipes = [
     servings: 4, servingSize: "Target-generated portion", prepTime: "20 minutes", cookTime: "20 minutes",
     tags: ["Greek-inspired", "Protein", "Meal prep"],
     ingredients: [
-      { key: "ground-chicken", item: "ground chicken", amount: 1.25, unit: "lb", grams: 567, category: "Protein", nutritionRole: "variable-protein", nutritionOptions: [{ label: "extra lean", leanFatRatio: "98/2", lookupQuery: "ground chicken 98% lean 2% fat" }, { label: "lean", leanFatRatio: "93/7", lookupQuery: "ground chicken 93% lean 7% fat" }], selectionRule: "Choose the lean/fat ratio from the full-day nutrition target; do not assume a default ratio." },
+      { key: "ground-chicken", item: "ground chicken", amount: 1.25, unit: "lb", grams: 567, category: "Protein", nutritionRole: "variable-protein", nutritionOptions: [{ label: "USDA generic ground chicken", source: "USDA FoodData Central", lookupQuery: "Chicken, ground, with additives, raw", dataType: "Foundation", status: "verified-generic" }], brandedOptionsPolicy: "A stated lean/fat ratio such as 93/7 or 98/2 may be added only when it is backed by a specific verified branded FoodData Central record or package Nutrition Facts record.", selectionRule: "Choose among verified nutrient records using the full-day nutrition target; never infer a lean/fat ratio from the generic USDA ground-chicken record." },
       { key: "feta", item: "feta cheese", amount: 4, unit: "oz", category: "Dairy" },
       { key: "egg", item: "egg", amount: 1, unit: "", category: "Dairy" },
       { key: "panko", item: "panko breadcrumbs", amount: 0.5, unit: "cup", category: "Pantry" },

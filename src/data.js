@@ -41,6 +41,39 @@ export const nutritionComponents = {
 
 export const recipes = [
   {
+    id: "ericas-pasta-sauce", name: "Erica’s Pasta Sauce",
+    description: "Erica’s long-simmered tomato sauce with red bell pepper, basil, garlic, onion, and deli Salamino Piccante. Preserved as the original family/friend recipe; nutrition quantities will be standardized before calculation.",
+    category: "main",
+    servings: 1, servingSize: "Batch quantity pending standardization", prepTime: "20 minutes", cookTime: "3–6 hours",
+    tags: ["Italian-inspired", "Pasta", "Want to Try"],
+    ingredients: [
+      { key: "olive-oil", item: "extra-virgin olive oil", amount: null, unit: "enough to cover saucepan bottom", category: "Pantry", quantificationStatus: "needs-standardization" },
+      { key: "yellow-onion", item: "yellow onion, diced", amount: 1, unit: "", category: "Produce" },
+      { key: "garlic", item: "garlic cloves, chopped", amount: 4, unit: "cloves", category: "Produce" },
+      { key: "red-bell-pepper", item: "red bell pepper, diced", amount: 1, unit: "", category: "Produce" },
+      { key: "salamino-piccante", item: "deli Salamino Piccante, sliced", amount: 1, unit: "deli stick", category: "Protein", quantificationStatus: "weigh-at-standardization" },
+      { key: "diced-tomatoes", item: "canned diced tomatoes", amount: 2, unit: "large cans", category: "Pantry", quantificationStatus: "record-can-size" },
+      { key: "black-pepper", item: "black pepper", amount: 0.5, unit: "Tbsp", category: "Pantry" },
+      { key: "sugar", item: "sugar", amount: null, unit: "a couple pinches", category: "Pantry", quantificationStatus: "needs-standardization" },
+      { key: "red-pepper-flakes", item: "crushed red pepper flakes", amount: null, unit: "a couple pinches", category: "Pantry", quantificationStatus: "needs-standardization" },
+      { key: "tomato-sauce", item: "canned tomato sauce", amount: 2, unit: "large cans", category: "Pantry", quantificationStatus: "record-can-size" },
+      { key: "fresh-basil", item: "fresh basil leaves", amount: null, unit: "to taste", category: "Produce", quantificationStatus: "needs-standardization" }
+    ],
+    instructions: [
+      "Cover the bottom of a large saucepan with olive oil and heat the pan.",
+      "Add the garlic and onion and sauté.",
+      "Add the red bell pepper and sliced Salamino Piccante.",
+      "Add the diced tomatoes, black pepper, sugar, and crushed red pepper flakes. Lower the heat and simmer for 1½–3 hours.",
+      "Add the tomato sauce and fresh basil leaves. Simmer for another 1½–3 hours.",
+      "Remove the basil leaves and serve with cooked pasta."
+    ],
+    portions: { alisa: "Generated after sauce and pasta are quantified", mom: "Generated separately from Mom’s target" },
+    portionStrategy: { mode: "nutrition-target", fixedServing: false, flavorContract: "Keep Erica’s sauce recipe intact. Adjust the finished sauce and pasta serving sizes around the day’s nutrition targets rather than independently reducing flavor ingredients." },
+    storage: "Refrigerate or freeze using standard cooked tomato-sauce food-safety guidance.",
+    nutrition: { calories: "Pending", protein: "Pending", carbs: "Pending", fat: "Pending", fiber: "Pending", saturatedFat: "Pending", sugar: "Pending", sodium: "Pending", status: "pending-standardization", source: "USDA FoodData Central after quantities are standardized", mfpStatus: "not checked" },
+    quantification: { status: "needs-standardization", displaySystem: "US customary kitchen measures", note: "Original recipe intentionally retains informal quantities. EVOO, deli Salamino Piccante weight, can sizes, sugar, basil, and red pepper flakes must be measured before USDA calculation." }
+  },
+  {
     id: "jammy-eggs-sourdough-avocado", name: "Jammy eggs + sourdough + avocado",
     description: "A substantial savory breakfast with jammy eggs, sourdough, and avocado.",
     servings: 1, servingSize: "1 breakfast", prepTime: "5 minutes", cookTime: "8 minutes",

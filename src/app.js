@@ -96,12 +96,42 @@ function dayNutritionTable(day) {
   const cells=[["Calories",Math.round(totals.calories),"calories","kcal"],["Protein",Math.round(totals.protein),"protein","g"],["Fiber",Math.round(totals.fiber),"fiber","g"],["Sat. fat",Math.round(totals.saturatedFat),"saturatedFat","g"]];
   return `<div class="day-nutrition ready"><div class="nutrition-row nutrition-head"><span>Daily total</span>${cells.map(c=>`<span>${c[0]}</span>`).join("")}</div><div class="nutrition-row"><strong>Alisa</strong>${cells.map(c=>`<span><b>${c[1]} ${c[3]}</b><small class="fit ${metricFit(c[1],c[2]).toLowerCase().replace(" ","-")}">${metricFit(c[1],c[2])}</small></span>`).join("")}</div></div>`;
 }
+function sundayPrepItems(week) {
+  const sauceNames = new Map(preparedSauces.map((s) => [s.recipeId, s]));
+  const plannedSauceIds = new Set(week.days.flatMap((day) => Object.values(day.meals).flat()).filter((entry) => typeof entry === "string" && sauceNames.has(entry)));
+  const prep = week.sundayPrep.map((item) => {
+    if (/lemon[-–— ]dill sauce/i.test(item)) {
+      const sauce = preparedSauces.find((s) => s.recipeId === "mediterranean-lemon-dill-sauce");
+      if (sauce?.status === "In Fridge") return "Use prepared lemon-dill sauce from fridge";
+    }
+    return item;
+  });
+  const today = new Date();
+  const urgent = preparedSauces
+    .filter((s) => s.status === "In Fridge" && s.madeOn)
+    .map((s) => ({ ...s, useBy: new Date(new Date(`${s.madeOn}T00:00:00`).getTime() + s.storageDays * 86400000) }))
+    .filter((s) => s.useBy >= new Date(today.getFullYear(), today.getMonth(), today.getDate()) && (s.useBy - today) / 86400000 <= 2)
+    .sort((a,b) => a.useBy - b.useBy);
+  urgent.forEach((s) => {
+    const label = `Use first: ${s.name} by ${s.useBy.toLocaleDateString("en-US", { month:"short", day:"numeric" })}`;
+    if (!prep.includes(label)) prep.unshift(label);
+  });
+  plannedSauceIds.forEach((id) => {
+    const sauce = preparedSauces.find((s) => s.recipeId === id);
+    if (sauce?.status === "In Fridge" && id !== "mediterranean-lemon-dill-sauce") {
+      const label = `Use prepared ${sauce.name} from fridge`;
+      if (!prep.includes(label)) prep.push(label);
+    }
+  });
+  return prep;
+}
+
 function weekView() {
   const week = activeWeek();
   const displayDays = adjustedDays(week);
   return `<section class="section-shell page">${pageHeader(`${week.label} · ${week.dateRange}`, "This week", "A flexible five-dinner rhythm with two intentional openings for life outside the kitchen.")}${nutritionTargetStrip()}
     <div class="week-layout"><div class="day-list">${displayDays.map((day) => `<article class="day-card"><div class="day-name"><span>${day.day.slice(0, 3)}</span><h2>${day.day}</h2></div><div class="day-content">${day.theme ? `<p class="tiny-label">${day.theme}</p>` : ""}${["breakfast","lunch","dinner","snack"].map((meal) => `<div class="meal-slot"><p class="tiny-label">${meal}</p>${day.meals[meal].length ? day.meals[meal].map((entry) => typeof entry === "string" ? `<div class="meal-line">${recipeLink(getRecipe(entry))}${meal === "breakfast" || meal === "lunch" || meal === "dinner" ? `<button class="move-meal" data-move-meal data-day="${day.day}" data-meal="${meal}" data-index="${day.meals[meal].indexOf(entry)}">Skipped? Move forward</button>` : ""}</div>` : `<div class="meal-line"><p class="meal-text${entry.leftover ? " leftover" : ""}${entry.open ? " open-meal" : ""}${entry.treat ? " treat-meal" : ""}">${entry.leftover ? '<span class="meal-badge">Leftover</span>' : entry.treat ? '<span class="meal-badge treat">Treat</span>' : entry.rollover ? '<span class="meal-badge">Moved forward</span>' : ""}${escapeHtml(entry.label)}</p>${!entry.open && !entry.rollover && ["breakfast","lunch","dinner"].includes(meal) ? `<button class="move-meal" data-move-meal data-day="${day.day}" data-meal="${meal}" data-index="${day.meals[meal].indexOf(entry)}">Skipped? Move forward</button>` : ""}</div>`).join("") : `<p class="day-note">Open / flexible</p>`}</div>`).join("")}${day.note ? `<p class="day-note">${day.note}</p>` : ""}${dayNutritionTable(day)}</div></article>`).join("")}</div>
-    <aside class="week-sidebar"><article class="note-card"><span class="number-disc">01</span><p class="tiny-label">Sunday prep</p><h3>A little now, easier later</h3><ul class="clean-list">${week.sundayPrep.map((item) => `<li>${item}</li>`).join("")}</ul></article><article class="note-card green"><span class="number-disc">02</span><p class="tiny-label">Wednesday pickup</p><h3>Fresh things, small trip</h3><ul class="clean-list">${week.wednesdayPickup.map((item) => `<li>${item}</li>`).join("")}</ul></article></aside></div></section>`;
+    <aside class="week-sidebar"><article class="note-card"><span class="number-disc">01</span><p class="tiny-label">Sunday prep</p><h3>A little now, easier later</h3><ul class="clean-list">${sundayPrepItems(week).map((item) => `<li>${item}</li>`).join("")}</ul></article><article class="note-card green"><span class="number-disc">02</span><p class="tiny-label">Wednesday pickup</p><h3>Fresh things, small trip</h3><ul class="clean-list">${week.wednesdayPickup.map((item) => `<li>${item}</li>`).join("")}</ul></article></aside></div></section>`;
 }
 
 function pastWeeksView() {

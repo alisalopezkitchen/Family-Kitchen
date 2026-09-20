@@ -158,9 +158,9 @@ export const freshnessPolicy = {
 
 export const preparedSauceStatuses = ["Make", "In Fridge", "Out"];
 export const initialPreparedSauces = [
-  { key: "med-lemon-dill", name: "Mediterranean lemon-dill sauce", status: "Make", storage: "Fridge", storageDays: 4 },
-  { key: "vietnamese-lime", name: "Vietnamese lime dressing", status: "Make", storage: "Fridge", storageDays: 5 },
-  { key: "thai-basil-lime", name: "Thai basil-lime sauce", status: "Out", storage: "Fridge", storageDays: 4 },
-  { key: "japanese-ginger-sesame", name: "Japanese ginger-sesame sauce", status: "Make", storage: "Fridge", storageDays: 7 },
-  { key: "spicy-sesame", name: "Spicy sesame sauce", status: "Out", storage: "Fridge", storageDays: 7 }
+  { key: "med-lemon-dill", recipeId: "mediterranean-lemon-dill-sauce", name: "Mediterranean lemon-dill sauce", status: "Make", storage: "Fridge", storageDays: 4 },
+  { key: "vietnamese-lime", recipeId: "vietnamese-lime-dressing", name: "Vietnamese lime dressing", status: "Make", storage: "Fridge", storageDays: 5 },
+  { key: "thai-basil-lime", recipeId: "thai-basil-lime-sauce", name: "Thai basil-lime sauce", status: "Out", storage: "Fridge", storageDays: 4 },
+  { key: "japanese-ginger-sesame", recipeId: "japanese-ginger-sesame-sauce", name: "Japanese ginger-sesame sauce", status: "Make", storage: "Fridge", storageDays: 7 },
+  { key: "spicy-sesame", recipeId: "spicy-sesame-sauce", name: "Spicy sesame sauce", status: "Out", storage: "Fridge", storageDays: 7 }
 ];

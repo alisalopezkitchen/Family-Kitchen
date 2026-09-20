@@ -16,6 +16,7 @@ let mealMoves = store.get("fk-meal-moves", []);
 let pantryFilter = "all";
 let shoppingStoreFilter = "all";
 let recipeFilter = "all";
+let recipeCategoryFilter = "all";
 let recipePreferences = store.get("fk-recipe-preferences", { alisa: {}, mom: {} });
 function recipePreference(recipeId, person = "alisa") { return recipePreferences[person]?.[recipeId] || "want-to-try"; }
 function setRecipePreference(recipeId, status, person = "alisa") {
@@ -172,15 +173,18 @@ function pastWeeksView() {
 }
 
 function recipesView() {
-  const visible = recipes.filter((recipe) => recipeFilter === "all" || recipePreference(recipe.id) === recipeFilter);
+  const categoryFor = (recipe) => recipe.category || (recipe.tags.includes("Sauce") ? "sauce" : recipe.tags.some((tag) => ["Fresh", "Salad", "Vegetarian"].includes(tag)) ? "side" : "main");
+  const visible = recipes.filter((recipe) => (recipeFilter === "all" || recipePreference(recipe.id) === recipeFilter) && (recipeCategoryFilter === "all" || categoryFor(recipe) === recipeCategoryFilter));
   const filters = [
     ["all", "All"],
     ["favorite", "Favorites"],
     ["want-to-try", "Want to Try"],
     ["not-for-me", "Not for Me"],
   ];
+  const categories = [["all","All types"],["main","Mains"],["side","Sides"],["meal-salad","Meal salads"],["breakfast","Breakfast"],["treat","Treats"],["sauce","Sauces"],["pantry-prep","Pantry prep"]];
   return `<section class="section-shell page">${pageHeader("The recipe box", "Recipes & preferences", "Heart what you love, keep new ideas in Want to Try, and mark recipes Not for Me without deleting them.")}
     <div class="filter-row" role="group" aria-label="Filter recipes">${filters.map(([id,label]) => `<button class="chip ${recipeFilter === id ? "active" : ""}" data-recipe-filter="${id}">${label}</button>`).join("")}</div>
+    <div class="filter-row secondary-filters" role="group" aria-label="Filter recipe type">${categories.map(([id,label]) => `<button class="chip ${recipeCategoryFilter === id ? "active" : ""}" data-recipe-category="${id}">${label}</button>`).join("")}</div>
     <div class="recipe-grid">${visible.map((recipe, index) => {
       const pref = recipePreference(recipe.id);
       return `<article class="recipe-card" data-preference="${pref}"><div class="recipe-card-art tone-${index % 4 + 1}"><span>${String(index + 1).padStart(2, "0")}</span><span class="tag">${recipe.tags[0]}</span></div><div class="recipe-card-body"><div class="recipe-title-row"><h2><a href="#/recipes/${recipe.id}">${recipe.name}</a></h2><button class="favorite-button ${pref === "favorite" ? "active" : ""}" data-favorite-recipe="${recipe.id}" aria-label="${pref === "favorite" ? "Remove from favorites" : "Add to favorites"}" title="${pref === "favorite" ? "Favorite" : "Add to favorites"}">${pref === "favorite" ? "♥" : "♡"}</button></div><p>${recipe.description}</p><div class="recipe-meta"><span>${recipe.prepTime} prep</span><span>${recipe.servings} servings</span></div><div class="recipe-preference-row"><span class="preference-label">${pref === "favorite" ? "Favorite" : pref === "not-for-me" ? "Not for Me" : "Want to Try"}</span><button class="text-button" data-not-for-me="${recipe.id}">${pref === "not-for-me" ? "Move back to Want to Try" : "Not for Me"}</button></div>${recipeLink(recipe, true)}</div></article>`;
@@ -300,6 +304,8 @@ document.addEventListener("click", async (event) => {
     showToast(recipePreference(id) === "not-for-me" ? "Marked Not for Me" : "Moved to Want to Try");
     return;
   }
+  const recipeCategoryButton = event.target.closest("[data-recipe-category]");
+  if (recipeCategoryButton) { recipeCategoryFilter = recipeCategoryButton.dataset.recipeCategory; render({ preserveScroll: true }); return; }
   const recipeFilterButton = event.target.closest("[data-recipe-filter]");
   if (recipeFilterButton) { recipeFilter = recipeFilterButton.dataset.recipeFilter; render({ preserveScroll: true }); return; }
   const chip = event.target.closest("[data-filter]"); if (chip) { document.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c === chip)); document.querySelectorAll(".recipe-card").forEach((card) => { card.hidden = chip.dataset.filter !== "all" && card.dataset.kind !== chip.dataset.filter; }); }

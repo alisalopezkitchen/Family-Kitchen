@@ -149,7 +149,15 @@ function pantryView() {
   const visible = pantryFilter === "all" ? pantry : pantry.filter((item) => item.status === pantryFilter);
   const groups = visible.reduce((out,item) => { const category=pantryCategory(item); (out[category] ??= []).push(item); return out; }, {});
   const plannedRecipeIds = new Set(activeWeek().days.flatMap((day) => Object.values(day.meals).flat()).filter((entry) => typeof entry === "string"));
-  const plannedSauces = preparedSauces.map((s) => ({ ...s, plannedThisWeek: plannedRecipeIds.has(s.recipeId) }));
+  let sauceStateChanged = false;
+  preparedSauces = preparedSauces.map((s) => {
+    const plannedThisWeek = plannedRecipeIds.has(s.recipeId);
+    const nextStatus = s.status === "In Fridge" ? "In Fridge" : plannedThisWeek ? "Make" : "Out";
+    if (nextStatus !== s.status) sauceStateChanged = true;
+    return { ...s, status: nextStatus, plannedThisWeek };
+  });
+  if (sauceStateChanged) store.set("fk-prepared-sauces", preparedSauces);
+  const plannedSauces = preparedSauces;
   const row = (item) => `<div class="pantry-row"><div><span class="pantry-dot status-${item.status.toLowerCase()}"></span><strong>${item.name}</strong></div><label><span class="sr-only">Status for ${item.name}</span><select data-pantry-key="${item.key}">${pantryStatuses.map((status) => `<option ${status === item.status ? "selected" : ""}>${status}</option>`).join("")}</select></label></div>`;
   return `<section class="section-shell page pantry-page">${pageHeader("Know what you have", "Pantry", "Keep staples visible and prevent repeat buys. Changes are saved on this device.")}
     <div class="pantry-filter-bar"><button class="pantry-all ${pantryFilter === "all" ? "active" : ""}" data-pantry-filter="all">All <span>${pantry.length}</span></button><div class="pantry-summary">${statusCounts.map(([status,count])=>`<button class="${pantryFilter === status ? "active" : ""}" data-pantry-filter="${status}"><strong>${count}</strong><span>${status}</span></button>`).join("")}</div></div>

@@ -8,14 +8,16 @@ export const mealGenerationPolicy = {
   rules: {
     fixedMeals: "Keep meals already selected for the week unless the user changes them.",
     flexibleMeals: "Generate unfilled breakfasts, lunches, dinners, and snacks to complement fixed meals and close daily nutrition gaps.",
-    portions: "Adjust quantified components and portions before replacing a fixed meal. Never assume equal shares of a household recipe.",
+    portions: "Adjust the serving size of a complete composed recipe and genuinely separate sides before replacing a fixed meal. Never assume equal shares of a household recipe.",
+    flavorContract: "Preserve each recipe's composition and flavor ratios. Dressing, sauce, marinade, seasoning, toppings, and other flavor components scale with the food they season; never independently reduce them merely to satisfy nutrition targets.",
+    independentLevers: "Use genuinely separate sides such as bread, rice, potatoes, fruit, or snacks as independent nutrition levers. A protein may be adjusted independently only when it is a separately portionable component and its intended seasoning, sauce, or marinade ratio is preserved.",
     validation: "Do not mark a generated day complete until all planned components are quantified and the day has been tested against the active nutrition targets.",
     weeklyVariety: "Use two proven favorites, one variation, and one experiment while avoiding unnecessary repetition.",
     waste: "After nutrition requirements are satisfied, favor ingredients already used elsewhere in the week and respect Sunday shopping, Wednesday freshness pickup, perishability, and carryover.",
     saturatedFat: "Do not add saturated fat merely to fill calories; prefer appropriate unsaturated-fat or carbohydrate levers when the day has room.",
   },
   mealRoles: {
-    fixed: "Selected meal; generator may adjust quantified component portions but does not silently replace it.",
+    fixed: "Selected meal; generator may adjust its composed serving size and genuine separate sides but does not silently replace it or alter its flavor ratios.",
     flexible: "Generator chooses the meal using the remaining day and week requirements.",
     open: "Intentionally unplanned restaurant/flexible slot; remains unscored until quantified.",
   },

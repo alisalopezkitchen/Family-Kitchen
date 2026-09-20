@@ -145,7 +145,17 @@ export const recipes = [
       { key: "sourdough", item: "Izzio Artisan Bakery San Francisco Style Sourdough Bread", amount: 2, unit: "slice", grams: 56, category: "Bakery", nutritionLookup: { source: "manufacturer nutrition label", brand: "Izzio Artisan Bakery", product: "San Francisco Style Sourdough Bread, sliced", status: "matched", serving: { slices: 2, grams: 56, calories: 140, protein: 5, carbs: 29, fat: 0.5, fiber: 1, saturatedFat: 0, sugar: 0, sodium: 290 } }, quantification: { status: "quantified", gramsPerSlice: 28 } }
     ],
     instructions: ["Cook the chicken until browned and cooked through, then rest and slice.", "Whisk lemon juice, Dijon, and olive oil for the dressing.", "Chop the cucumber, carrot, cabbage, dill, and parsley; toss with the dressing.", "Top with sliced chicken and feta and serve with sourdough."],
-    portions: { alisa: "Generated from Alisa's active nutrition target", mom: "Generated separately from Mom's nutrition target" }, portionStrategy: { mode: "nutrition-target", fixedServing: false }, storage: "Keep chicken, chopped vegetables, dressing, and bread separate until serving.", nutrition: { status: "calculated", basis: "whole-recipe", calories: 910.16, protein: 96.88, carbs: 58.28, fat: 31.66, fiber: 8.64, saturatedFat: 9.78, sugar: 12.75, sodium: 1297.18, source: "USDA FoodData Central + reviewed manufacturer labels", note: "Whole-recipe total. Per-person nutrition is generated from target-based portions; do not divide automatically by recipe servings." },
+    portions: { alisa: "Generated from Alisa's active nutrition target", mom: "Generated separately from Mom's nutrition target" },
+    portionStrategy: {
+      mode: "nutrition-target",
+      fixedServing: false,
+      flavorContract: "Scale the composed salad as one unit so chicken, vegetables, herbs, feta, and dressing retain their verified recipe ratios. Sourdough is a genuine separate side and may be adjusted independently.",
+      components: [
+        { id: "composed-salad", role: "flavor-locked", includes: ["chicken-breast","cucumber","carrots","cabbage","feta","dill","parsley","lemon-juice","dijon","olive-oil"], nutrition: { basis: "whole-component", calories: 770.16, protein: 91.88, carbs: 29.28, fat: 31.16, fiber: 7.64, saturatedFat: 9.78, sugar: 12.75, sodium: 1007.18, status: "calculated", source: "USDA FoodData Central + reviewed manufacturer label" } },
+        { id: "sourdough-side", role: "independent-side", includes: ["sourdough"], nutrition: { basis: "whole-component", calories: 140, protein: 5, carbs: 29, fat: 0.5, fiber: 1, saturatedFat: 0, sugar: 0, sodium: 290, status: "calculated", source: "Izzio manufacturer nutrition label" } }
+      ]
+    },
+    storage: "Keep chicken, chopped vegetables, dressing, and bread separate until serving.", nutrition: { status: "calculated", basis: "whole-recipe", calories: 910.16, protein: 96.88, carbs: 58.28, fat: 31.66, fiber: 8.64, saturatedFat: 9.78, sugar: 12.75, sodium: 1297.18, source: "USDA FoodData Central + reviewed manufacturer labels", note: "Whole-recipe total. Per-person nutrition is generated from target-based portions; do not divide automatically by recipe servings." },
   },
   {
     id: "sesame-tahini-ribbon-salad", name: "Cucumber & ribbon carrots with sesame-tahini dressing",

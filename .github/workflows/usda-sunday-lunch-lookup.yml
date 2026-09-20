@@ -82,3 +82,90 @@ jobs:
           print("REVIEW REQUIRED: These are candidates only. No FDC record was")
           print("assigned to the Family Kitchen recipe by this workflow.")
           PY
+
+      - name: Calculate reviewed Sunday lunch nutrient subtotal
+        env:
+          FDC_API_KEY: ${{ secrets.FDC_API_KEY }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request
+
+          api_key = os.environ["FDC_API_KEY"]
+
+          # Reviewed ingredient identities and standardized recipe weights.
+          # Dijon is intentionally excluded until it has a reviewed source/weight.
+          foods = [
+              ("chicken breast", 2646170, 340.2),
+              ("feta cheese", 2259796, 56.7),
+              ("cucumber", 2346406, 200.0),
+              ("carrot", 170393, 61.0),
+              ("green cabbage", 2346407, 178.0),
+              ("flat-leaf parsley", 170416, 8.0),
+              ("fresh dill", 172233, 6.0),
+              ("lemon juice", 167747, 30.0),
+              ("extra-virgin olive oil", 748608, 13.5),
+          ]
+
+          wanted = {
+              "protein": {"Protein"},
+              "carbs": {"Carbohydrate, by difference"},
+              "fat": {"Total lipid (fat)"},
+              "fiber": {"Fiber, total dietary"},
+              "saturatedFat": {"Fatty acids, total saturated"},
+              "sugar": {"Sugars, Total NLEA", "Sugars, total including NLEA"},
+              "sodium": {"Sodium, Na"},
+          }
+
+          def details(fdc_id):
+              url = f"https://api.nal.usda.gov/fdc/v1/food/{fdc_id}?format=full&api_key=" + urllib.parse.quote(api_key)
+              with urllib.request.urlopen(url, timeout=30) as response:
+                  return json.load(response)
+
+          def nutrient_map(food):
+              out = {}
+              energy_candidates = []
+              for entry in food.get("foodNutrients", []):
+                  nutrient = entry.get("nutrient", {})
+                  name = nutrient.get("name")
+                  unit = nutrient.get("unitName")
+                  amount = entry.get("amount")
+                  if amount is None:
+                      continue
+                  if name == "Energy" and unit == "kcal":
+                      energy_candidates.append(float(amount))
+                  for key, names in wanted.items():
+                      if name in names:
+                          out[key] = float(amount)
+              if energy_candidates:
+                  out["calories"] = energy_candidates[0]
+              return out
+
+          metrics = ["calories", "protein", "carbs", "fat", "fiber", "saturatedFat", "sugar", "sodium"]
+          totals = {m: 0.0 for m in metrics}
+          print("SUNDAY LUNCH — USDA REVIEW SUBTOTAL")
+          print("Values below are calculated from the reviewed USDA records and recipe gram weights.")
+          print("")
+          for label, fdc_id, grams in foods:
+              food = details(fdc_id)
+              per100 = nutrient_map(food)
+              scaled = {m: per100.get(m) * grams / 100 if per100.get(m) is not None else None for m in metrics}
+              for m, value in scaled.items():
+                  if value is not None:
+                      totals[m] += value
+              print(f"{label.upper()} | FDC {fdc_id} | {grams:g} g")
+              print("  " + " | ".join(f"{m}: {scaled[m]:.2f}" if scaled[m] is not None else f"{m}: MISSING" for m in metrics))
+
+          # Confirmed branded bread values: Izzio sliced sourdough, 2 slices / 56 g.
+          izzio = {"calories": 140.0, "protein": 5.0, "carbs": 29.0, "fat": 0.5, "fiber": 1.0, "saturatedFat": 0.0, "sugar": 0.0, "sodium": 290.0}
+          for m, value in izzio.items():
+              totals[m] += value
+          print("IZZIO SOURDOUGH | manufacturer label | 56 g / 2 slices")
+          print("  " + " | ".join(f"{m}: {izzio[m]:.2f}" for m in metrics))
+
+          print("")
+          print("REVIEW SUBTOTAL (USDA foods + Izzio bread; Dijon NOT INCLUDED)")
+          print("  " + " | ".join(f"{m}: {totals[m]:.2f}" for m in metrics))
+          print("")
+          print("BLOCKER: Dijon mustard still needs a reviewed nutrition source and standardized gram weight.")
+          print("No recipe nutrition values were written by this workflow.")
+          PY

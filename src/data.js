@@ -1,11 +1,7 @@
-export const nutritionTargets = { calories: 1750, protein: 125, proteinUpper: 130, fiber: 25, fiberUpper: 30, saturatedFatMax: 15 };
+export const nutritionTargets = { calories: 1750, protein: 125, proteinUpper: 130, fiber: 25, fiberUpper: 30, saturatedFatMax: 15, trackingMetrics: ["calories","protein","carbs","fat","fiber","saturatedFat","sugar","sodium"], primaryMetrics: ["calories","protein","fiber","saturatedFat"] };
+export const nutritionSource = { primary: "USDA FoodData Central", tracking: "MyFitnessPal", policy: "USDA-calculated values become planning values only after ingredient quantities and servings are quantified. MyFitnessPal is a reconciliation check, not the calculation source." };
 
-const nutritionPending = {
-  calories: "To be calculated",
-  protein: "To be calculated",
-  fiber: "To be calculated",
-  saturatedFat: "To be calculated",
-};
+const nutritionPending = { calories:"To be calculated", protein:"To be calculated", carbs:"To be calculated", fat:"To be calculated", fiber:"To be calculated", saturatedFat:"To be calculated", sugar:"To be calculated", sodium:"To be calculated", status:"pending", source:"USDA FoodData Central", mfpStatus:"not checked" };
 
 export const recipes = [
   {

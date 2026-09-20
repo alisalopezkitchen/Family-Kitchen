@@ -1,4 +1,4 @@
-import { getActiveWeek, getPastWeeks, getRecipe, initialPantry, nutritionTargets, pantryStatuses, recipes } from "./data.js";
+import { getActiveWeek, getPastWeeks, getRecipe, initialPantry, nutritionSource, nutritionTargets, pantryStatuses, recipes } from "./data.js";
 import { consolidateShoppingList, formatAmount, groupShoppingList } from "./shopping.js";
 
 const app = document.querySelector("#app");
@@ -70,7 +70,7 @@ function adjustedDays(week) {
   return days;
 }
 
-function nutritionTargetStrip() { return `<div class="nutrition-target-strip"><div><span>Daily target</span><strong>~${nutritionTargets.calories.toLocaleString()} kcal</strong></div><div><span>Protein</span><strong>${nutritionTargets.protein}–${nutritionTargets.proteinUpper} g</strong></div><div><span>Fiber</span><strong>${nutritionTargets.fiber}–${nutritionTargets.fiberUpper} g</strong></div><div><span>Sat. fat</span><strong>≤ ${nutritionTargets.saturatedFatMax} g</strong></div><p>Weekly plans are validated against these targets before they are considered nutrition-ready.</p></div>`; }
+function nutritionTargetStrip() { return `<div class="nutrition-source-note"><strong>Nutrition source:</strong> ${nutritionSource.primary} · <strong>Tracking check:</strong> ${nutritionSource.tracking}</div><div class="nutrition-target-strip"><div><span>Daily target</span><strong>~${nutritionTargets.calories.toLocaleString()} kcal</strong></div><div><span>Protein</span><strong>${nutritionTargets.protein}–${nutritionTargets.proteinUpper} g</strong></div><div><span>Fiber</span><strong>${nutritionTargets.fiber}–${nutritionTargets.fiberUpper} g</strong></div><div><span>Sat. fat</span><strong>≤ ${nutritionTargets.saturatedFatMax} g</strong></div><p>These are the targets the nutrition engine validates against as recipes are quantified. Exact recipe values require quantified ingredients + servings; MyFitnessPal is used as a reconciliation check.</p></div>`; }
 
 function numericNutrition(entry) {
   const n = typeof entry === "string" ? getRecipe(entry)?.nutrition : entry?.nutrition;

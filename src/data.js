@@ -77,13 +77,13 @@ export const weeks = [{
   wednesdayPickup: ["Sushi-grade ahi tuna", "Salmon", "Avocado and sprouts", "Fresh cucumbers and ginger"],
   treats: [{ key: "grapefruit-juice", item: "fresh grapefruit juice", amount: 2, unit: "servings", category: "Produce", pickup: "wednesday", shoppingOptions: "2–3 fresh grapefruit OR one small bottle 100% grapefruit juice", note: "4–6 oz per serving; planned later in the week." }],
   days: [
-    { day: "Sunday", meals: { breakfast: [], lunch: [], dinner: ["greek-chicken-feta-meatballs", "cucumber-carrot-herb-salad", "mediterranean-lemon-dill-sauce"], snack: [] }, theme: "Mediterranean table", note: "Serve dinner with basmati rice." },
-    { day: "Monday", meals: { breakfast: [], lunch: [], dinner: [], snack: [] }, note: "Dinner intentionally open — dinner out or choose something easy." },
-    { day: "Tuesday", meals: { breakfast: [], lunch: [], dinner: ["vietnamese-chicken-cabbage-salad"], snack: [] }, theme: "Crisp & herb-filled" },
-    { day: "Wednesday", meals: { breakfast: [], lunch: [], dinner: [], snack: [] }, note: "Dinner intentionally open + quick fresh-food pickup." },
-    { day: "Thursday", meals: { breakfast: [], lunch: [], dinner: ["sushi-style-rice-bowl", "japanese-ginger-sesame-sauce"], snack: [] }, theme: "Two-fish rice bowls" },
-    { day: "Friday", meals: { breakfast: [], lunch: [], dinner: ["use-it-up-bowl"], snack: [] }, theme: "Waste-less Friday" },
-    { day: "Saturday", meals: { breakfast: [], lunch: [], dinner: ["brown-sugar-mayo-salmon", "sesame-cucumber-carrot-salad"], snack: [] }, theme: "Easy salmon supper", note: "Serve dinner with rice." },
+    { day: "Sunday", meals: { breakfast: [{ label: "Jammy eggs + sourdough + avocado" }], lunch: [{ label: "Greek yogurt + kiwi + basil seeds" }], dinner: ["greek-chicken-feta-meatballs", "cucumber-carrot-herb-salad", "mediterranean-lemon-dill-sauce"], snack: [{ label: "Cucumber & ribbon carrots with sesame-Tajín dressing" }] }, theme: "Mediterranean table", note: "Serve dinner with basmati rice." },
+    { day: "Monday", meals: { breakfast: [{ label: "Poached eggs + sourdough + avocado" }], lunch: [{ label: "Leftover Greek chicken-feta meatballs + basmati rice + cucumber-carrot salad", leftover: true }], dinner: [{ label: "Open / flexible", open: true }], snack: [{ label: "Kiwi + Greek yogurt" }] }, note: "Dinner intentionally open — dinner out or choose something easy." },
+    { day: "Tuesday", meals: { breakfast: [{ label: "Greek yogurt + kiwi + basil seeds" }], lunch: [{ label: "Leftover Greek chicken-feta meatballs + chopped herb salad", leftover: true }], dinner: ["vietnamese-chicken-cabbage-salad"], snack: [{ label: "Green apple + lemon + Tajín" }] }, theme: "Crisp & herb-filled" },
+    { day: "Wednesday", meals: { breakfast: [{ label: "Jammy eggs + sourdough" }], lunch: [{ label: "Leftover Vietnamese chicken cabbage salad", leftover: true }], dinner: [{ label: "Open / flexible", open: true }], snack: [{ label: "Greek yogurt + kiwi" }] }, note: "Dinner intentionally open + quick fresh-food pickup." },
+    { day: "Thursday", meals: { breakfast: [{ label: "Poached eggs + avocado toast" }, { label: "4–6 oz fresh grapefruit juice", treat: true }], lunch: [{ label: "Leftover Vietnamese chicken cabbage salad", leftover: true }], dinner: ["sushi-style-rice-bowl", "japanese-ginger-sesame-sauce"], snack: [{ label: "Cucumber & ribbon carrots with sesame-Tajín dressing" }] }, theme: "Two-fish rice bowls" },
+    { day: "Friday", meals: { breakfast: [{ label: "Greek yogurt + kiwi + basil seeds" }], lunch: [{ label: "Leftover ahi/salmon rice bowl components", leftover: true }], dinner: ["use-it-up-bowl"], snack: [{ label: "Green apple + lemon + Tajín" }] }, theme: "Waste-less Friday" },
+    { day: "Saturday", meals: { breakfast: [{ label: "Jammy eggs + sourdough + avocado" }, { label: "4–6 oz fresh grapefruit juice", treat: true }], lunch: [{ label: "Flexible lunch / brunch", open: true }], dinner: ["brown-sugar-mayo-salmon", "sesame-cucumber-carrot-salad"], snack: [{ label: "Greek yogurt + kiwi, if hungry" }] }, theme: "Easy salmon supper", note: "Serve dinner with rice." },
   ],
 }];
 

@@ -334,6 +334,12 @@ function updateShoppingCount() { const count = consolidateShoppingList(activeWee
 function ingredientsText(recipe) { return `${recipe.name}\n${recipe.servings} servings\n\n${recipe.ingredients.map((i) => `${formatAmount(i.amount)} ${i.unit} ${i.item}`.replace(/\s+/g, " ").trim()).join("\n")}`; }
 
 document.addEventListener("click", async (event) => {
+  const findStore = event.target.closest("[data-find-store]");
+  if (findStore) {
+    const retailer = supportedRetailers[findStore.dataset.findStore];
+    if (retailer?.locatorUrl) window.open(retailer.locatorUrl, "_blank", "noopener,noreferrer");
+    return;
+  }
   const deleteFood = event.target.closest("[data-delete-food-log]");
   if (deleteFood) { foodLog = foodLog.filter((entry) => entry.id !== deleteFood.dataset.deleteFoodLog); store.set("fk-food-log", foodLog); render({ preserveScroll: true }); return; }
   const resetTargets = event.target.closest("[data-reset-nutrition-targets]");

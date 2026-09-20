@@ -29,7 +29,9 @@ export const localStoreConfiguration = {
 
 export const configuredStore = (storeKey) => localStoreConfiguration.stores[storeKey] || null;
 
-export const canVerifyLocalPrice = (storeKey) => {
+export const canVerifyLocalPrice = (storeKey, profile = null) => {
+  const profileStore = profile?.shopping?.exactStores?.[storeKey];
+  if (profileStore?.id) return true;
   const store = configuredStore(storeKey);
   return Boolean(store?.storeId && store.locationStatus === "configured");
 };

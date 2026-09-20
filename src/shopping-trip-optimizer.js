@@ -28,14 +28,15 @@ const planForStores = (items, storeIds) => {
   return { storeIds, tripCount: storeIds.length, total: Math.round(total * 100) / 100, assignments };
 };
 
-export function optimizeShoppingTrips(items, { mode = "fewest-trips", meaningfulSavings = 5 } = {}) {
+export function optimizeShoppingTrips(items, { mode = "fewest-trips", meaningfulSavings = 5, maxTrips = Infinity } = {}) {
   const priced = items.filter((item) => validOffers(item).length);
   const unpriced = items.filter((item) => !validOffers(item).length);
   const storeIds = [...new Set(priced.flatMap((item) => validOffers(item).map((offer) => offer.storeId)))];
   if (!priced.length || !storeIds.length) return { mode, plan: null, alternatives: [], unpriced };
 
-  const plans = combinations(storeIds).map((ids) => planForStores(priced, ids)).filter(Boolean);
-  if (!plans.length) return { mode, plan: null, alternatives: [], unpriced };
+  const tripLimit = Number.isFinite(Number(maxTrips)) && Number(maxTrips) > 0 ? Number(maxTrips) : Infinity;
+  const plans = combinations(storeIds).filter((ids) => ids.length <= tripLimit).map((ids) => planForStores(priced, ids)).filter(Boolean);
+  if (!plans.length) return { mode, plan: null, alternatives: [], unpriced, reason: "No priced plan fits the selected trip limit." };
 
   const cheapest = [...plans].sort((a, b) => a.total - b.total || a.tripCount - b.tripCount)[0];
   const fewest = [...plans].sort((a, b) => a.tripCount - b.tripCount || a.total - b.total)[0];

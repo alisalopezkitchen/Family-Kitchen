@@ -42,6 +42,7 @@ export const nutritionComponents = {
 export const recipes = [
   {
     id: "kibbeh-spiced-lamb-skewers", name: "Kibbeh-Spiced Lamb Skewers", description: "Lebanese-inspired spiced lamb skewers with tenderizing onion and bright citrus notes.",
+    proteinType: "lamb",
     category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Delish", url: "https://www.delish.com/cooking/recipe-ideas/a60129910/kibbeh-spiced-lamb-skewers-recipe/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -51,6 +52,7 @@ export const recipes = [
   },
   {
     id: "harissa-grilled-chicken", name: "Harissa Grilled Chicken", description: "Harissa-marinated grilled chicken with bold North African-inspired flavor.",
+    proteinType: "chicken",
     category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Delish", url: "https://www.delish.com/cooking/recipe-ideas/a40208036/harissa-grilled-chicken-recipe/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -60,6 +62,7 @@ export const recipes = [
   },
   {
     id: "greek-lemon-potatoes", name: "Greek Lemon Potatoes", description: "Lemony Greek-style potatoes for pairing with chicken, fish, or other mains.",
+    proteinType: "none",
     category: "side", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Delish", url: "https://www.delish.com/cooking/recipe-ideas/a39440405/greek-lemon-potatoes-recipe/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -69,6 +72,7 @@ export const recipes = [
   },
   {
     id: "halloumi-salad", name: "Halloumi Salad", description: "A substantial salad built around savory halloumi and fresh vegetables.",
+    proteinType: "vegetarian",
     category: "meal-salad", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Delish", url: "https://www.delish.com/cooking/recipe-ideas/a36321546/halloumi-salad-recipe/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -78,6 +82,7 @@ export const recipes = [
   },
   {
     id: "pasta-alla-norma", name: "Pasta alla Norma", description: "Sicilian-style pasta with eggplant, tomato, basil, and cheese.",
+    proteinType: "vegetarian",
     category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Delish", url: "https://www.delish.com/cooking/recipe-ideas/a34151085/pasta-alla-norma-recipe/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -87,6 +92,7 @@ export const recipes = [
   },
   {
     id: "skordalia", name: "Skordalia", description: "A garlicky Greek potato dip or side for Mediterranean plates.",
+    proteinType: "none",
     category: "side", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Delish", url: "https://www.delish.com/cooking/recipe-ideas/a30778443/skordalia-recipe/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -96,6 +102,7 @@ export const recipes = [
   },
   {
     id: "tahini-date-banana-shake", name: "Tahini Date Banana Shake", description: "A creamy tahini, date, and banana shake reserved as an intentional treat.",
+    proteinType: "vegetarian",
     category: "treat", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "The Mediterranean Dish", url: "https://www.themediterraneandish.com/tahini-date-banana-shake/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -105,6 +112,7 @@ export const recipes = [
   },
   {
     id: "sweet-potato-hash", name: "Sweet Potato Hash", description: "A savory sweet-potato hash candidate for breakfast or brunch.",
+    proteinType: "vegetarian",
     category: "breakfast", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "The Mediterranean Dish", url: "https://www.themediterraneandish.com/sweet-potato-hash-recipe/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -114,6 +122,7 @@ export const recipes = [
   },
   {
     id: "roasted-branzino", name: "Roasted Branzino", description: "Whole roasted branzino for a fresh Mediterranean seafood meal.",
+    proteinType: "white-fish",
     category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "The Mediterranean Dish", url: "https://www.themediterraneandish.com/roasted-branzino-recipe/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -123,6 +132,7 @@ export const recipes = [
   },
   {
     id: "baked-cod-lemon-garlic", name: "Baked Cod with Lemon & Garlic", description: "Baked white fish with lemon and garlic for a lighter seafood main.",
+    proteinType: "white-fish",
     category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "The Mediterranean Dish", url: "https://www.themediterraneandish.com/baked-cod-recipe-lemon-garlic/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -132,6 +142,7 @@ export const recipes = [
   },
   {
     id: "mediterranean-lettuce-salad", name: "Mediterranean Lettuce Salad", description: "A fresh lettuce-based side salad for balancing richer mains.",
+    proteinType: "none",
     category: "side", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "The Mediterranean Dish", url: "https://www.themediterraneandish.com/lettuce-salad-recipe/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -141,6 +152,7 @@ export const recipes = [
   },
   {
     id: "mediterranean-quinoa-salad", name: "Mediterranean Quinoa Salad", description: "Quinoa salad candidate adapted for this kitchen without scallions or onions.",
+    proteinType: "vegetarian",
     category: "side", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "The Mediterranean Dish", url: "https://www.themediterraneandish.com/quinoa-salad/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -150,6 +162,7 @@ export const recipes = [
   },
   {
     id: "baba-ganoush", name: "Baba Ganoush", description: "Smoky eggplant dip for vegetables, rice-paper crisps, or Mediterranean plates.",
+    proteinType: "none",
     category: "side", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Serious Eats", url: "https://www.seriouseats.com/the-best-baba-ganoush-recipe", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -159,6 +172,7 @@ export const recipes = [
   },
   {
     id: "watermelon-cucumber-feta-salad", name: "Watermelon Cucumber Feta Salad", description: "Fresh watermelon, cucumber, and feta salad for warm-weather meals.",
+    proteinType: "vegetarian",
     category: "side", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "The Mediterranean Dish", url: "https://www.themediterraneandish.com/watermelon-salad-with-cucumber-feta/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -168,6 +182,7 @@ export const recipes = [
   },
   {
     id: "preserved-lemons", name: "Preserved Lemons", description: "A make-ahead preserved-lemon pantry project for future sauces, marinades, and meals.",
+    proteinType: "none",
     category: "pantry-prep", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Serious Eats", url: "https://www.seriouseats.com/how-to-make-preserved-lemons", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -177,6 +192,7 @@ export const recipes = [
   },
   {
     id: "bun-thit-nuong", name: "Bún Thịt Nướng", description: "Vietnamese grilled pork vermicelli bowl with fresh herbs and vegetables.",
+    proteinType: "pork",
     category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Cooking Therapy", url: "https://www.cooking-therapy.com/bun-thit-nuong/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -186,6 +202,7 @@ export const recipes = [
   },
   {
     id: "vietnamese-pork-noodle-bowls", name: "Vietnamese Pork Noodle Bowls", description: "Vietnamese-style pork noodle bowls with fresh vegetables, herbs, and a punchy dressing.",
+    proteinType: "pork",
     category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
     tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "RecipeTin Eats", url: "https://www.recipetineats.com/vietnamese-pork-noodle-bowls/", status: "candidate-not-yet-standardized" },
     ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
@@ -195,6 +212,7 @@ export const recipes = [
   },
   {
     id: "ericas-pasta-sauce", name: "Erica’s Pasta Sauce",
+    proteinType: "pork",
     description: "Erica’s long-simmered tomato sauce with red bell pepper, basil, garlic, onion, and deli Salamino Piccante. Preserved as the original family/friend recipe; nutrition quantities will be standardized before calculation.",
     category: "main",
     servings: 1, servingSize: "Batch quantity pending standardization", prepTime: "20 minutes", cookTime: "3–6 hours",
@@ -228,6 +246,7 @@ export const recipes = [
   },
   {
     id: "jammy-eggs-sourdough-avocado", name: "Jammy eggs + sourdough + avocado",
+    proteinType: "eggs",
     description: "A substantial savory breakfast with jammy eggs, sourdough, and avocado.",
     servings: 1, servingSize: "1 breakfast", prepTime: "5 minutes", cookTime: "8 minutes",
     tags: ["Breakfast", "Protein", "Savory"],
@@ -244,6 +263,7 @@ export const recipes = [
   },
   {
     id: "greek-chicken-feta-meatballs", name: "Greek chicken-feta meatballs",
+    proteinType: "chicken",
     description: "Tender, herb-filled chicken meatballs with feta and lemon—built for Sunday dinner and flexible leftovers.",
     servings: 4, servingSize: "Target-generated portion", prepTime: "20 minutes", cookTime: "20 minutes",
     tags: ["Greek-inspired", "Protein", "Meal prep"],
@@ -264,6 +284,7 @@ export const recipes = [
   },
   {
     id: "cucumber-carrot-herb-salad", name: "Cucumber, carrot & herb salad", description: "A crisp lemony side that carries fresh herbs across the week.", servings: 4, servingSize: "about 1 cup", prepTime: "15 minutes", cookTime: "0 minutes", tags: ["Mediterranean", "Fresh", "Vegetarian"],
+    proteinType: "none",
     ingredients: [
       { key: "cucumber", item: "Persian cucumbers", amount: 4, unit: "", category: "Produce", quantification: { status: "needs-standard-edible-grams", reason: "Produce count varies by size; retain count for shopping and use edible grams for nutrition." } }, { key: "carrots", item: "carrots", amount: 3, unit: "", category: "Produce", quantification: { status: "needs-standard-edible-grams" } },
       { key: "parsley", item: "flat-leaf parsley", amount: 0.5, unit: "bunch", category: "Herbs", quantification: { status: "needs-standard-edible-grams" } }, { key: "dill", item: "fresh dill", amount: 0.5, unit: "bunch", category: "Herbs", quantification: { status: "needs-standard-edible-grams" } },
@@ -273,6 +294,7 @@ export const recipes = [
   },
   {
     id: "mediterranean-lemon-dill-sauce", name: "Mediterranean lemon-dill Dijon sauce", description: "A cool, bright yogurt sauce with dill and Dijon for meatballs, salads, and Friday’s use-it-up bowl.", servings: 1, servingSize: "Target-generated portion from measured batch", prepTime: "10 minutes", cookTime: "0 minutes", tags: ["Mediterranean", "Sauce", "Vegetarian"],
+    proteinType: "none",
     ingredients: [
       { key: "greek-yogurt", item: "plain Greek yogurt", amount: 0.5, unit: "cup", category: "Dairy", nutritionRole: "variable-fat-dairy", nutritionOptions: [{ label: "nonfat", fatPercent: 0, lookupQuery: "Greek yogurt plain nonfat" }, { label: "2%", fatPercent: 2, lookupQuery: "Greek yogurt plain lowfat 2%" }, { label: "whole milk", fatPercent: 5, lookupQuery: "Greek yogurt plain whole milk" }], selectionRule: "Choose yogurt fat percentage from the full-day nutrition target rather than using a fixed default." },
       { key: "olive-oil", item: "extra-virgin olive oil", amount: 1, unit: "tbsp", grams: 13.5, category: "Pantry", pantry: true, nutritionLookup: { source: "USDA FoodData Central", query: "olive oil", fdcId: 748608, dataType: "Foundation", status: "matched" } },
@@ -287,36 +309,43 @@ export const recipes = [
   },
   {
     id: "vietnamese-chicken-cabbage-salad", name: "Vietnamese chicken cabbage salad", description: "Crunchy cabbage, tender chicken, herbs, and a lively lime-fish sauce dressing.", servings: 4, servingSize: "about 2 cups", prepTime: "25 minutes", cookTime: "15 minutes", tags: ["Vietnamese-inspired", "Salad", "High protein"],
+    proteinType: "chicken",
     ingredients: [ { key: "chicken-breast", item: "boneless chicken breast", amount: 1.25, unit: "lb", category: "Protein" }, { key: "cabbage", item: "green cabbage", amount: 0.5, unit: "head", category: "Produce" }, { key: "carrots", item: "carrots", amount: 2, unit: "", category: "Produce" }, { key: "mint", item: "fresh mint", amount: 1, unit: "bunch", category: "Herbs" }, { key: "cilantro", item: "fresh cilantro", amount: 1, unit: "bunch", category: "Herbs" }, { key: "lime", item: "limes", amount: 2, unit: "", category: "Produce" }, { key: "fish-sauce", item: "fish sauce", amount: 2, unit: "tbsp", category: "Pantry", pantry: true }, { key: "brown-sugar", item: "brown sugar or honey", amount: 1, unit: "tbsp", category: "Pantry", pantry: true } ],
     instructions: ["Poach or pan-cook the chicken until cooked through, then rest and shred.", "Whisk lime juice, fish sauce, brown sugar, and a splash of water.", "Toss chicken with finely sliced cabbage, carrot, herbs, and dressing just before serving."], portions: { alisa: "2 cups with about 5 oz chicken", mom: "1½ cups with about 4 oz chicken" }, storage: "Refrigerate components separately for up to 3 days; dress only what you will eat.", nutrition: nutritionPending,
   },
   {
     id: "sushi-style-rice-bowl", name: "Sushi-style rice bowl", description: "A customizable bowl with sushi rice, crisp vegetables, avocado, and either ahi or cooked salmon.", servings: 2, servingSize: "1 composed bowl", prepTime: "20 minutes", cookTime: "20 minutes", tags: ["Japanese-inspired", "Bowl", "Fresh"],
+    proteinType: "mixed-fish",
     ingredients: [ { key: "ahi", item: "sushi-grade ahi tuna", amount: 6, unit: "oz", category: "Protein", pickup: "wednesday" }, { key: "salmon", item: "salmon", amount: 6, unit: "oz", category: "Protein", pickup: "wednesday" }, { key: "sushi-rice", item: "sushi rice", amount: 1, unit: "cup", category: "Pantry", pantry: true }, { key: "cucumber", item: "Persian cucumbers", amount: 2, unit: "", category: "Produce", pickup: "wednesday" }, { key: "avocado", item: "ripe avocado", amount: 1, unit: "", category: "Produce", pickup: "wednesday" }, { key: "sprouts", item: "radish sprouts", amount: 1, unit: "pack", category: "Produce", pickup: "wednesday" }, { key: "rice-vinegar", item: "rice vinegar", amount: 2, unit: "tbsp", category: "Pantry", pantry: true }, { key: "sesame-seeds", item: "sesame seeds", amount: 1, unit: "tbsp", category: "Pantry", pantry: true } ],
     instructions: ["Cook and season the sushi rice with rice vinegar; cool until warm.", "Cook Mom’s salmon through. Keep Alisa’s ahi well chilled and slice with a clean knife just before serving.", "Arrange rice, fish, cucumber, avocado, and sprouts in each bowl; finish with sesame seeds and sauce."], portions: { alisa: "3 oz raw ahi, ¾ cup rice, and half the vegetables", mom: "3 oz cooked salmon, ½ cup rice, and half the vegetables" }, storage: "Serve fish the day it is purchased. Refrigerate cooked rice promptly and use within 1 day.", nutrition: nutritionPending,
   },
   {
     id: "japanese-ginger-sesame-sauce", name: "Japanese ginger-sesame sauce", description: "A savory, gingery drizzle for rice bowls and vegetables.", servings: 6, servingSize: "2 tablespoons", prepTime: "10 minutes", cookTime: "0 minutes", tags: ["Japanese-inspired", "Sauce", "Dairy-free"],
+    proteinType: "none",
     ingredients: [ { key: "ginger", item: "fresh ginger", amount: 2, unit: "inch", category: "Produce", pickup: "wednesday" }, { key: "tamari", item: "low-sodium soy sauce or tamari", amount: 0.25, unit: "cup", category: "Pantry", pantry: true }, { key: "rice-vinegar", item: "rice vinegar", amount: 2, unit: "tbsp", category: "Pantry", pantry: true }, { key: "sesame-oil", item: "toasted sesame oil", amount: 1, unit: "tbsp", category: "Pantry", pantry: true }, { key: "brown-sugar", item: "brown sugar or honey", amount: 1, unit: "tsp", category: "Pantry", pantry: true } ],
     instructions: ["Finely grate the ginger.", "Whisk all ingredients until the sweetener dissolves; adjust with a spoonful of water if desired."], portions: { alisa: "2 tablespoons", mom: "1–2 tablespoons" }, storage: "Refrigerate for up to 1 week and shake well before using.", nutrition: nutritionPending,
   },
   {
     id: "use-it-up-bowl", name: "Friday use-it-up bowl", description: "A flexible formula, not a strict recipe: turn the week’s good leftovers into a fresh, composed dinner.", servings: 2, servingSize: "1 bowl", prepTime: "15 minutes", cookTime: "5 minutes", tags: ["Flexible", "Leftovers", "No-waste"],
+    proteinType: "flexible",
     ingredients: [ { key: "leftover-protein", item: "remaining cooked protein", amount: 2, unit: "portions", category: "Other", optional: true }, { key: "leftover-rice", item: "remaining cooked rice", amount: 1.5, unit: "cups", category: "Other", optional: true }, { key: "cucumber", item: "remaining cucumber", amount: 1, unit: "", category: "Produce", optional: true }, { key: "carrots", item: "remaining carrots", amount: 1, unit: "", category: "Produce", optional: true }, { key: "cabbage", item: "remaining cabbage", amount: 0.25, unit: "head", category: "Produce", optional: true }, { key: "avocado", item: "remaining avocado", amount: 1, unit: "", category: "Produce", optional: true }, { key: "leftover-sauce", item: "existing sauce", amount: 4, unit: "tbsp", category: "Other", optional: true } ],
     instructions: ["Check the refrigerator and choose only leftovers that are still fresh.", "Reheat protein and rice safely, or serve cold when appropriate.", "Layer with crisp vegetables and herbs, then finish with an existing sauce."], portions: { alisa: "Build to appetite, prioritizing protein and vegetables", mom: "A smaller bowl with extra vegetables" }, storage: "This meal is intended to use leftovers; follow the storage guidance of each original component.", nutrition: nutritionPending,
   },
   {
     id: "brown-sugar-mayo-salmon", name: "Brown-sugar mayo glazed salmon", description: "An easy savory-sweet salmon with a burnished glaze for Saturday dinner.", servings: 4, servingSize: "1 salmon fillet", prepTime: "10 minutes", cookTime: "15 minutes", tags: ["Seafood", "Easy", "Family dinner"],
+    proteinType: "salmon",
     ingredients: [ { key: "salmon", item: "salmon", amount: 1.5, unit: "lb", category: "Protein", pickup: "wednesday" }, { key: "mayonnaise", item: "mayonnaise", amount: 0.25, unit: "cup", category: "Pantry" }, { key: "brown-sugar", item: "brown sugar or honey", amount: 1, unit: "tbsp", category: "Pantry", pantry: true }, { key: "tamari", item: "low-sodium soy sauce or tamari", amount: 1, unit: "tbsp", category: "Pantry", pantry: true } ],
     instructions: ["Heat the oven to 425°F and place salmon on a lined sheet pan.", "Mix mayonnaise, brown sugar, and tamari; spread a thin layer over the fish.", "Roast until the center flakes and is cooked to your preferred doneness, about 10–15 minutes."], portions: { alisa: "5–6 oz salmon with ¾ cup rice", mom: "4 oz salmon with ½ cup rice" }, storage: "Refrigerate cooked salmon for up to 3 days.", nutrition: nutritionPending,
   },
   {
     id: "sesame-cucumber-carrot-salad", name: "Sesame cucumber & ribbon-carrot salad", description: "A crunchy, tangy salad to balance the glazed salmon.", servings: 4, servingSize: "about 1 cup", prepTime: "15 minutes", cookTime: "0 minutes", tags: ["Japanese-inspired", "Fresh", "Vegetarian"],
+    proteinType: "none",
     ingredients: [ { key: "cucumber", item: "Persian cucumbers", amount: 4, unit: "", category: "Produce", pickup: "wednesday" }, { key: "carrots", item: "carrots", amount: 3, unit: "", category: "Produce" }, { key: "rice-vinegar", item: "rice vinegar", amount: 2, unit: "tbsp", category: "Pantry", pantry: true }, { key: "sesame-oil", item: "toasted sesame oil", amount: 1, unit: "tsp", category: "Pantry", pantry: true }, { key: "sesame-seeds", item: "sesame seeds", amount: 1, unit: "tbsp", category: "Pantry", pantry: true } ],
     instructions: ["Slice cucumbers and shave carrots into ribbons.", "Toss with rice vinegar and sesame oil; finish with sesame seeds just before serving."], portions: { alisa: "1 cup", mom: "1 cup" }, storage: "Best the day it is made; refrigerate undressed vegetables for up to 2 days.", nutrition: nutritionPending,
   },
   {
     id: "mediterranean-chicken-feta-chopped-salad", name: "Mediterranean chicken-feta chopped salad + sourdough", description: "A crisp Mediterranean lunch with chicken, feta, herbs, vegetables, lemon-Dijon dressing, and sourdough.", servings: 2, servingSize: "Target-generated portion", prepTime: "20 minutes", cookTime: "15 minutes", tags: ["Mediterranean", "Lunch", "High protein"],
+    proteinType: "chicken",
     ingredients: [
       { key: "chicken-breast", item: "boneless skinless chicken breast", amount: 0.75, unit: "lb", grams: 340.2, category: "Protein", nutritionLookup: { source: "USDA FoodData Central", query: "chicken breast raw boneless skinless", fdcId: 2646170, dataType: "Foundation", status: "matched" } },
       { key: "cucumber", item: "Persian cucumbers", amount: 2, unit: "", grams: 200, category: "Produce", nutritionLookup: { source: "USDA FoodData Central", query: "cucumber with peel raw", fdcId: 2346406, dataType: "Foundation", status: "matched" }, quantification: { status: "standardized", basis: "100 g edible portion per Persian cucumber", verifyAtPrep: true } },
@@ -345,6 +374,7 @@ export const recipes = [
   },
   {
     id: "sesame-tahini-ribbon-salad", name: "Cucumber & ribbon carrots with sesame-tahini dressing",
+    proteinType: "none",
     description: "Crisp cucumber and carrot ribbons with a creamy sesame-tahini dressing.",
     servings: 2, servingSize: "about 1½ cups", prepTime: "10 minutes", cookTime: "0 minutes", tags: ["Fresh", "Snack", "Vegetarian"],
     ingredients: [

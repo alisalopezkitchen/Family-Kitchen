@@ -1,6 +1,31 @@
 export const nutritionTargets = { calories: 1750, protein: 125, proteinUpper: 130, fiber: 25, fiberUpper: 30, saturatedFatMax: 15, trackingMetrics: ["calories","protein","carbs","fat","fiber","saturatedFat","sugar","sodium"], primaryMetrics: ["calories","protein","fiber","saturatedFat"] };
 export const nutritionSource = { primary: "USDA FoodData Central", tracking: "MyFitnessPal", policy: "USDA-calculated values become planning values only after ingredient quantities and servings are quantified. MyFitnessPal is a reconciliation check, not the calculation source." };
 
+export const mealGenerationPolicy = {
+  mode: "whole-day-and-week",
+  person: "Alisa",
+  dailyTargetsRef: "nutritionTargets",
+  rules: {
+    fixedMeals: "Keep meals already selected for the week unless the user changes them.",
+    flexibleMeals: "Generate unfilled breakfasts, lunches, dinners, and snacks to complement fixed meals and close daily nutrition gaps.",
+    portions: "Adjust quantified components and portions before replacing a fixed meal. Never assume equal shares of a household recipe.",
+    validation: "Do not mark a generated day complete until all planned components are quantified and the day has been tested against the active nutrition targets.",
+    weeklyVariety: "Use two proven favorites, one variation, and one experiment while avoiding unnecessary repetition.",
+    waste: "After nutrition requirements are satisfied, favor ingredients already used elsewhere in the week and respect Sunday shopping, Wednesday freshness pickup, perishability, and carryover.",
+    saturatedFat: "Do not add saturated fat merely to fill calories; prefer appropriate unsaturated-fat or carbohydrate levers when the day has room.",
+  },
+  mealRoles: {
+    fixed: "Selected meal; generator may adjust quantified component portions but does not silently replace it.",
+    flexible: "Generator chooses the meal using the remaining day and week requirements.",
+    open: "Intentionally unplanned restaurant/flexible slot; remains unscored until quantified.",
+  },
+  household: {
+    alisa: "Generate from Alisa's active targets.",
+    mom: "Generate separately from Mom's targets; Alisa target changes must not alter Mom's portions.",
+  },
+  publicationGate: "A week may be proposed before all recipes are quantified, but target-fit nutrition and exact Prep/Shopping quantities must remain pending until every planned component needed for those calculations is quantified.",
+};
+
 const nutritionPending = { calories:"To be calculated", protein:"To be calculated", carbs:"To be calculated", fat:"To be calculated", fiber:"To be calculated", saturatedFat:"To be calculated", sugar:"To be calculated", sodium:"To be calculated", status:"pending", source:"USDA FoodData Central", mfpStatus:"not checked" };
 
 export const nutritionComponents = {

@@ -71,19 +71,38 @@ export const recipes = [
   },
 ];
 
+  {
+    id: "sesame-tahini-ribbon-salad", name: "Cucumber & ribbon carrots with sesame-tahini dressing",
+    description: "Crisp cucumber and carrot ribbons with a creamy sesame-tahini dressing.",
+    servings: 2, servingSize: "about 1½ cups", prepTime: "10 minutes", cookTime: "0 minutes", tags: ["Fresh", "Snack", "Vegetarian"],
+    ingredients: [
+      { key: "carrots", item: "large carrots", amount: 2, unit: "", category: "Produce" },
+      { key: "english-cucumber", item: "large English cucumber", amount: 1, unit: "", category: "Produce" },
+      { key: "sesame-seeds", item: "toasted sesame seeds", amount: 1, unit: "tbsp", category: "Pantry", pantry: true },
+      { key: "tahini", item: "tahini", amount: 2, unit: "tbsp", category: "Pantry", pantry: true },
+      { key: "rice-vinegar", item: "rice vinegar", amount: 1, unit: "tbsp", category: "Pantry", pantry: true },
+      { key: "tamari", item: "soy sauce or tamari", amount: 1, unit: "tbsp", category: "Pantry", pantry: true },
+      { key: "sesame-oil", item: "toasted sesame oil", amount: 1, unit: "tsp", category: "Pantry", pantry: true },
+      { key: "maple-honey", item: "maple syrup or honey", amount: 1, unit: "tsp", category: "Pantry", pantry: true },
+      { key: "garlic", item: "small garlic clove", amount: 1, unit: "", category: "Produce", optional: true },
+      { key: "chile-flakes", item: "red pepper flakes", amount: 1, unit: "pinch", category: "Pantry", pantry: true }
+    ],
+    instructions: ["Peel the carrots and cucumber into long ribbons.", "Whisk tahini, rice vinegar, soy sauce or tamari, sesame oil, maple syrup or honey, and 1 tablespoon warm water. Add more water as needed to thin.", "Add grated garlic if using, then season with a pinch of salt and red pepper flakes.", "Toss the ribbons with dressing just before serving and finish with toasted sesame seeds."],
+    portions: { alisa: "1 generous bowl", mom: "¾ bowl" }, storage: "Keep vegetable ribbons and dressing separate; combine just before eating.", nutrition: nutritionPending,
+  },
 export const weeks = [{
   id: "week-1", label: "Week 1", dateRange: "September 20–26", eyebrow: "A bright, flexible first week",
   sundayPrep: ["Bake chicken-feta meatballs", "Cook basmati rice", "Wash and chop sturdy vegetables", "Mix lemon-dill sauce"],
   wednesdayPickup: ["Sushi-grade ahi tuna", "Salmon", "Avocado and sprouts", "Fresh cucumbers and ginger"],
   treats: [{ key: "grapefruit-juice", item: "fresh grapefruit juice", amount: 2, unit: "servings", category: "Produce", pickup: "wednesday", shoppingOptions: "2–3 fresh grapefruit OR one small bottle 100% grapefruit juice", note: "4–6 oz per serving; planned later in the week." }],
   days: [
-    { day: "Sunday", meals: { breakfast: [{ label: "Jammy eggs + sourdough + avocado" }], lunch: [{ label: "Chicken-feta meatball bowl + basmati rice + cucumber-carrot salad" }], dinner: ["greek-chicken-feta-meatballs", "cucumber-carrot-herb-salad", "mediterranean-lemon-dill-sauce"], snack: [{ label: "Greek yogurt + kiwi + basil seeds" }] }, theme: "Mediterranean table", note: "Serve dinner with basmati rice." },
-    { day: "Monday", meals: { breakfast: [{ label: "Poached eggs + sourdough + avocado" }], lunch: [{ label: "Leftover Greek chicken-feta meatballs + basmati rice + cucumber-carrot salad", leftover: true }], dinner: [{ label: "Open / flexible", open: true }], snack: [{ label: "Kiwi + Greek yogurt" }] }, note: "Dinner intentionally open — dinner out or choose something easy." },
-    { day: "Tuesday", meals: { breakfast: [{ label: "Greek yogurt + kiwi + basil seeds" }], lunch: [{ label: "Leftover Greek chicken-feta meatballs + chopped herb salad", leftover: true }], dinner: ["vietnamese-chicken-cabbage-salad"], snack: [{ label: "Green apple + lemon + Tajín" }] }, theme: "Crisp & herb-filled" },
-    { day: "Wednesday", meals: { breakfast: [{ label: "Jammy eggs + sourdough" }], lunch: [{ label: "Leftover Vietnamese chicken cabbage salad", leftover: true }], dinner: [{ label: "Open / flexible", open: true }], snack: [{ label: "Greek yogurt + kiwi" }] }, note: "Dinner intentionally open + quick fresh-food pickup." },
-    { day: "Thursday", meals: { breakfast: [{ label: "Poached eggs + avocado toast" }, { label: "4–6 oz fresh grapefruit juice", treat: true }], lunch: [{ label: "Leftover Vietnamese chicken cabbage salad", leftover: true }], dinner: ["sushi-style-rice-bowl", "japanese-ginger-sesame-sauce"], snack: [{ label: "Cucumber & ribbon carrots with sesame-Tajín dressing" }] }, theme: "Two-fish rice bowls" },
-    { day: "Friday", meals: { breakfast: [{ label: "Greek yogurt + kiwi + basil seeds" }], lunch: [{ label: "Leftover ahi/salmon rice bowl components", leftover: true }], dinner: ["use-it-up-bowl"], snack: [{ label: "Green apple + lemon + Tajín" }] }, theme: "Waste-less Friday" },
-    { day: "Saturday", meals: { breakfast: [{ label: "Jammy eggs + sourdough + avocado" }, { label: "4–6 oz fresh grapefruit juice", treat: true }], lunch: [{ label: "Flexible lunch / brunch", open: true }], dinner: ["brown-sugar-mayo-salmon", "sesame-cucumber-carrot-salad"], snack: [{ label: "Greek yogurt + kiwi, if hungry" }] }, theme: "Easy salmon supper", note: "Serve dinner with rice." },
+    { day: "Sunday", meals: { breakfast: [{ label: "Jammy eggs + sourdough + avocado" }], lunch: [{ label: "Feta, cucumber & herb sourdough plate" }], dinner: ["greek-chicken-feta-meatballs", "cucumber-carrot-herb-salad", "mediterranean-lemon-dill-sauce"], snack: ["sesame-tahini-ribbon-salad"] }, theme: "Mediterranean table", note: "Serve dinner with basmati rice." },
+    { day: "Monday", meals: { breakfast: [{ label: "Greek yogurt + kiwi + basil seeds + walnuts" }], lunch: [{ label: "Leftover Greek chicken-feta meatballs + basmati rice + cucumber-carrot salad", leftover: true }], dinner: [{ label: "Open / flexible", open: true }], snack: ["sesame-tahini-ribbon-salad"] }, note: "Dinner intentionally open — dinner out or choose something easy." },
+    { day: "Tuesday", meals: { breakfast: [{ label: "Jammy eggs + feta + sourdough" }], lunch: [{ label: "Leftover Greek chicken-feta meatballs + chopped herb salad", leftover: true }], dinner: ["vietnamese-chicken-cabbage-salad"], snack: [{ label: "Green apple + lemon + Tajín" }] }, theme: "Crisp & herb-filled" },
+    { day: "Wednesday", meals: { breakfast: [{ label: "Avocado toast + poached eggs + dill" }], lunch: [{ label: "Leftover Vietnamese chicken cabbage salad", leftover: true }], dinner: [{ label: "Open / flexible", open: true }], snack: [{ label: "Kiwi + basil seeds" }] }, note: "Dinner intentionally open + quick fresh-food pickup." },
+    { day: "Thursday", meals: { breakfast: [{ label: "Poached eggs + avocado toast" }, { label: "4–6 oz fresh grapefruit juice", treat: true }], lunch: [{ label: "Leftover Vietnamese chicken cabbage salad", leftover: true }], dinner: ["sushi-style-rice-bowl", "japanese-ginger-sesame-sauce"], snack: ["sesame-tahini-ribbon-salad"] }, theme: "Two-fish rice bowls" },
+    { day: "Friday", meals: { breakfast: [{ label: "Greek yogurt + kiwi + basil seeds + walnuts" }], lunch: [{ label: "Leftover ahi/salmon rice bowl components", leftover: true }], dinner: ["use-it-up-bowl"], snack: [{ label: "Green apple + lemon + Tajín" }] }, theme: "Waste-less Friday" },
+    { day: "Saturday", meals: { breakfast: [{ label: "Flexible breakfast / brunch", open: true }, { label: "4–6 oz fresh grapefruit juice", treat: true }], lunch: [{ label: "Flexible lunch / brunch", open: true }], dinner: ["brown-sugar-mayo-salmon", "sesame-cucumber-carrot-salad"], snack: [{ label: "Greek yogurt + kiwi, if hungry" }] }, theme: "Easy salmon supper", note: "Serve dinner with rice." },
   ],
 }];
 

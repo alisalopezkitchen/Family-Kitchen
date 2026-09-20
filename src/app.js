@@ -1,4 +1,4 @@
-import { activeWeekId, getActiveWeek, getRecipe, initialPantry, pantryStatuses, recipes } from "./data.js";
+import { getActiveWeek, getPastWeeks, getRecipe, initialPantry, pantryStatuses, recipes } from "./data.js";
 import { consolidateShoppingList, formatAmount, groupShoppingList } from "./shopping.js";
 
 const app = document.querySelector("#app");
@@ -78,6 +78,13 @@ function weekView() {
     <aside class="week-sidebar"><article class="note-card"><span class="number-disc">01</span><p class="tiny-label">Sunday prep</p><h3>A little now, easier later</h3><ul class="clean-list">${week.sundayPrep.map((item) => `<li>${item}</li>`).join("")}</ul></article><article class="note-card green"><span class="number-disc">02</span><p class="tiny-label">Wednesday pickup</p><h3>Fresh things, small trip</h3><ul class="clean-list">${week.wednesdayPickup.map((item) => `<li>${item}</li>`).join("")}</ul></article></aside></div></section>`;
 }
 
+function pastWeeksView() {
+  const past = getPastWeeks();
+  return `<section class="section-shell page">${pageHeader("Your kitchen history", "Past weeks", "Previous meal plans stay here for reference instead of disappearing when a new week begins.")}
+    <div class="archive-grid">${past.length ? past.map((week) => `<article class="archive-card"><p class="eyebrow">${escapeHtml(week.label)}</p><h2>${escapeHtml(week.dateRange)}</h2><p>${week.days.length} days · ${week.days.reduce((n,d)=>n+d.meals.dinner.filter(x=>!(typeof x !== "string" && x.open)).length,0)} planned dinner components</p></article>`).join("") : '<div class="empty-progress"><h2>No archived weeks yet.</h2><p>When the next dated week becomes current, this week will move here automatically.</p></div>'}</div>
+  </section>`;
+}
+
 function recipesView() {
   return `<section class="section-shell page">${pageHeader("The recipe box", "Permanent favorites", "Recipes live here once and can be reused in every weekly plan.")}
     <div class="filter-row" role="group" aria-label="Filter recipes"><button class="chip active" data-filter="all">All recipes</button><button class="chip" data-filter="main">Mains</button><button class="chip" data-filter="sauce">Sauces</button><button class="chip" data-filter="fresh">Fresh sides</button></div>
@@ -115,9 +122,9 @@ function render() {
   const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
   const route = parts[0] || "home";
   const recipe = route === "recipes" && parts[1] ? getRecipe(parts[1]) : null;
-  app.innerHTML = recipe ? recipeDetailView(recipe) : ({ home: homeView, week: weekView, recipes: recipesView, shopping: shoppingView, pantry: pantryView, progress: progressView }[route] || homeView)();
+  app.innerHTML = recipe ? recipeDetailView(recipe) : ({ home: homeView, week: weekView, "past-weeks": pastWeeksView, recipes: recipesView, shopping: shoppingView, pantry: pantryView, progress: progressView }[route] || homeView)();
   document.querySelectorAll("[data-nav]").forEach((link) => link.classList.toggle("active", link.dataset.nav === route));
-  document.title = `${recipe?.name || ({ home: "Home", week: "This Week", recipes: "Recipes", shopping: "Shopping", pantry: "Pantry", progress: "Progress" }[route] || "Home")} · Family Kitchen`;
+  document.title = `${recipe?.name || ({ home: "Home", week: "This Week", "past-weeks": "Past Weeks", recipes: "Recipes", shopping: "Shopping", pantry: "Pantry", progress: "Progress" }[route] || "Home")} · Family Kitchen`;
   updateShoppingCount();
   nav.classList.remove("open"); menuButton.setAttribute("aria-expanded", "false");
   window.scrollTo(0, 0);

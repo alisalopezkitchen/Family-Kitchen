@@ -46,7 +46,7 @@ export const recipes = [
   },
   {
     id: "sushi-style-rice-bowl", name: "Sushi-style rice bowl", description: "A customizable bowl with sushi rice, crisp vegetables, avocado, and either ahi or cooked salmon.", servings: 2, servingSize: "1 composed bowl", prepTime: "20 minutes", cookTime: "20 minutes", tags: ["Japanese-inspired", "Bowl", "Fresh"],
-    ingredients: [ { key: "ahi", item: "sushi-grade ahi tuna", amount: 6, unit: "oz", category: "Protein", pickup: "wednesday" }, { key: "salmon-bowl", item: "salmon fillet", amount: 6, unit: "oz", category: "Protein", pickup: "wednesday" }, { key: "sushi-rice", item: "sushi rice", amount: 1, unit: "cup", category: "Pantry", pantry: true }, { key: "cucumber", item: "Persian cucumbers", amount: 2, unit: "", category: "Produce", pickup: "wednesday" }, { key: "avocado", item: "ripe avocado", amount: 1, unit: "", category: "Produce", pickup: "wednesday" }, { key: "sprouts", item: "radish sprouts", amount: 1, unit: "pack", category: "Produce", pickup: "wednesday" }, { key: "rice-vinegar", item: "rice vinegar", amount: 2, unit: "tbsp", category: "Pantry", pantry: true }, { key: "sesame-seeds", item: "sesame seeds", amount: 1, unit: "tbsp", category: "Pantry", pantry: true } ],
+    ingredients: [ { key: "ahi", item: "sushi-grade ahi tuna", amount: 6, unit: "oz", category: "Protein", pickup: "wednesday" }, { key: "salmon", item: "salmon", amount: 6, unit: "oz", category: "Protein", pickup: "wednesday" }, { key: "sushi-rice", item: "sushi rice", amount: 1, unit: "cup", category: "Pantry", pantry: true }, { key: "cucumber", item: "Persian cucumbers", amount: 2, unit: "", category: "Produce", pickup: "wednesday" }, { key: "avocado", item: "ripe avocado", amount: 1, unit: "", category: "Produce", pickup: "wednesday" }, { key: "sprouts", item: "radish sprouts", amount: 1, unit: "pack", category: "Produce", pickup: "wednesday" }, { key: "rice-vinegar", item: "rice vinegar", amount: 2, unit: "tbsp", category: "Pantry", pantry: true }, { key: "sesame-seeds", item: "sesame seeds", amount: 1, unit: "tbsp", category: "Pantry", pantry: true } ],
     instructions: ["Cook and season the sushi rice with rice vinegar; cool until warm.", "Cook Mom’s salmon through. Keep Alisa’s ahi well chilled and slice with a clean knife just before serving.", "Arrange rice, fish, cucumber, avocado, and sprouts in each bowl; finish with sesame seeds and sauce."], portions: { alisa: "3 oz raw ahi, ¾ cup rice, and half the vegetables", mom: "3 oz cooked salmon, ½ cup rice, and half the vegetables" }, storage: "Serve fish the day it is purchased. Refrigerate cooked rice promptly and use within 1 day.", nutrition: nutritionPending,
   },
   {
@@ -61,7 +61,7 @@ export const recipes = [
   },
   {
     id: "brown-sugar-mayo-salmon", name: "Brown-sugar mayo glazed salmon", description: "An easy savory-sweet salmon with a burnished glaze for Saturday dinner.", servings: 4, servingSize: "1 salmon fillet", prepTime: "10 minutes", cookTime: "15 minutes", tags: ["Seafood", "Easy", "Family dinner"],
-    ingredients: [ { key: "salmon-main", item: "salmon fillets", amount: 1.5, unit: "lb", category: "Protein", pickup: "wednesday" }, { key: "mayonnaise", item: "mayonnaise", amount: 0.25, unit: "cup", category: "Pantry" }, { key: "brown-sugar", item: "brown sugar or honey", amount: 1, unit: "tbsp", category: "Pantry", pantry: true }, { key: "tamari", item: "low-sodium soy sauce or tamari", amount: 1, unit: "tbsp", category: "Pantry", pantry: true } ],
+    ingredients: [ { key: "salmon", item: "salmon", amount: 1.5, unit: "lb", category: "Protein", pickup: "wednesday" }, { key: "mayonnaise", item: "mayonnaise", amount: 0.25, unit: "cup", category: "Pantry" }, { key: "brown-sugar", item: "brown sugar or honey", amount: 1, unit: "tbsp", category: "Pantry", pantry: true }, { key: "tamari", item: "low-sodium soy sauce or tamari", amount: 1, unit: "tbsp", category: "Pantry", pantry: true } ],
     instructions: ["Heat the oven to 425°F and place salmon on a lined sheet pan.", "Mix mayonnaise, brown sugar, and tamari; spread a thin layer over the fish.", "Roast until the center flakes and is cooked to your preferred doneness, about 10–15 minutes."], portions: { alisa: "5–6 oz salmon with ¾ cup rice", mom: "4 oz salmon with ½ cup rice" }, storage: "Refrigerate cooked salmon for up to 3 days.", nutrition: nutritionPending,
   },
   {
@@ -75,14 +75,15 @@ export const weeks = [{
   id: "week-1", label: "Week 1", dateRange: "September 20–26", eyebrow: "A bright, flexible first week",
   sundayPrep: ["Bake chicken-feta meatballs", "Cook basmati rice", "Wash and chop sturdy vegetables", "Mix lemon-dill sauce"],
   wednesdayPickup: ["Sushi-grade ahi tuna", "Salmon", "Avocado and sprouts", "Fresh cucumbers and ginger"],
+  treats: [{ key: "grapefruit-juice", item: "fresh grapefruit juice", amount: 2, unit: "servings", category: "Produce", pickup: "wednesday", shoppingOptions: "2–3 fresh grapefruit OR one small bottle 100% grapefruit juice", note: "4–6 oz per serving; planned later in the week." }],
   days: [
-    { day: "Sunday", theme: "Mediterranean table", recipeIds: ["greek-chicken-feta-meatballs", "cucumber-carrot-herb-salad", "mediterranean-lemon-dill-sauce"], note: "Serve with basmati rice." },
-    { day: "Monday", recipeIds: [], note: "Open evening — dinner out or choose something easy." },
-    { day: "Tuesday", theme: "Crisp & herb-filled", recipeIds: ["vietnamese-chicken-cabbage-salad"] },
-    { day: "Wednesday", recipeIds: [], note: "Open evening + quick fresh-food pickup." },
-    { day: "Thursday", theme: "Two-fish rice bowls", recipeIds: ["sushi-style-rice-bowl", "japanese-ginger-sesame-sauce"] },
-    { day: "Friday", theme: "Waste-less Friday", recipeIds: ["use-it-up-bowl"] },
-    { day: "Saturday", theme: "Easy salmon supper", recipeIds: ["brown-sugar-mayo-salmon", "sesame-cucumber-carrot-salad"], note: "Serve with rice." },
+    { day: "Sunday", meals: { breakfast: [], lunch: [], dinner: ["greek-chicken-feta-meatballs", "cucumber-carrot-herb-salad", "mediterranean-lemon-dill-sauce"], snack: [] }, theme: "Mediterranean table", note: "Serve dinner with basmati rice." },
+    { day: "Monday", meals: { breakfast: [], lunch: [], dinner: [], snack: [] }, note: "Dinner intentionally open — dinner out or choose something easy." },
+    { day: "Tuesday", meals: { breakfast: [], lunch: [], dinner: ["vietnamese-chicken-cabbage-salad"], snack: [] }, theme: "Crisp & herb-filled" },
+    { day: "Wednesday", meals: { breakfast: [], lunch: [], dinner: [], snack: [] }, note: "Dinner intentionally open + quick fresh-food pickup." },
+    { day: "Thursday", meals: { breakfast: [], lunch: [], dinner: ["sushi-style-rice-bowl", "japanese-ginger-sesame-sauce"], snack: [] }, theme: "Two-fish rice bowls" },
+    { day: "Friday", meals: { breakfast: [], lunch: [], dinner: ["use-it-up-bowl"], snack: [] }, theme: "Waste-less Friday" },
+    { day: "Saturday", meals: { breakfast: [], lunch: [], dinner: ["brown-sugar-mayo-salmon", "sesame-cucumber-carrot-salad"], snack: [] }, theme: "Easy salmon supper", note: "Serve dinner with rice." },
   ],
 }];
 

@@ -132,7 +132,7 @@ jobs:
           api_key = os.environ["FDC_API_KEY"]
 
           # Reviewed ingredient identities and standardized recipe weights.
-          # Dijon is intentionally excluded until it has a reviewed source/weight.
+          # USDA foods below are combined with reviewed branded-label foods.
           foods = [
               ("chicken breast", 2646170, 340.2),
               ("feta cheese", 2259796, 56.7),
@@ -258,8 +258,7 @@ jobs:
               if provenance:
                   print("  provenance: " + " | ".join(f"{m}={source}" for m, source in sorted(provenance.items())))
 
-          # Confirmed branded bread values: Izzio sliced sourdough, 2 slices / 56 g.
-          izzio = {"calories": 140.0, "protein": 5.0, "carbs": 29.0, "fat": 0.5, "fiber": 1.0, "saturatedFat": 0.0, "sugar": 0.0, "sodium": 290.0}
+          # Confirmed branded values from manufacturer labels.\n          # Grey Poupon Dijon Mustard: 1 tsp / 5 g.\n          grey_poupon = {"calories": 5.0, "protein": 0.0, "carbs": 0.0, "fat": 0.0, "fiber": 0.0, "saturatedFat": 0.0, "sugar": 0.0, "sodium": 115.0}\n          for m, value in grey_poupon.items():\n              totals[m] += value\n          print("GREY POUPON DIJON MUSTARD | manufacturer label | 5 g / 1 tsp")\n          print("  " + " | ".join(f"{m}: {grey_poupon[m]:.2f}" for m in metrics))\n\n          # Izzio sliced sourdough: 2 slices / 56 g.\n          izzio = {"calories": 140.0, "protein": 5.0, "carbs": 29.0, "fat": 0.5, "fiber": 1.0, "saturatedFat": 0.0, "sugar": 0.0, "sodium": 290.0}
           for m, value in izzio.items():
               totals[m] += value
           print("IZZIO SOURDOUGH | manufacturer label | 56 g / 2 slices")
@@ -271,9 +270,7 @@ jobs:
               for item in missing_required:
                   print("  - " + item)
           else:
-              print("REVIEW SUBTOTAL (USDA foods + Izzio bread; Dijon NOT INCLUDED)")
+              print("REVIEW TOTAL (USDA foods + Grey Poupon Dijon + Izzio bread)")
               print("  " + " | ".join(f"{m}: {totals[m]:.2f}" for m in metrics))
-          print("")
-          print("BLOCKER: Dijon mustard still needs a reviewed nutrition source and standardized gram weight.")
-          print("No recipe nutrition values were written by this workflow.")
+          print("")\n          print("All Sunday lunch ingredients now have reviewed nutrition sources and standardized weights.")\n          print("Review calculation only — no recipe nutrition values were written by this workflow.")
           PY

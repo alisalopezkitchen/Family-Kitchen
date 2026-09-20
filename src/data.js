@@ -10,15 +10,15 @@ export const recipes = [
     servings: 1, servingSize: "1 breakfast", prepTime: "5 minutes", cookTime: "8 minutes",
     tags: ["Breakfast", "Protein", "Savory"],
     ingredients: [
-      { key: "egg", item: "large eggs", amount: 2, unit: "", grams: 100, category: "Protein", nutritionLookup: { source: "USDA FoodData Central", query: "Egg, whole, raw, fresh", status: "pending-match" } },
-      { key: "sourdough", item: "sourdough bread", amount: 1, unit: "small slice", grams: 35, category: "Bakery", nutritionLookup: { source: "USDA FoodData Central", query: "Bread, sourdough", status: "pending-match" } },
-      { key: "avocado", item: "avocado", amount: 0.5, unit: "medium", grams: 75, category: "Produce", nutritionLookup: { source: "USDA FoodData Central", query: "Avocados, raw, all commercial varieties", status: "pending-match" } }
+      { key: "egg", item: "large eggs", amount: 2, unit: "", grams: 100, category: "Protein", nutritionLookup: { source: "USDA FoodData Central", query: "Egg, whole, raw, fresh", fdcId: 171287, dataType: "SR Legacy", status: "matched" } },
+      { key: "sourdough", item: "sourdough bread", amount: 1, unit: "small slice", grams: 31, category: "Bakery", nutritionLookup: { source: "USDA FoodData Central", query: "Bread, sour dough", fdcId: 2707646, dataType: "FNDDS 2021-2023", status: "matched" } },
+      { key: "avocado", item: "avocado", amount: 0.5, unit: "medium", grams: 75, category: "Produce", nutritionLookup: { source: "USDA FoodData Central", query: "Avocados, raw, all commercial varieties", fdcId: 171705, dataType: "SR Legacy", status: "matched" } }
     ],
     instructions: ["Cook the eggs until the whites are set and the yolks remain jammy.", "Toast the sourdough.", "Serve with measured avocado; season to taste."],
     portions: { alisa: "2 large eggs + 1 small slice sourdough toast + ½ medium avocado", mom: "Adjust separately when planned" },
     storage: "Best prepared fresh.",
-    nutrition: nutritionPending,
-    quantification: { status: "usda-match-ready", displaySystem: "US customary kitchen measures", calculationBasis: "USDA gram-equivalent weights stored behind the scenes", requiredNutrients: ["calories","protein","carbs","fat","fiber","saturatedFat","sugar","sodium"], note: "Recipes display familiar kitchen portions first. Internal gram-equivalent weights exist only for USDA nutrient calculations. Nutrition remains pending until each search identity is resolved to a reviewed FDC ID." }
+    nutrition: { calories: 347, protein: 17.4, carbs: 23.2, fat: 21.3, fiber: 5.7, saturatedFat: 4.9, sugar: 2.3, sodium: 334, status: "calculated", source: "USDA FoodData Central", mfpStatus: "not checked" },
+    quantification: { status: "usda-calculated", displaySystem: "US customary kitchen measures", calculationBasis: "USDA gram-equivalent weights stored behind the scenes", requiredNutrients: ["calories","protein","carbs","fat","fiber","saturatedFat","sugar","sodium"], note: "Recipes display familiar kitchen portions first. Nutrition is calculated from matched USDA records and internal gram-equivalent portion weights. MyFitnessPal reconciliation remains pending." }
   },
   {
     id: "greek-chicken-feta-meatballs", name: "Greek chicken-feta meatballs",

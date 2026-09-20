@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f3eb" />
+    <meta name="description" content="Family Kitchen — a calm home for weekly meals, recipes, groceries, and pantry planning." />
+    <title>Family Kitchen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#app">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="#/home" aria-label="Family Kitchen home">
+        <span class="brand-mark" aria-hidden="true">FK</span>
+        <span><strong>Family Kitchen</strong><small>Plan well. Eat together.</small></span>
+      </a>
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="primary-nav"><span></span><span></span><span></span><span class="sr-only">Open menu</span></button>
+      <nav id="primary-nav" class="primary-nav" aria-label="Primary navigation">
+        <a href="#/home" data-nav="home">Home</a>
+        <a href="#/week" data-nav="week">This Week</a>
+        <a href="#/recipes" data-nav="recipes">Recipes</a>
+        <a href="#/shopping" data-nav="shopping">Shopping <span id="shopping-count" class="nav-count" hidden></span></a>
+        <a href="#/pantry" data-nav="pantry">Pantry</a>
+        <a href="#/progress" data-nav="progress">Progress</a>
+      </nav>
+    </header>
+    <main id="app" tabindex="-1"></main>
+    <footer><span>Family Kitchen</span><span>Made for calm, flexible weeks.</span></footer>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>

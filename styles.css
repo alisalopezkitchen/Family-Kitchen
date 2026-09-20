@@ -69,3 +69,18 @@ footer { min-height:78px; padding:0 max(1.5rem,calc((100vw - 1180px)/2)); border
 @media(max-width:620px){.nutrition-row{grid-template-columns:1fr 1fr 1fr}.nutrition-row>*:nth-child(4),.nutrition-row>*:nth-child(5){border-top:1px solid var(--line)}}
 
 .nutrition-source-note{margin:-1.5rem 0 1.7rem;color:var(--muted);font-size:11px}.nutrition-source-note strong{color:var(--ink);font-weight:600}.nutrition-provenance{margin:.4rem 0 1rem;color:var(--muted);font-size:10px;line-height:1.5}
+
+.prepared-sauces { margin-top:3rem; padding-top:2.5rem; border-top:1px solid var(--line); }
+.prepared-heading { display:flex; justify-content:space-between; align-items:end; gap:2rem; margin-bottom:1rem; }
+.prepared-heading h2 { margin:.2rem 0 0; font:600 1.8rem var(--serif); }
+.prepared-heading > p { max-width:430px; margin:0; color:var(--muted); font-size:12px; }
+.prepared-list { border:1px solid var(--line); background:var(--paper); }
+.prepared-list-head,.prepared-row { display:grid; grid-template-columns:1fr 130px 170px; gap:1rem; align-items:center; padding:1rem 1.5rem; }
+.prepared-list-head { background:#edeae2; color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:.12em; }
+.prepared-row { border-top:1px solid var(--line); }
+.prepared-row strong,.prepared-row small { display:block; }
+.prepared-row strong { font-size:13px; }
+.prepared-row small { margin-top:.25rem; color:var(--muted); font-size:10px; }
+.prepared-row select { width:100%; border:1px solid var(--line); background:var(--cream); padding:.55rem .7rem; color:var(--ink); }
+.storage-pill { width:max-content; padding:.25rem .6rem; border-radius:20px; background:var(--pale-sage); font-size:10px; font-weight:700; }
+@media (max-width:620px) { .prepared-heading { align-items:start; flex-direction:column; gap:.5rem; }.prepared-list-head,.prepared-row { grid-template-columns:1fr 100px; padding:1rem; }.prepared-list-head span:nth-child(2) { display:none; }.prepared-row .storage-pill { display:none; } }

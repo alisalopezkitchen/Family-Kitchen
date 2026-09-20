@@ -1,4 +1,4 @@
-import { getActiveWeek, getPastWeeks, getRecipe, initialPantry, nutritionSource, nutritionTargets, pantryStatuses, recipes } from "./data.js";
+import { getActiveWeek, getPastWeeks, getRecipe, initialPantry, initialPreparedSauces, preparedSauceStatuses, nutritionSource, nutritionTargets, pantryStatuses, recipes } from "./data.js";
 import { consolidateShoppingList, formatAmount, groupShoppingList } from "./shopping.js";
 
 const app = document.querySelector("#app");
@@ -14,6 +14,7 @@ let extras = store.get("fk-shopping-extras", []);
 let checked = store.get("fk-shopping-checked", []);
 let mealMoves = store.get("fk-meal-moves", []);
 let pantryFilter = "all";
+let preparedSauces = store.get("fk-prepared-sauces", initialPreparedSauces);
 
 const icons = {
   arrow: `<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>`,
@@ -151,6 +152,8 @@ function pantryView() {
   return `<section class="section-shell page pantry-page">${pageHeader("Know what you have", "Pantry", "Keep staples visible and prevent repeat buys. Changes are saved on this device.")}
     <div class="pantry-filter-bar"><button class="pantry-all ${pantryFilter === "all" ? "active" : ""}" data-pantry-filter="all">All <span>${pantry.length}</span></button><div class="pantry-summary">${statusCounts.map(([status,count])=>`<button class="${pantryFilter === status ? "active" : ""}" data-pantry-filter="${status}"><strong>${count}</strong><span>${status}</span></button>`).join("")}</div></div>
     <div class="pantry-groups">${Object.entries(groups).map(([category,items])=>`<section class="pantry-group"><div class="pantry-category"><h2>${category}</h2><span>${items.length} item${items.length===1?"":"s"}</span></div><div class="pantry-list"><div class="pantry-list-head"><span>Staple</span><span>Status</span></div>${items.map(row).join("")}</div></section>`).join("") || '<div class="empty-state">No pantry items in this filter.</div>'}</div>
+    <section class="prepared-sauces"><div class="prepared-heading"><div><p class="eyebrow">Ready-made components</p><h2>Prepared sauces & dressings</h2></div><p>Track what is already made so the weekly plan can use it before making another batch.</p></div><div class="prepared-list"><div class="prepared-list-head"><span>Sauce or dressing</span><span>Storage</span><span>Status</span></div>${preparedSauces.map((s)=>`<div class="prepared-row"><div><strong>${s.name}</strong><small>Best used within about ${s.storageDays} days when freshly made.</small></div><span class="storage-pill">${s.storage}</span><label><span class="sr-only">Status for ${s.name}</span><select data-sauce-key="${s.key}">${preparedSauceStatuses.map((status)=>`<option ${status===s.status?"selected":""}>${status}</option>`).join("")}</select></label></div>`).join("")}</div></section>
+    <p class="helper-text"><strong>Prepared sauce statuses:</strong> <strong>Make</strong> means prepare a batch for the plan, <strong>In Fridge</strong> means use the existing batch first, and <strong>Out</strong> means none is currently prepared.</p>
     <p class="helper-text"><strong>Have</strong> means it is already in the house. <strong>Low</strong> adds it to Shopping when this week needs it. <strong>Buy</strong> always adds it to Shopping. Fresh-food priority is handled by the weekly meal plan, not as a Pantry status.</p></section>`;
 }
 
@@ -186,6 +189,7 @@ document.addEventListener("click", async (event) => {
   const chip = event.target.closest("[data-filter]"); if (chip) { document.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c === chip)); document.querySelectorAll(".recipe-card").forEach((card) => { card.hidden = chip.dataset.filter !== "all" && card.dataset.kind !== chip.dataset.filter; }); }
 });
 document.addEventListener("change", (event) => {
+  if (event.target.matches("[data-sauce-key]")) { preparedSauces = preparedSauces.map((item) => item.key === event.target.dataset.sauceKey ? { ...item, status: event.target.value } : item); store.set("fk-prepared-sauces", preparedSauces); showToast(`${event.target.value}: prepared sauce updated`); render(); return; }
   if (event.target.matches("[data-pantry-key]")) { pantry = pantry.map((item) => item.key === event.target.dataset.pantryKey ? { ...item, status: event.target.value } : item); store.set("fk-pantry", pantry); showToast(`${event.target.value}: pantry updated`); render(); }
   if (event.target.matches("[data-grocery]")) { const id = event.target.dataset.grocery; checked = event.target.checked ? [...new Set([...checked, id])] : checked.filter((item) => item !== id); store.set("fk-shopping-checked", checked); event.target.closest(".check-row").classList.toggle("checked", event.target.checked); }
 });

@@ -76,13 +76,13 @@ export const weeks = [{
   sundayPrep: ["Bake chicken-feta meatballs", "Cook basmati rice", "Wash and chop sturdy vegetables", "Mix lemon-dill sauce"],
   wednesdayPickup: ["Sushi-grade ahi tuna", "Salmon", "Avocado and sprouts", "Fresh cucumbers and ginger"],
   days: [
-    { day: "Sunday", theme: "Mediterranean table", recipeIds: ["greek-chicken-feta-meatballs", "cucumber-carrot-herb-salad", "mediterranean-lemon-dill-sauce"], note: "Serve with basmati rice." },
-    { day: "Monday", recipeIds: [], note: "Open evening — dinner out or choose something easy." },
-    { day: "Tuesday", theme: "Crisp & herb-filled", recipeIds: ["vietnamese-chicken-cabbage-salad"] },
-    { day: "Wednesday", recipeIds: [], note: "Open evening + quick fresh-food pickup." },
-    { day: "Thursday", theme: "Two-fish rice bowls", recipeIds: ["sushi-style-rice-bowl", "japanese-ginger-sesame-sauce"] },
-    { day: "Friday", theme: "Waste-less Friday", recipeIds: ["use-it-up-bowl"] },
-    { day: "Saturday", theme: "Easy salmon supper", recipeIds: ["brown-sugar-mayo-salmon", "sesame-cucumber-carrot-salad"], note: "Serve with rice." },
+    { day: "Sunday", meals: { breakfast: [], lunch: [], dinner: ["greek-chicken-feta-meatballs", "cucumber-carrot-herb-salad", "mediterranean-lemon-dill-sauce"], snack: [] }, theme: "Mediterranean table", note: "Serve dinner with basmati rice." },
+    { day: "Monday", meals: { breakfast: [], lunch: [], dinner: [], snack: [] }, note: "Dinner intentionally open — dinner out or choose something easy." },
+    { day: "Tuesday", meals: { breakfast: [], lunch: [], dinner: ["vietnamese-chicken-cabbage-salad"], snack: [] }, theme: "Crisp & herb-filled" },
+    { day: "Wednesday", meals: { breakfast: [], lunch: [], dinner: [], snack: [] }, note: "Dinner intentionally open + quick fresh-food pickup." },
+    { day: "Thursday", meals: { breakfast: [], lunch: [], dinner: ["sushi-style-rice-bowl", "japanese-ginger-sesame-sauce"], snack: [] }, theme: "Two-fish rice bowls" },
+    { day: "Friday", meals: { breakfast: [], lunch: [], dinner: ["use-it-up-bowl"], snack: [] }, theme: "Waste-less Friday" },
+    { day: "Saturday", meals: { breakfast: [], lunch: [], dinner: ["brown-sugar-mayo-salmon", "sesame-cucumber-carrot-salad"], snack: [] }, theme: "Easy salmon supper", note: "Serve dinner with rice." },
   ],
 }];
 

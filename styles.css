@@ -90,3 +90,13 @@ footer { min-height:78px; padding:0 max(1.5rem,calc((100vw - 1180px)/2)); border
 .made-on { display:grid; grid-template-columns:auto 1fr; gap:.45rem; align-items:center; color:var(--muted); font-size:9px; text-transform:uppercase; letter-spacing:.08em; }
 .made-on input { min-width:0; border:1px solid var(--line); background:var(--cream); color:var(--ink); padding:.35rem .45rem; font:inherit; text-transform:none; letter-spacing:0; }
 .made-on input:disabled { opacity:.4; }
+
+.prep-card-link { color: inherit; text-decoration: none; display: block; }
+.prep-card-link:hover h3 { text-decoration: underline; text-underline-offset: .18em; }
+.prep-session { padding: 2rem 0 2.5rem; border-top: 1px solid var(--line); scroll-margin-top: 7rem; }
+.prep-session + .prep-session { margin-top: 1rem; }
+.prep-task-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 1.25rem; }
+.prep-task { background: var(--paper); padding: 1.4rem; }
+.prep-task h3 { margin: .3rem 0 .65rem; }
+.prep-task p:last-child { margin: 0; color: var(--muted); }
+@media (max-width: 760px) { .prep-task-list { grid-template-columns: 1fr; } }

@@ -64,3 +64,39 @@ export const storeDiscoverySummary = (profile) => {
   const selected = request.stores.filter((item) => item.selected).length;
   return { ...request, selectedCount: selected, pendingCount: request.stores.length - selected };
 };
+
+
+export const retailerLocatorAdapters = new Map();
+
+export const registerRetailerLocatorAdapter = (retailerKey, adapter) => {
+  if (!supportedRetailers[retailerKey]) throw new Error(`Unsupported retailer: ${retailerKey}`);
+  if (typeof adapter !== "function") throw new TypeError("Store locator adapter must be a function.");
+  retailerLocatorAdapters.set(retailerKey, adapter);
+};
+
+export const discoverNearbyStores = async (profile, options = {}) => {
+  const request = storeDiscoveryRequest(profile);
+  if (request.status !== "ready") return { ...request, results: [], pendingRetailers: request.retailerKeys || [] };
+
+  const radiusMiles = Number(options.radiusMiles || profile.shopping?.radiusMiles || 10);
+  const results = [];
+  const pendingRetailers = [];
+
+  for (const retailerKey of request.retailerKeys) {
+    const adapter = retailerLocatorAdapters.get(retailerKey);
+    if (!adapter) { pendingRetailers.push(retailerKey); continue; }
+    const rawStores = await adapter({ postalCode: request.postalCode, radiusMiles, retailer: supportedRetailers[retailerKey] });
+    const normalized = (Array.isArray(rawStores) ? rawStores : [])
+      .map((store) => normalizeDiscoveredStore(retailerKey, store))
+      .filter(Boolean);
+    results.push(...normalized);
+  }
+
+  return {
+    status: pendingRetailers.length ? (results.length ? "partial" : "adapters-pending") : "complete",
+    postalCode: request.postalCode,
+    radiusMiles,
+    results,
+    pendingRetailers,
+  };
+};

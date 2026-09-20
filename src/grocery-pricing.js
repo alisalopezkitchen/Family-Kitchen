@@ -12,6 +12,19 @@ export const groceryPriceObservations = [];
 
 export const PRICE_FRESHNESS_HOURS = 24;
 
+// Weekly planning cadence: refresh after the Sunday circular/weekly-ad prices
+// are available, before the Sunday shop and meal-prep run.
+export const groceryPriceRefreshPolicy = {
+  cadence: "weekly",
+  day: "Sunday",
+  trigger: "after-weekly-ad-release",
+  refreshBeforeShopping: true,
+  stores: ["ralphs", "sprouts", "seafood-city"],
+  compareRegularAndSalePrices: true,
+  includeLoyaltyConditions: true,
+  note: "Run a fresh lookup for the active shopping list after weekly ads are available; retain the 24-hour freshness gate for Best verified price.",
+};
+
 export const priceObservationIsFresh = (observation, now = new Date()) => {
   const checked = new Date(observation?.checkedAt);
   if (Number.isNaN(checked.getTime())) return false;

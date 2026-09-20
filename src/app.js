@@ -299,7 +299,7 @@ function progressView() {
     saturatedFat: sum.saturatedFat + Number(entry.saturatedFat || 0),
   }), { calories: 0, protein: 0, fiber: 0, saturatedFat: 0 });
   const alisaTargets = activeNutritionTargets("alisa");
-  return `<section class="section-shell page">${pageHeader("Nutrition & progress", "Progress", "Family Kitchen is your food log, nutrition tracker, and portion-planning app.")}
+  return `<section class="section-shell page">${pageHeader("Nutrition & progress", "Progress", "Family Kitchen is your food log, nutrition tracker, and portion-planning app.")}\n    <article class="detail-card"><p class="eyebrow">My kitchen</p><h2>Location & shopping</h2><p>Your ZIP code will determine which local store catalogs can verify grocery prices. It does not change the shared recipe catalogue.</p><form data-profile-location-form><div class="progress-stats"><label><span>ZIP code</span><input name="postalCode" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="91910" value="${escapeHtml(userProfile.postalCode || "")}" required></label></div><button class="primary-button" type="submit">Save shopping ZIP</button></form>${userProfile.postalCode ? `<p class="muted">Shopping area: ${escapeHtml(userProfile.postalCode)} · exact stores will be selected from this area next.</p>` : `<p class="muted">Add a ZIP code to personalize grocery stores and weekly prices.</p>`}</article>
     <article class="detail-card"><p class="eyebrow">Today's food log</p><h2>${Math.round(totals.calories)} / ${alisaTargets.calories} calories</h2>
       <div class="progress-stats"><div><strong>${Math.round(totals.protein)}g</strong><span>protein · goal ${alisaTargets.protein}g+</span></div><div><strong>${Math.round(totals.fiber)}g</strong><span>fiber · goal ${alisaTargets.fiber}g+</span></div><div><strong>${Math.round(totals.saturatedFat)}g</strong><span>sat fat · max ${alisaTargets.saturatedFatMax}g</span></div></div>
       <form data-food-log-form><div class="progress-stats"><label><span>Food / meal</span><input name="name" required placeholder="What did you eat?"></label><label><span>Calories</span><input type="number" name="calories" min="0" step="1" required></label><label><span>Protein (g)</span><input type="number" name="protein" min="0" step="0.1" value="0"></label><label><span>Fiber (g)</span><input type="number" name="fiber" min="0" step="0.1" value="0"></label><label><span>Sat fat (g)</span><input type="number" name="saturatedFat" min="0" step="0.1" value="0"></label></div><button class="primary-button" type="submit">Log food</button></form>
@@ -372,6 +372,14 @@ document.addEventListener("click", async (event) => {
   const chip = event.target.closest("[data-filter]"); if (chip) { document.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c === chip)); document.querySelectorAll(".recipe-card").forEach((card) => { card.hidden = chip.dataset.filter !== "all" && card.dataset.kind !== chip.dataset.filter; }); }
 });
 document.addEventListener("submit", (event) => {
+  if (event.target.matches("[data-profile-location-form]")) {
+    event.preventDefault();
+    const form = new FormData(event.target);
+    const postalCode = String(form.get("postalCode") || "").trim();
+    if (!/^\d{5}$/.test(postalCode)) { showToast("Enter a 5-digit ZIP code"); return; }
+    userProfile = saveUserProfile({ ...userProfile, postalCode, shopping: { ...userProfile.shopping, market: postalCode, exactStores: {} } });
+    render({ preserveScroll: true }); showToast("Shopping ZIP saved"); return;
+  }
   if (event.target.matches("[data-food-log-form]")) {
     event.preventDefault();
     const form = new FormData(event.target);

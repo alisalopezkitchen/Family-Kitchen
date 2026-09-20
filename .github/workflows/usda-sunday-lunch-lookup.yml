@@ -147,6 +147,28 @@ jobs:
                   out["calories"] = energy_kj / 4.184
               return out
 
+          # Nutrients that are structurally zero for specific whole-food types when
+          # USDA omits them. These are explicit food-specific rules, not a global
+          # "missing means zero" fallback.
+          structural_zero = {
+              "chicken breast": {"fiber", "sugar"},
+              "feta cheese": {"fiber"},
+              "extra-virgin olive oil": {"protein", "carbs", "fiber", "sugar", "sodium"},
+          }
+
+          # Foundation records sometimes omit a directly reported kcal value.
+          # Derive energy only when protein/carbohydrate/fat are all present.
+          def resolve_missing(label, values):
+              provenance = {}
+              for metric in structural_zero.get(label, set()):
+                  if values.get(metric) is None:
+                      values[metric] = 0.0
+                      provenance[metric] = "structural-zero"
+              if values.get("calories") is None and all(values.get(m) is not None for m in ("protein", "carbs", "fat")):
+                  values["calories"] = 4 * values["protein"] + 4 * values["carbs"] + 9 * values["fat"]
+                  provenance["calories"] = "derived-4-4-9"
+              return values, provenance
+
           metrics = ["calories", "protein", "carbs", "fat", "fiber", "saturatedFat", "sugar", "sodium"]
           totals = {m: 0.0 for m in metrics}
           missing_required = []
@@ -156,6 +178,7 @@ jobs:
           for label, fdc_id, grams in foods:
               food = details(fdc_id)
               per100 = nutrient_map(food)
+              per100, provenance = resolve_missing(label, per100)
               scaled = {m: per100.get(m) * grams / 100 if per100.get(m) is not None else None for m in metrics}
               for m, value in scaled.items():
                   if value is not None:
@@ -164,6 +187,8 @@ jobs:
                       missing_required.append(f"{label}: {m}")
               print(f"{label.upper()} | FDC {fdc_id} | {grams:g} g")
               print("  " + " | ".join(f"{m}: {scaled[m]:.2f}" if scaled[m] is not None else f"{m}: MISSING" for m in metrics))
+              if provenance:
+                  print("  provenance: " + " | ".join(f"{m}={source}" for m, source in sorted(provenance.items())))
 
           # Confirmed branded bread values: Izzio sliced sourdough, 2 slices / 56 g.
           izzio = {"calories": 140.0, "protein": 5.0, "carbs": 29.0, "fat": 0.5, "fiber": 1.0, "saturatedFat": 0.0, "sugar": 0.0, "sodium": 290.0}

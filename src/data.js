@@ -137,10 +137,21 @@ export const initialPantry = [
   ["jasmine-rice", "Jasmine rice", "Have"], ["basmati-rice", "Basmati rice", "Have"], ["sushi-rice", "Sushi rice", "Low"],
   ["olive-oil", "Olive oil", "Have"], ["garlic-oil", "Garlic-infused olive oil", "Have"], ["rice-vinegar", "Rice vinegar", "Have"],
   ["red-wine-vinegar", "Red wine vinegar", "Have"], ["tamari", "Low-sodium soy sauce / tamari", "Low"], ["fish-sauce", "Fish sauce", "Have"],
-  ["sesame-oil", "Toasted sesame oil", "Have"], ["dijon", "Dijon mustard", "Have"], ["tahini", "Tahini", "Use First"],
+  ["sesame-oil", "Toasted sesame oil", "Have"], ["dijon", "Dijon mustard", "Have"], ["tahini", "Tahini", "Have"],
   ["sesame-seeds", "Sesame seeds", "Have"], ["tajin", "Tajín", "Have"], ["brown-sugar", "Brown sugar / honey", "Have"],
   ["oregano", "Oregano", "Have"], ["cumin", "Cumin", "Have"], ["smoked-paprika", "Smoked paprika", "Have"],
-  ["zaatar", "Za’atar / sumac", "Use First"], ["black-pepper", "Black pepper", "Have"], ["chile-flakes", "Chile flakes", "Have"],
+  ["zaatar", "Za’atar / sumac", "Have"], ["black-pepper", "Black pepper", "Have"], ["chile-flakes", "Chile flakes", "Have"],
 ].map(([key, name, status]) => ({ key, name, status }));
 
-export const pantryStatuses = ["Have", "Low", "Buy", "Use First"];
+export const pantryStatuses = ["Have", "Low", "Buy"];
+
+export const freshnessPolicy = {
+  purpose: "Prioritize perishable food in weekly planning before it spoils without treating freshness as a pantry inventory status.",
+  planningRules: [
+    "Use the most perishable purchased ingredients in the earliest compatible meals.",
+    "Carry leftover fresh ingredients into the next compatible meal before planning a duplicate purchase.",
+    "Wednesday pickup ingredients should be scheduled from Wednesday onward unless their storage life safely supports later use.",
+    "Friday use-it-up meals should preferentially consume remaining fresh produce, herbs, cooked proteins, rice, and opened sauces that are still safe to eat.",
+    "When generating a new week, review carryover perishables before adding new ingredients to the shopping list."
+  ]
+};

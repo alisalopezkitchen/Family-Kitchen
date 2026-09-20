@@ -50,7 +50,7 @@ export function consolidateShoppingList(week, pantry, extraRecipeIds = []) {
   [...ingredients, ...standalone, ...pantryBuyItems].forEach((ingredient) => {
     if (ingredient.optional) return;
     const pantryStatus = pantryByKey.get(ingredient.key);
-    if (pantryStatus === "Have" || pantryStatus === "Use First") {
+    if (pantryStatus === "Have") {
       if (ingredient.pantry) return;
     }
     if (pantryStatus === "Low" && ingredient.pantry !== true) return;

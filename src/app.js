@@ -14,6 +14,7 @@ let extras = store.get("fk-shopping-extras", []);
 let checked = store.get("fk-shopping-checked", []);
 let mealMoves = store.get("fk-meal-moves", []);
 let pantryFilter = "all";
+let shoppingStoreFilter = "all";
 let preparedSauces = store.get("fk-prepared-sauces", initialPreparedSauces).map((item) => ({ ...item, madeOn: item.madeOn || "" }));
 
 const icons = {
@@ -182,9 +183,10 @@ function recipeDetailView(recipe) {
 
 function shoppingView() {
   const items = consolidateShoppingList(activeWeek(), pantry, extras);
+  const stores = [{ id: "all", label: "All" }, { id: "ralphs", label: "Ralphs" }, { id: "vons", label: "Vons" }, { id: "northgate", label: "Northgate" }, { id: "sprouts", label: "Sprouts" }];
   const groups = groupShoppingList(items);
   const shopSection = (shop, title, subtitle) => `<section class="shop-section"><div class="shop-heading"><div><p class="eyebrow">${subtitle}</p><h2>${title}</h2></div><span>${Object.values(groups[shop]).flat().length} items</span></div>${Object.keys(groups[shop]).length ? Object.entries(groups[shop]).map(([category, categoryItems]) => `<article class="grocery-category"><h3>${category}</h3>${categoryItems.map((item) => { const id = `${shop}:${item.key}:${item.unitGroup ?? item.unit}`; return `<label class="check-row ${checked.includes(id) ? "checked" : ""}"><input type="checkbox" data-grocery="${id}" ${checked.includes(id) ? "checked" : ""}><span class="custom-check"></span><span>${item.item}</span><strong>${item.displayAmount ?? `${formatAmount(item.amount)} ${item.unit}`}</strong></label>`; }).join("")}</article>`).join("") : `<div class="empty-state">Nothing on this list yet.</div>`}</section>`;
-  return `<section class="section-shell page">${pageHeader("This week’s groceries", "Shopping", "One consolidated list, split around how you actually shop. Pantry staples you have are already filtered out.")}<div class="shopping-toolbar"><span>${icons.cart} <strong>${items.length}</strong> ingredients to pick up</span>${checked.length ? `<button class="button text" data-clear-checked>Clear checked items</button>` : ""}</div><div class="shopping-layout">${shopSection("sunday", "Sunday main shop", "Stock the week")}${shopSection("wednesday", "Wednesday fresh pickup", "Small and fresh")}</div>${extras.length ? `<div class="extras-note"><span>Extra recipe${extras.length > 1 ? "s" : ""} added manually: ${extras.map((id) => getRecipe(id).name).join(", ")}</span><button data-clear-extras>Remove extras</button></div>` : ""}</section>`;
+  return `<section class="section-shell page">${pageHeader("This week’s groceries", "Shopping", "One consolidated list, split around how you actually shop. Pantry staples you have are already filtered out.")}<div class="store-filter" role="group" aria-label="Filter shopping list by store">${stores.map((store) => `<button class="chip ${shoppingStoreFilter === store.id ? "active" : ""}" data-store-filter="${store.id}">${store.label}</button>`).join("")}</div><p class="helper-text store-filter-note">${shoppingStoreFilter === "all" ? "Showing the complete list. Store assignments will populate as sale and best-price data is added." : `Store view ready for ${stores.find((store) => store.id === shoppingStoreFilter)?.label}. Items will appear here once store pricing and assignments are connected.`}</p><div class="shopping-toolbar"><span>${icons.cart} <strong>${items.length}</strong> ingredients to pick up</span>${checked.length ? `<button class="button text" data-clear-checked>Clear checked items</button>` : ""}</div><div class="shopping-layout">${shopSection("sunday", "Sunday main shop", "Stock the week")}${shopSection("wednesday", "Wednesday fresh pickup", "Small and fresh")}</div>${extras.length ? `<div class="extras-note"><span>Extra recipe${extras.length > 1 ? "s" : ""} added manually: ${extras.map((id) => getRecipe(id).name).join(", ")}</span><button data-clear-extras>Remove extras</button></div>` : ""}</section>`;
 }
 
 function pantryCategory(item) {
@@ -263,6 +265,7 @@ document.addEventListener("click", async (event) => {
   if (add && !extras.includes(add.dataset.addRecipe)) { extras.push(add.dataset.addRecipe); store.set("fk-shopping-extras", extras); add.disabled = true; add.textContent = "Added to shopping list"; updateShoppingCount(); showToast("Recipe added to shopping list"); }
   const clearExtras = event.target.closest("[data-clear-extras]"); if (clearExtras) { extras = []; store.set("fk-shopping-extras", extras); render(); }
   const clearChecked = event.target.closest("[data-clear-checked]"); if (clearChecked) { checked = []; store.set("fk-shopping-checked", checked); render(); }
+  const storeFilterButton = event.target.closest("[data-store-filter]"); if (storeFilterButton) { shoppingStoreFilter = storeFilterButton.dataset.storeFilter; render({ preserveScroll: true }); return; }
   const pantryFilterButton = event.target.closest("[data-pantry-filter]"); if (pantryFilterButton) { pantryFilter = pantryFilterButton.dataset.pantryFilter; render(); return; }
   const chip = event.target.closest("[data-filter]"); if (chip) { document.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c === chip)); document.querySelectorAll(".recipe-card").forEach((card) => { card.hidden = chip.dataset.filter !== "all" && card.dataset.kind !== chip.dataset.filter; }); }
 });

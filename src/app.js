@@ -142,6 +142,18 @@ function pantryCategory(item) {
   if (["sesame-seeds"].includes(item.key)) return "Seeds & specialty";
   return "Spices & seasonings";
 }
+function sauceFreshness(s) {
+  if (s.status !== "In Fridge" || !s.madeOn) return "";
+  const made = new Date(`${s.madeOn}T12:00:00`);
+  if (Number.isNaN(made.getTime())) return "";
+  const useBy = new Date(made); useBy.setDate(useBy.getDate() + s.storageDays);
+  const today = new Date(); today.setHours(12,0,0,0);
+  const daysLeft = Math.ceil((useBy - today) / 86400000);
+  const label = useBy.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  if (daysLeft < 0) return `<span class="freshness-alert expired">Past planning window · check batch</span>`;
+  if (daysLeft <= 2) return `<span class="freshness-alert use-first">Use first · by ${label}</span>`;
+  return `<span class="freshness-alert">Use by ${label}</span>`;
+}
 function pantryView() {
   const normalizedPantry = pantry.map((item) => item.status === "Use First" ? { ...item, status: "Have" } : item);
   if (normalizedPantry.some((item, i) => item.status !== pantry[i].status)) { pantry = normalizedPantry; store.set("fk-pantry", pantry); }
@@ -162,7 +174,7 @@ function pantryView() {
   return `<section class="section-shell page pantry-page">${pageHeader("Know what you have", "Pantry", "Keep staples visible and prevent repeat buys. Changes are saved on this device.")}
     <div class="pantry-filter-bar"><button class="pantry-all ${pantryFilter === "all" ? "active" : ""}" data-pantry-filter="all">All <span>${pantry.length}</span></button><div class="pantry-summary">${statusCounts.map(([status,count])=>`<button class="${pantryFilter === status ? "active" : ""}" data-pantry-filter="${status}"><strong>${count}</strong><span>${status}</span></button>`).join("")}</div></div>
     <div class="pantry-groups">${Object.entries(groups).map(([category,items])=>`<section class="pantry-group"><div class="pantry-category"><h2>${category}</h2><span>${items.length} item${items.length===1?"":"s"}</span></div><div class="pantry-list"><div class="pantry-list-head"><span>Staple</span><span>Status</span></div>${items.map(row).join("")}</div></section>`).join("") || '<div class="empty-state">No pantry items in this filter.</div>'}</div>
-    <section class="prepared-sauces"><div class="prepared-heading"><div><p class="eyebrow">Ready-made components</p><h2>Prepared sauces & dressings</h2></div><p>Keep the full sauce inventory visible. Weekly recipes are flagged separately so existing fridge batches can be used before making more.</p></div><div class="prepared-list"><div class="prepared-list-head"><span>Sauce or dressing</span><span>Storage</span><span>Status</span></div>${plannedSauces.map((s)=>`<div class="prepared-row"><div><strong>${s.name}</strong><small>${s.plannedThisWeek ? '<span class="planned-badge">Planned this week</span> · ' : ""}Best used within about ${s.storageDays} days when freshly made.</small></div><span class="storage-pill">${s.storage}</span><div class="prepared-controls"><label><span class="sr-only">Status for ${s.name}</span><select data-sauce-key="${s.key}">${preparedSauceStatuses.map((status)=>`<option ${status===s.status?"selected":""}>${status}</option>`).join("")}</select></label><label class="made-on"><span>Made on</span><input type="date" data-sauce-date="${s.key}" value="${s.madeOn || ""}" ${s.status !== "In Fridge" ? "disabled" : ""}></label></div></div>`).join("")}</div></section>
+    <section class="prepared-sauces"><div class="prepared-heading"><div><p class="eyebrow">Ready-made components</p><h2>Prepared sauces & dressings</h2></div><p>Keep the full sauce inventory visible. Weekly recipes are flagged separately so existing fridge batches can be used before making more.</p></div><div class="prepared-list"><div class="prepared-list-head"><span>Sauce or dressing</span><span>Storage</span><span>Status</span></div>${plannedSauces.map((s)=>`<div class="prepared-row"><div><strong>${s.name}</strong><small>${s.plannedThisWeek ? '<span class="planned-badge">Planned this week</span> · ' : ""}Best used within about ${s.storageDays} days when freshly made. ${sauceFreshness(s)}</small></div><span class="storage-pill">${s.storage}</span><div class="prepared-controls"><label><span class="sr-only">Status for ${s.name}</span><select data-sauce-key="${s.key}">${preparedSauceStatuses.map((status)=>`<option ${status===s.status?"selected":""}>${status}</option>`).join("")}</select></label><label class="made-on"><span>Made on</span><input type="date" data-sauce-date="${s.key}" value="${s.madeOn || ""}" ${s.status !== "In Fridge" ? "disabled" : ""}></label></div></div>`).join("")}</div></section>
     <p class="helper-text"><strong>Prepared sauce statuses:</strong> <strong>Make</strong> means prepare a batch for the plan, <strong>In Fridge</strong> means use the existing batch first, and <strong>Out</strong> means none is currently prepared.</p>
     <p class="helper-text"><strong>Have</strong> means it is already in the house. <strong>Low</strong> adds it to Shopping when this week needs it. <strong>Buy</strong> always adds it to Shopping. Fresh-food priority is handled by the weekly meal plan, not as a Pantry status.</p></section>`;
 }

@@ -1,0 +1,23 @@
+name: Weekly grocery price refresh
+
+on:
+  schedule:
+    # Sunday 9:00 AM Pacific during daylight time (16:00 UTC).
+    # The job records its run; store-specific lookup adapters can populate
+    # verified observations as they are added.
+    - cron: "0 16 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh-grocery-prices:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate weekly price refresh configuration
+        run: node scripts/refresh-grocery-prices.mjs

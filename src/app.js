@@ -12,6 +12,7 @@ const store = {
 let pantry = store.get("fk-pantry", initialPantry);
 let extras = store.get("fk-shopping-extras", []);
 let checked = store.get("fk-shopping-checked", []);
+let mealMoves = store.get("fk-meal-moves", []);
 
 const icons = {
   arrow: `<svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>`,
@@ -45,10 +46,35 @@ function homeView() {
   <section class="section-shell recipe-strip"><div class="section-title"><div><p class="eyebrow">Quick links</p><h2>Recipes for this week</h2></div><a href="#/recipes">Browse all</a></div><div class="quick-recipe-grid">${recipes.slice(0, 4).map((r, i) => `<a class="quick-recipe tone-${i + 1}" href="#/recipes/${r.id}"><span class="recipe-number">0${i + 1}</span><div><span class="tag">${r.tags[0]}</span><h3>${r.name}</h3><p>${r.prepTime} prep · ${r.servings} servings</p></div>${icons.arrow}</a>`).join("")}</div></section>`;
 }
 
+function mealLabel(entry) { return typeof entry === "string" ? getRecipe(entry)?.name : entry?.label; }
+function adjustedDays(week) {
+  const days = structuredClone(week.days);
+  for (const move of mealMoves) {
+    const fromDay = days.findIndex((d) => d.day === move.day);
+    if (fromDay < 0) continue;
+    const source = days[fromDay].meals[move.meal]?.[move.index];
+    if (!source) continue;
+    days[fromDay].meals[move.meal].splice(move.index, 1);
+    let placed = false;
+    for (let di = fromDay + 1; di < days.length && !placed; di++) {
+      for (const slot of ["breakfast","lunch","dinner"]) {
+        const target = days[di].meals[slot];
+        if (!target.length || target.every((x) => typeof x !== "string" && x.open)) {
+          days[di].meals[slot] = [{ label: mealLabel(source), rollover: true }];
+          placed = true; break;
+        }
+      }
+    }
+    if (!placed) days.push({ day: "Next Sunday", meals: { breakfast: [{ label: mealLabel(source), rollover: true }], lunch: [], dinner: [], snack: [] }, note: "Rolled forward to use ingredients already purchased." });
+  }
+  return days;
+}
+
 function weekView() {
   const week = activeWeek();
+  const displayDays = adjustedDays(week);
   return `<section class="section-shell page">${pageHeader(`${week.label} · ${week.dateRange}`, "This week", "A flexible five-dinner rhythm with two intentional openings for life outside the kitchen.")}
-    ${week.treats?.length ? `<div class="treat-strip"><p class="eyebrow">Treats & drinks</p>${week.treats.map((t) => `<p><strong>${t.item}</strong> · ${t.note}</p>`).join("")}</div>` : ""}<div class="week-layout"><div class="day-list">${week.days.map((day) => `<article class="day-card"><div class="day-name"><span>${day.day.slice(0, 3)}</span><h2>${day.day}</h2></div><div class="day-content">${day.theme ? `<p class="tiny-label">${day.theme}</p>` : ""}${["breakfast","lunch","dinner","snack"].map((meal) => `<div class="meal-slot"><p class="tiny-label">${meal}</p>${day.meals[meal].length ? day.meals[meal].map((entry) => typeof entry === "string" ? recipeLink(getRecipe(entry)) : `<p class="meal-text${entry.leftover ? " leftover" : ""}${entry.open ? " open-meal" : ""}${entry.treat ? " treat-meal" : ""}">${entry.leftover ? '<span class="meal-badge">Leftover</span>' : entry.treat ? '<span class="meal-badge treat">Treat</span>' : ""}${escapeHtml(entry.label)}</p>`).join("") : `<p class="day-note">Open / flexible</p>`}</div>`).join("")}${day.note ? `<p class="day-note">${day.note}</p>` : ""}</div></article>`).join("")}</div>
+    ${week.treats?.length ? `<div class="treat-strip"><p class="eyebrow">Treats & drinks</p>${week.treats.map((t) => `<p><strong>${t.item}</strong> · ${t.note}</p>`).join("")}</div>` : ""}<div class="week-layout"><div class="day-list">${displayDays.map((day) => `<article class="day-card"><div class="day-name"><span>${day.day.slice(0, 3)}</span><h2>${day.day}</h2></div><div class="day-content">${day.theme ? `<p class="tiny-label">${day.theme}</p>` : ""}${["breakfast","lunch","dinner","snack"].map((meal) => `<div class="meal-slot"><p class="tiny-label">${meal}</p>${day.meals[meal].length ? day.meals[meal].map((entry) => typeof entry === "string" ? `<div class="meal-line">${recipeLink(getRecipe(entry))}<button class="move-meal" data-move-meal data-day="${day.day}" data-meal="${meal}" data-index="${day.meals[meal].indexOf(entry)}">Skipped? Move forward</button></div>` : `<div class="meal-line"><p class="meal-text${entry.leftover ? " leftover" : ""}${entry.open ? " open-meal" : ""}${entry.treat ? " treat-meal" : ""}">${entry.leftover ? '<span class="meal-badge">Leftover</span>' : entry.treat ? '<span class="meal-badge treat">Treat</span>' : entry.rollover ? '<span class="meal-badge">Moved forward</span>' : ""}${escapeHtml(entry.label)}</p>${!entry.open && !entry.rollover ? `<button class="move-meal" data-move-meal data-day="${day.day}" data-meal="${meal}" data-index="${day.meals[meal].indexOf(entry)}">Skipped? Move forward</button>` : ""}</div>`).join("") : `<p class="day-note">Open / flexible</p>`}</div>`).join("")}${day.note ? `<p class="day-note">${day.note}</p>` : ""}</div></article>`).join("")}</div>
     <aside class="week-sidebar"><article class="note-card"><span class="number-disc">01</span><p class="tiny-label">Sunday prep</p><h3>A little now, easier later</h3><ul class="clean-list">${week.sundayPrep.map((item) => `<li>${item}</li>`).join("")}</ul></article><article class="note-card green"><span class="number-disc">02</span><p class="tiny-label">Wednesday pickup</p><h3>Fresh things, small trip</h3><ul class="clean-list">${week.wednesdayPickup.map((item) => `<li>${item}</li>`).join("")}</ul></article></aside></div></section>`;
 }
 
@@ -101,6 +127,8 @@ function updateShoppingCount() { const count = consolidateShoppingList(activeWee
 function ingredientsText(recipe) { return `${recipe.name}\n${recipe.servings} servings\n\n${recipe.ingredients.map((i) => `${formatAmount(i.amount)} ${i.unit} ${i.item}`.replace(/\s+/g, " ").trim()).join("\n")}`; }
 
 document.addEventListener("click", async (event) => {
+  const moveMeal = event.target.closest("[data-move-meal]");
+  if (moveMeal) { mealMoves.push({ day: moveMeal.dataset.day, meal: moveMeal.dataset.meal, index: Number(moveMeal.dataset.index) }); store.set("fk-meal-moves", mealMoves); render(); showToast("Meal moved to the next open slot"); return; }
   const copy = event.target.closest("[data-copy-ingredients]");
   if (copy) { const recipe = getRecipe(copy.dataset.copyIngredients); await navigator.clipboard.writeText(ingredientsText(recipe)); showToast("Ingredients copied for MyFitnessPal"); }
   const add = event.target.closest("[data-add-recipe]");

@@ -107,3 +107,6 @@ footer { min-height:78px; padding:0 max(1.5rem,calc((100vw - 1180px)/2)); border
   font-size: 0.9rem;
   line-height: 1.4;
 }
+
+.store-filter { display:flex; flex-wrap:wrap; gap:.6rem; margin:0 0 .75rem; }
+.store-filter-note { margin-top:0; margin-bottom:1.5rem; }

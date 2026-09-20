@@ -130,18 +130,18 @@ function dayPreparedSauceNote(day) {
 function prepView() {
   const week = activeWeek();
   const sundayTasks = [
-    { group: "Protein", task: "Bake chicken-feta meatballs", meals: "Sunday dinner · Monday lunch leftovers" },
-    { group: "Grain", task: "Cook basmati rice", meals: "Sunday dinner · Monday lunch leftovers" },
-    { group: "Vegetables", task: "Wash and prep sturdy cucumber, carrots and herbs", meals: "Sunday dinner salad · Sunday snack · Tuesday Vietnamese chicken salad" },
-    { group: "Sauce", task: "Check Mediterranean lemon-dill sauce; use the fridge batch before making more", meals: "Sunday dinner · leftover Mediterranean components" }
+    { group: "Protein", task: "Bake chicken-feta meatballs", quantity: "___ meatballs · ___ lb chicken", meals: "Sunday dinner · Monday lunch leftovers" },
+    { group: "Grain", task: "Cook basmati rice", quantity: "___ cups dry → ___ cups cooked", meals: "Sunday dinner · Monday lunch leftovers" },
+    { group: "Vegetables", task: "Wash and prep sturdy cucumber, carrots and herbs", quantity: "___ cucumbers · ___ carrots · ___ bunches herbs", meals: "Sunday dinner salad · Sunday snack · Tuesday Vietnamese chicken salad" },
+    { group: "Sauce", task: "Check Mediterranean lemon-dill sauce; use the fridge batch before making more", quantity: "___ tablespoons / ___ batch", meals: "Sunday dinner · leftover Mediterranean components" }
   ];
   const wednesdayTasks = [
-    { group: "Fresh protein", task: "Pick up sushi-grade ahi and salmon", meals: "Thursday dinner: ahi bowl for you · salmon bowl for Mom · Saturday salmon if needed" },
-    { group: "Produce", task: "Refresh avocado, sprouts and cucumbers", meals: "Thursday Japanese bowls · Friday use-it-up bowl" },
-    { group: "Flavor", task: "Refresh ginger and any herbs running low", meals: "Thursday Japanese bowls · remaining week sauces" },
-    { group: "Inventory", task: "Check prepared sauces and use-by dates before making another batch", meals: "Thursday–Saturday meals; prioritize anything marked Use first" }
+    { group: "Fresh protein", task: "Pick up sushi-grade ahi and salmon", quantity: "___ oz ahi · ___ oz salmon", meals: "Thursday dinner: ahi bowl for you · salmon bowl for Mom · Saturday salmon if needed" },
+    { group: "Produce", task: "Refresh avocado, sprouts and cucumbers", quantity: "___ avocado · ___ pack sprouts · ___ cucumbers", meals: "Thursday Japanese bowls · Friday use-it-up bowl" },
+    { group: "Flavor", task: "Refresh ginger and any herbs running low", quantity: "___ ginger · ___ bunches herbs", meals: "Thursday Japanese bowls · remaining week sauces" },
+    { group: "Inventory", task: "Check prepared sauces and use-by dates before making another batch", quantity: "Use existing fridge amounts first", meals: "Thursday–Saturday meals; prioritize anything marked Use first" }
   ];
-  const taskList = (tasks) => `<div class="prep-task-list">${tasks.map((item) => `<div class="prep-task"><p class="tiny-label">${item.group}</p><h3>${item.task}</h3><p><strong>For:</strong> ${item.meals}</p></div>`).join("")}</div>`;
+  const taskList = (tasks) => `<div class="prep-task-list">${tasks.map((item) => `<div class="prep-task"><p class="tiny-label">${item.group}</p><h3>${item.task}</h3><p><strong>Quantity:</strong> ${item.quantity}</p><p><strong>For:</strong> ${item.meals}</p></div>`).join("")}</div>`;
   return `<section class="section-shell page">${pageHeader(`${week.label} · ${week.dateRange}`, "Prep", "Prep only what has a job this week. Each task shows which meals it supports so leftovers and fresh ingredients are intentional.")}
     <div id="sunday-prep" class="prep-session"><div class="panel-heading"><span class="number-disc">01</span><div><p class="tiny-label">Sunday prep</p><h2>Set up Sunday through Tuesday</h2></div></div>${taskList(sundayTasks)}</div>
     <div id="wednesday-refresh" class="prep-session"><div class="panel-heading"><span class="number-disc">02</span><div><p class="tiny-label">Wednesday refresh</p><h2>Set up Thursday through Saturday</h2></div></div>${taskList(wednesdayTasks)}</div>
@@ -153,7 +153,7 @@ function weekView() {
   const displayDays = adjustedDays(week);
   return `<section class="section-shell page">${pageHeader(`${week.label} · ${week.dateRange}`, "This week", "A flexible five-dinner rhythm with two intentional openings for life outside the kitchen.")}${nutritionTargetStrip()}
     <div class="week-layout"><div class="day-list">${displayDays.map((day) => `<article class="day-card"><div class="day-name"><span>${day.day.slice(0, 3)}</span><h2>${day.day}</h2></div><div class="day-content">${day.theme ? `<p class="tiny-label">${day.theme}</p>` : ""}${["breakfast","lunch","dinner","snack"].map((meal) => `<div class="meal-slot"><p class="tiny-label">${meal}</p>${day.meals[meal].length ? day.meals[meal].map((entry) => typeof entry === "string" ? `<div class="meal-line">${recipeLink(getRecipe(entry))}${meal === "breakfast" || meal === "lunch" || meal === "dinner" ? `<button class="move-meal" data-move-meal data-day="${day.day}" data-meal="${meal}" data-index="${day.meals[meal].indexOf(entry)}">Skipped? Move forward</button>` : ""}</div>` : `<div class="meal-line"><p class="meal-text${entry.leftover ? " leftover" : ""}${entry.open ? " open-meal" : ""}${entry.treat ? " treat-meal" : ""}">${entry.leftover ? '<span class="meal-badge">Leftover</span>' : entry.treat ? '<span class="meal-badge treat">Treat</span>' : entry.rollover ? '<span class="meal-badge">Moved forward</span>' : ""}${escapeHtml(entry.label)}</p>${!entry.open && !entry.rollover && ["breakfast","lunch","dinner"].includes(meal) ? `<button class="move-meal" data-move-meal data-day="${day.day}" data-meal="${meal}" data-index="${day.meals[meal].indexOf(entry)}">Skipped? Move forward</button>` : ""}</div>`).join("") : `<p class="day-note">Open / flexible</p>`}</div>`).join("")}${day.note ? `<p class="day-note">${day.note}</p>` : ""}${dayPreparedSauceNote(day).map((note) => `<p class="day-note"><strong>Prepared:</strong> ${note}</p>`).join("")}${dayNutritionTable(day)}</div></article>`).join("")}</div>
-    <aside class="week-sidebar"><article class="note-card"><a class="prep-card-link" href="#/prep?s=sunday-prep"><span class="number-disc">01</span><p class="tiny-label">Sunday prep →</p><h3>A little now, easier later</h3></a><ul class="clean-list">${sundayPrepItems(week).map((item) => `<li>${item}</li>`).join("")}</ul></article><article class="note-card green"><a class="prep-card-link" href="#/prep?s=wednesday-refresh"><span class="number-disc">02</span><p class="tiny-label">Wednesday refresh →</p><h3>Fresh things, small trip</h3></a><ul class="clean-list">${week.wednesdayPickup.map((item) => `<li>${item}</li>`).join("")}</ul></article></aside></div></section>`;
+    <aside class="week-sidebar"><article class="note-card"><a class="prep-card-link" href="#/prep/sunday-prep"><span class="number-disc">01</span><p class="tiny-label">Sunday prep →</p><h3>A little now, easier later</h3></a><ul class="clean-list">${sundayPrepItems(week).map((item) => `<li>${item}</li>`).join("")}</ul></article><article class="note-card green"><a class="prep-card-link" href="#/prep/wednesday-refresh"><span class="number-disc">02</span><p class="tiny-label">Wednesday refresh →</p><h3>Fresh things, small trip</h3></a><ul class="clean-list">${week.wednesdayPickup.map((item) => `<li>${item}</li>`).join("")}</ul></article></aside></div></section>`;
 }
 
 function pastWeeksView() {
@@ -246,7 +246,9 @@ function render(options = {}) {
   document.title = `${recipe?.name || ({ home: "Home", week: "This Week", prep: "Prep", "past-weeks": "Past Weeks", recipes: "Recipes", shopping: "Shopping", pantry: "Pantry", progress: "Progress" }[route] || "Home")} · Family Kitchen`;
   updateShoppingCount();
   nav.classList.remove("open"); menuButton.setAttribute("aria-expanded", "false");
-  if (preserveScroll) window.scrollTo(0, scrollY); else window.scrollTo(0, 0);
+  if (preserveScroll) window.scrollTo(0, scrollY);
+  else if (route === "prep" && parts[1]) requestAnimationFrame(() => document.getElementById(parts[1])?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  else window.scrollTo(0, 0);
 }
 
 function updateShoppingCount() { const count = consolidateShoppingList(activeWeek(), pantry, extras).length; const badge = document.querySelector("#shopping-count"); badge.textContent = count; badge.hidden = !count; }

@@ -5,6 +5,22 @@ const nutritionPending = { calories:"To be calculated", protein:"To be calculate
 
 export const recipes = [
   {
+    id: "jammy-eggs-sourdough-avocado", name: "Jammy eggs + sourdough + avocado",
+    description: "A substantial savory breakfast with jammy eggs, sourdough, and avocado.",
+    servings: 1, servingSize: "1 breakfast", prepTime: "5 minutes", cookTime: "8 minutes",
+    tags: ["Breakfast", "Protein", "Savory"],
+    ingredients: [
+      { key: "egg", item: "large eggs", amount: 2, unit: "", grams: 100, category: "Protein", nutritionLookup: { source: "USDA FoodData Central", status: "pending-match" } },
+      { key: "sourdough", item: "sourdough bread", amount: 2, unit: "slices", grams: 70, category: "Bakery", nutritionLookup: { source: "USDA FoodData Central", status: "pending-match" } },
+      { key: "avocado", item: "avocado", amount: 0.5, unit: "medium", grams: 75, category: "Produce", nutritionLookup: { source: "USDA FoodData Central", status: "pending-match" } }
+    ],
+    instructions: ["Cook the eggs until the whites are set and the yolks remain jammy.", "Toast the sourdough.", "Serve with measured avocado; season to taste."],
+    portions: { alisa: "2 large eggs + 2 slices (70 g) sourdough + 75 g avocado", mom: "Adjust separately when planned" },
+    storage: "Best prepared fresh.",
+    nutrition: nutritionPending,
+    quantification: { status: "portion-defined", note: "Weights are defined; nutrition remains pending until the selected USDA food records are matched and calculated." }
+  },
+  {
     id: "greek-chicken-feta-meatballs", name: "Greek chicken-feta meatballs",
     description: "Tender, herb-filled chicken meatballs with feta and lemon—built for Sunday dinner and flexible leftovers.",
     servings: 4, servingSize: "4–5 meatballs", prepTime: "20 minutes", cookTime: "20 minutes",
@@ -94,7 +110,7 @@ export const weeks = [{
   wednesdayPickup: ["Sushi-grade ahi tuna", "Salmon", "Avocado and sprouts", "Fresh cucumbers and ginger"],
   treats: [{ key: "grapefruit-juice", item: "fresh grapefruit juice", amount: 2, unit: "servings", category: "Produce", pickup: "wednesday", shoppingOptions: "2–3 fresh grapefruit OR one small bottle 100% grapefruit juice", note: "4–6 oz per serving; planned later in the week." }],
   days: [
-    { day: "Sunday", meals: { breakfast: [{ label: "Jammy eggs + sourdough + avocado" }], lunch: [{ label: "Mediterranean chicken-feta chopped salad + sourdough", nutrition: { calories: 450, protein: 38, fiber: 7, saturatedFat: 5 } }], dinner: ["greek-chicken-feta-meatballs", "cucumber-carrot-herb-salad", "mediterranean-lemon-dill-sauce"], snack: ["sesame-tahini-ribbon-salad"] }, theme: "Mediterranean table", note: "Serve dinner with basmati rice." },
+    { day: "Sunday", meals: { breakfast: ["jammy-eggs-sourdough-avocado"], lunch: [{ label: "Mediterranean chicken-feta chopped salad + sourdough", nutrition: { calories: 450, protein: 38, fiber: 7, saturatedFat: 5 } }], dinner: ["greek-chicken-feta-meatballs", "cucumber-carrot-herb-salad", "mediterranean-lemon-dill-sauce"], snack: ["sesame-tahini-ribbon-salad"] }, theme: "Mediterranean table", note: "Serve dinner with basmati rice." },
     { day: "Monday", meals: { breakfast: [{ label: "Greek yogurt + kiwi + basil seeds + walnuts" }], lunch: [{ label: "Leftover Greek chicken-feta meatballs + basmati rice + cucumber-carrot salad", leftover: true }], dinner: [{ label: "Open / flexible", open: true }], snack: ["sesame-tahini-ribbon-salad"] }, note: "Dinner intentionally open — dinner out or choose something easy." },
     { day: "Tuesday", meals: { breakfast: [{ label: "Goat cheese + jam + prosciutto on sourdough" }], lunch: [{ label: "Leftover Greek chicken-feta meatballs + chopped herb salad", leftover: true }], dinner: ["vietnamese-chicken-cabbage-salad"], snack: [{ label: "Greek yogurt + kiwi + basil seeds" }] }, theme: "Crisp & herb-filled" },
     { day: "Wednesday", meals: { breakfast: [{ label: "Avocado toast + poached eggs + dill" }], lunch: [{ label: "Leftover Vietnamese chicken cabbage salad", leftover: true }], dinner: [{ label: "Open / flexible", open: true }], snack: [{ label: "Kiwi + basil seeds" }] }, note: "Dinner intentionally open + quick fresh-food pickup." },

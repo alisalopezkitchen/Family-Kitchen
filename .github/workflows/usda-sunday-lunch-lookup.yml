@@ -237,6 +237,21 @@ jobs:
 
           metrics = ["calories", "protein", "carbs", "fat", "fiber", "saturatedFat", "sugar", "sodium"]
           totals = {m: 0.0 for m in metrics}
+          component_for = {
+              "chicken breast": "composed-salad",
+              "feta cheese": "composed-salad",
+              "cucumber": "composed-salad",
+              "carrot": "composed-salad",
+              "green cabbage": "composed-salad",
+              "flat-leaf parsley": "composed-salad",
+              "fresh dill": "composed-salad",
+              "lemon juice": "composed-salad",
+              "extra-virgin olive oil": "composed-salad",
+          }
+          component_totals = {
+              "composed-salad": {m: 0.0 for m in metrics},
+              "bread": {m: 0.0 for m in metrics},
+          }
           missing_required = []
           print("SUNDAY LUNCH — USDA REVIEW SUBTOTAL")
           print("Values below are calculated from the reviewed USDA records and recipe gram weights.")
@@ -248,9 +263,11 @@ jobs:
               per100, provenance = resolve_missing(label, per100)
               provenance = {**fallback_provenance, **provenance}
               scaled = {m: per100.get(m) * grams / 100 if per100.get(m) is not None else None for m in metrics}
+              component = component_for[label]
               for m, value in scaled.items():
                   if value is not None:
                       totals[m] += value
+                      component_totals[component][m] += value
                   else:
                       missing_required.append(f"{label}: {m}")
               print(f"{label.upper()} | FDC {fdc_id} | {grams:g} g")
@@ -263,6 +280,7 @@ jobs:
           grey_poupon = {"calories": 5.0, "protein": 0.0, "carbs": 0.0, "fat": 0.0, "fiber": 0.0, "saturatedFat": 0.0, "sugar": 0.0, "sodium": 115.0}
           for m, value in grey_poupon.items():
               totals[m] += value
+              component_totals["composed-salad"][m] += value
           print("GREY POUPON DIJON MUSTARD | manufacturer label | 5 g / 1 tsp")
           print("  " + " | ".join(f"{m}: {grey_poupon[m]:.2f}" for m in metrics))
 
@@ -270,9 +288,16 @@ jobs:
           izzio = {"calories": 140.0, "protein": 5.0, "carbs": 29.0, "fat": 0.5, "fiber": 1.0, "saturatedFat": 0.0, "sugar": 0.0, "sodium": 290.0}
           for m, value in izzio.items():
               totals[m] += value
+              component_totals["bread"][m] += value
           print("IZZIO SOURDOUGH | manufacturer label | 56 g / 2 slices")
           print("  " + " | ".join(f"{m}: {izzio[m]:.2f}" for m in metrics))
 
+          print("")
+          print("PORTION COMPONENT TOTALS")
+          print("  COMPOSED SALAD — chicken + vegetables + herbs + feta + proportional dressing")
+          print("    " + " | ".join(f"{m}: {component_totals['composed-salad'][m]:.2f}" for m in metrics))
+          print("  BREAD — genuine separate side")
+          print("    " + " | ".join(f"{m}: {component_totals['bread'][m]:.2f}" for m in metrics))
           print("")
           if missing_required:
               print("SUBTOTAL WITHHELD — required USDA nutrients are missing:")

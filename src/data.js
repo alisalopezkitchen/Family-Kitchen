@@ -62,12 +62,30 @@ export const recipeStandardizationPolicy = {
   outputs: ["recipe nutrition", "scalable component nutrition", "person-specific portions", "Prep quantities", "Shopping quantities", "MyFitnessPal import-ready recipe"],
 };
 
+const ingredientStandardizationReady = (ingredient) => {
+  if (ingredient?.amount === null || ingredient?.amount === undefined || !ingredient?.unit && ingredient?.amount !== 1) return false;
+  const status = ingredient?.quantification?.status;
+  if (status && (status.startsWith("needs-") || status === "pending")) return false;
+  return Boolean(
+    ingredient?.grams !== undefined ||
+    ingredient?.quantification?.status === "quantified" ||
+    ingredient?.nutritionLookup?.status === "matched"
+  );
+};
+
 export const recipeStandardizationStatus = (recipe) => {
   const status = recipe?.quantification?.status || recipe?.nutrition?.status || "candidate";
-  if (["usda-calculated", "validated", "complete"].includes(status)) return "validated";
-  if (status.includes("portion")) return "portioning";
-  if (status.includes("usda") || status.includes("nutrition")) return "nutrition";
-  if (status.includes("standard") || (recipe?.ingredients?.length && recipe.ingredients.every((ingredient) => ingredient.amount !== null && ingredient.amount !== undefined))) return "ingredients";
+  const ingredients = recipe?.ingredients || [];
+  const nutritionComplete = recipeStandardizationPolicy.requiredNutrients.every(
+    (key) => Number.isFinite(recipe?.nutrition?.[key])
+  );
+
+  // Never infer readiness merely because an ingredient has an amount. A cup,
+  // bunch, whole fruit, or branded product can still be unresolved for nutrition.
+  if (["validated", "complete"].includes(status) && nutritionComplete && recipe?.portionStrategy) return "validated";
+  if ((status.includes("portion") || recipe?.portionStrategy?.components) && nutritionComplete) return "portioning";
+  if ((status.includes("usda") || status.includes("nutrition")) && nutritionComplete) return "nutrition";
+  if (ingredients.length && ingredients.every(ingredientStandardizationReady)) return "ingredients";
   return "source";
 };
 

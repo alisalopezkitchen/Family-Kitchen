@@ -40,12 +40,20 @@ export function consolidateShoppingList(week, pantry, extraRecipeIds = []) {
   const recipeIds = [...new Set([...plannedIds, ...extraRecipeIds])];
   const ingredients = recipeIds.flatMap((id) => getRecipe(id)?.ingredients ?? []);
   const standalone = week.treats ?? [];
+  const ingredientByKey = new Map([...ingredients, ...standalone].map((ingredient) => [ingredient.key, ingredient]));
+  const pantryBuyItems = pantry
+    .filter((item) => item.status === "Buy")
+    .filter((item) => !ingredientByKey.has(item.key))
+    .map((item) => ({ key: item.key, item: item.name, amount: 1, unit: "item", category: "Pantry", pantryRequested: true }));
   const consolidated = new Map();
 
-  [...ingredients, ...standalone].forEach((ingredient) => {
+  [...ingredients, ...standalone, ...pantryBuyItems].forEach((ingredient) => {
     if (ingredient.optional) return;
     const pantryStatus = pantryByKey.get(ingredient.key);
-    if (ingredient.pantry && (pantryStatus === "Have" || pantryStatus === "Use First")) return;
+    if (pantryStatus === "Have" || pantryStatus === "Use First") {
+      if (ingredient.pantry) return;
+    }
+    if (pantryStatus === "Low" && ingredient.pantry !== true) return;
     const n = normalizeIngredient(ingredient);
     const shop = ingredient.pickup === "wednesday" ? "wednesday" : "sunday";
     const listKey = `${shop}:${ingredient.key}:${n.unitGroup}`;

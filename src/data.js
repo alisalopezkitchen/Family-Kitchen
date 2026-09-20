@@ -91,7 +91,7 @@ export const recipes = [
 ];
 
 export const weeks = [{
-  id: "week-1", label: "Week 1", dateRange: "September 20–26", eyebrow: "A bright, flexible first week",
+  id: "week-1", label: "Week 1", startDate: "2026-09-20", dateRange: "September 20–26", eyebrow: "A bright, flexible first week",
   sundayPrep: ["Bake chicken-feta meatballs", "Cook basmati rice", "Wash and chop sturdy vegetables", "Mix lemon-dill sauce"],
   wednesdayPickup: ["Sushi-grade ahi tuna", "Salmon", "Avocado and sprouts", "Fresh cucumbers and ginger"],
   treats: [{ key: "grapefruit-juice", item: "fresh grapefruit juice", amount: 2, unit: "servings", category: "Produce", pickup: "wednesday", shoppingOptions: "2–3 fresh grapefruit OR one small bottle 100% grapefruit juice", note: "4–6 oz per serving; planned later in the week." }],
@@ -107,7 +107,16 @@ export const weeks = [{
 }];
 
 export const activeWeekId = "week-1";
-export const getActiveWeek = () => weeks.find((week) => week.id === activeWeekId);
+export const getActiveWeek = (today = new Date()) => {
+  const dated = weeks.map((week) => ({ week, start: week.startDate ? new Date(`${week.startDate}T00:00:00`) : null })).filter((x) => x.start);
+  if (!dated.length) return weeks.find((week) => week.id === activeWeekId) || weeks[weeks.length - 1];
+  const eligible = dated.filter((x) => x.start <= today).sort((a, b) => b.start - a.start);
+  return (eligible[0] || dated.sort((a, b) => a.start - b.start)[0]).week;
+};
+export const getPastWeeks = (today = new Date()) => {
+  const current = getActiveWeek(today);
+  return weeks.filter((week) => week.id !== current.id && week.startDate && new Date(`${week.startDate}T00:00:00`) < today).sort((a,b) => new Date(b.startDate) - new Date(a.startDate));
+};
 export const getRecipe = (id) => recipes.find((recipe) => recipe.id === id);
 
 export const initialPantry = [

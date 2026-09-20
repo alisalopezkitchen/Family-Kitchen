@@ -155,3 +155,12 @@ export const freshnessPolicy = {
     "When generating a new week, review carryover perishables before adding new ingredients to the shopping list."
   ]
 };
+
+export const preparedSauceStatuses = ["Make", "In Fridge", "Out"];
+export const initialPreparedSauces = [
+  { key: "med-lemon-dill", name: "Mediterranean lemon-dill sauce", status: "Make", storage: "Fridge", storageDays: 4 },
+  { key: "vietnamese-lime", name: "Vietnamese lime dressing", status: "Make", storage: "Fridge", storageDays: 5 },
+  { key: "thai-basil-lime", name: "Thai basil-lime sauce", status: "Out", storage: "Fridge", storageDays: 4 },
+  { key: "japanese-ginger-sesame", name: "Japanese ginger-sesame sauce", status: "Make", storage: "Fridge", storageDays: 7 },
+  { key: "spicy-sesame", name: "Spicy sesame sauce", status: "Out", storage: "Fridge", storageDays: 7 }
+];

@@ -14,6 +14,7 @@ let pantry = store.get("fk-pantry", initialPantry);
 let extras = store.get("fk-shopping-extras", []);
 let checked = store.get("fk-shopping-checked", []);
 let mealMoves = store.get("fk-meal-moves", []);
+let foodLog = store.get("fk-food-log", []);
 let pantryFilter = "all";
 let shoppingStoreFilter = "all";
 let recipeFilter = "all";
@@ -285,7 +286,21 @@ function progressView() {
       </form>
     </article>`;
   };
-  return `<section class="section-shell page">${pageHeader("Nutrition settings", "Progress", "Separate planning targets for each person. Shared recipes can produce different serving sizes.")}
+  const today = new Date().toISOString().slice(0, 10);
+  const todaysLog = foodLog.filter((entry) => entry.date === today && entry.person === "alisa");
+  const totals = todaysLog.reduce((sum, entry) => ({
+    calories: sum.calories + Number(entry.calories || 0),
+    protein: sum.protein + Number(entry.protein || 0),
+    fiber: sum.fiber + Number(entry.fiber || 0),
+    saturatedFat: sum.saturatedFat + Number(entry.saturatedFat || 0),
+  }), { calories: 0, protein: 0, fiber: 0, saturatedFat: 0 });
+  const alisaTargets = activeNutritionTargets("alisa");
+  return `<section class="section-shell page">${pageHeader("Nutrition & progress", "Progress", "Family Kitchen is your food log, nutrition tracker, and portion-planning app.")}
+    <article class="detail-card"><p class="eyebrow">Today's food log</p><h2>${Math.round(totals.calories)} / ${alisaTargets.calories} calories</h2>
+      <div class="progress-stats"><div><strong>${Math.round(totals.protein)}g</strong><span>protein · goal ${alisaTargets.protein}g+</span></div><div><strong>${Math.round(totals.fiber)}g</strong><span>fiber · goal ${alisaTargets.fiber}g+</span></div><div><strong>${Math.round(totals.saturatedFat)}g</strong><span>sat fat · max ${alisaTargets.saturatedFatMax}g</span></div></div>
+      <form data-food-log-form><div class="progress-stats"><label><span>Food / meal</span><input name="name" required placeholder="What did you eat?"></label><label><span>Calories</span><input type="number" name="calories" min="0" step="1" required></label><label><span>Protein (g)</span><input type="number" name="protein" min="0" step="0.1" value="0"></label><label><span>Fiber (g)</span><input type="number" name="fiber" min="0" step="0.1" value="0"></label><label><span>Sat fat (g)</span><input type="number" name="saturatedFat" min="0" step="0.1" value="0"></label></div><button class="primary-button" type="submit">Log food</button></form>
+      ${todaysLog.length ? `<div class="stack-list">${todaysLog.map((entry) => `<div class="compact-card"><strong>${entry.name}</strong><span>${entry.calories} cal · ${entry.protein}g protein · ${entry.fiber}g fiber · ${entry.saturatedFat}g sat fat</span><button class="text-button" data-delete-food-log="${entry.id}">Remove</button></div>`).join("")}</div>` : '<p class="muted">Nothing logged yet today.</p>'}
+    </article>
     <div class="progress-grid">
       ${targetCard("alisa", "Alisa", nutritionTargets)}
       ${targetCard("mom", "Mom", momDefaultNutritionTargets)}
@@ -314,6 +329,8 @@ function updateShoppingCount() { const count = consolidateShoppingList(activeWee
 function ingredientsText(recipe) { return `${recipe.name}\n${recipe.servings} servings\n\n${recipe.ingredients.map((i) => `${formatAmount(i.amount)} ${i.unit} ${i.item}`.replace(/\s+/g, " ").trim()).join("\n")}`; }
 
 document.addEventListener("click", async (event) => {
+  const deleteFood = event.target.closest("[data-delete-food-log]");
+  if (deleteFood) { foodLog = foodLog.filter((entry) => entry.id !== deleteFood.dataset.deleteFoodLog); store.set("fk-food-log", foodLog); render({ preserveScroll: true }); return; }
   const resetTargets = event.target.closest("[data-reset-nutrition-targets]");
   if (resetTargets) { const person = resetTargets.dataset.resetNutritionTargets; personalNutritionTargets[person] = { ...(person === "alisa" ? nutritionTargets : momDefaultNutritionTargets) }; store.set("fk-nutrition-targets", personalNutritionTargets); render({ preserveScroll: true }); showToast(`${person === "alisa" ? "Alisa" : "Mom"}'s nutrition targets reset`); return; }
   const moveMeal = event.target.closest("[data-move-meal]");
@@ -351,6 +368,12 @@ document.addEventListener("click", async (event) => {
   const chip = event.target.closest("[data-filter]"); if (chip) { document.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c === chip)); document.querySelectorAll(".recipe-card").forEach((card) => { card.hidden = chip.dataset.filter !== "all" && card.dataset.kind !== chip.dataset.filter; }); }
 });
 document.addEventListener("submit", (event) => {
+  if (event.target.matches("[data-food-log-form]")) {
+    event.preventDefault();
+    const form = new FormData(event.target);
+    foodLog.push({ id: String(Date.now()), date: new Date().toISOString().slice(0,10), person: "alisa", name: form.get("name"), calories: Number(form.get("calories")), protein: Number(form.get("protein")), fiber: Number(form.get("fiber")), saturatedFat: Number(form.get("saturatedFat")) });
+    store.set("fk-food-log", foodLog); render({ preserveScroll: true }); showToast("Food logged"); return;
+  }
   if (!event.target.matches("[data-nutrition-target-form]")) return;
   event.preventDefault();
   const form = new FormData(event.target);

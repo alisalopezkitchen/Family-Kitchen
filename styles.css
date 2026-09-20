@@ -84,3 +84,9 @@ footer { min-height:78px; padding:0 max(1.5rem,calc((100vw - 1180px)/2)); border
 .prepared-row select { width:100%; border:1px solid var(--line); background:var(--cream); padding:.55rem .7rem; color:var(--ink); }
 .storage-pill { width:max-content; padding:.25rem .6rem; border-radius:20px; background:var(--pale-sage); font-size:10px; font-weight:700; }
 @media (max-width:620px) { .prepared-heading { align-items:start; flex-direction:column; gap:.5rem; }.prepared-list-head,.prepared-row { grid-template-columns:1fr 100px; padding:1rem; }.prepared-list-head span:nth-child(2) { display:none; }.prepared-row .storage-pill { display:none; } }
+
+.planned-badge { color:var(--rust); font-weight:700; }
+.prepared-controls { display:grid; gap:.45rem; }
+.made-on { display:grid; grid-template-columns:auto 1fr; gap:.45rem; align-items:center; color:var(--muted); font-size:9px; text-transform:uppercase; letter-spacing:.08em; }
+.made-on input { min-width:0; border:1px solid var(--line); background:var(--cream); color:var(--ink); padding:.35rem .45rem; font:inherit; text-transform:none; letter-spacing:0; }
+.made-on input:disabled { opacity:.4; }

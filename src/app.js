@@ -127,6 +127,16 @@ function dayPreparedSauceNote(day) {
   return [...new Set(notes)];
 }
 
+function prepView() {
+  const week = activeWeek();
+  return `<section class="section-shell page">${pageHeader(`${week.label} · ${week.dateRange}`, "Prep", "Two focused kitchen sessions: set up the week on Sunday, then refresh the fresh ingredients on Wednesday.")}
+    <div class="dashboard-grid">
+      <article class="panel prep-card"><div class="panel-heading"><span class="number-disc">01</span><div><p class="tiny-label">Sunday prep</p><h3>Set up the week</h3></div></div><ul class="clean-list">${sundayPrepItems(week).map((item) => `<li>${item}</li>`).join("")}</ul></article>
+      <article class="panel prep-card"><div class="panel-heading"><span class="number-disc">02</span><div><p class="tiny-label">Wednesday refresh</p><h3>Fresh things, small trip</h3></div></div><ul class="clean-list">${week.wednesdayPickup.map((item) => `<li>${item}</li>`).join("")}</ul></article>
+    </div>
+  </section>`;
+}
+
 function weekView() {
   const week = activeWeek();
   const displayDays = adjustedDays(week);
@@ -220,9 +230,9 @@ function render(options = {}) {
   const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
   const route = parts[0] || "home";
   const recipe = route === "recipes" && parts[1] ? getRecipe(parts[1]) : null;
-  app.innerHTML = recipe ? recipeDetailView(recipe) : ({ home: homeView, week: weekView, "past-weeks": pastWeeksView, recipes: recipesView, shopping: shoppingView, pantry: pantryView, progress: progressView }[route] || homeView)();
+  app.innerHTML = recipe ? recipeDetailView(recipe) : ({ home: homeView, week: weekView, prep: prepView, "past-weeks": pastWeeksView, recipes: recipesView, shopping: shoppingView, pantry: pantryView, progress: progressView }[route] || homeView)();
   document.querySelectorAll("[data-nav]").forEach((link) => link.classList.toggle("active", link.dataset.nav === route));
-  document.title = `${recipe?.name || ({ home: "Home", week: "This Week", "past-weeks": "Past Weeks", recipes: "Recipes", shopping: "Shopping", pantry: "Pantry", progress: "Progress" }[route] || "Home")} · Family Kitchen`;
+  document.title = `${recipe?.name || ({ home: "Home", week: "This Week", prep: "Prep", "past-weeks": "Past Weeks", recipes: "Recipes", shopping: "Shopping", pantry: "Pantry", progress: "Progress" }[route] || "Home")} · Family Kitchen`;
   updateShoppingCount();
   nav.classList.remove("open"); menuButton.setAttribute("aria-expanded", "false");
   if (preserveScroll) window.scrollTo(0, scrollY); else window.scrollTo(0, 0);

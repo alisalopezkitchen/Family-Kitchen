@@ -83,6 +83,45 @@ jobs:
           print("assigned to the Family Kitchen recipe by this workflow.")
           PY
 
+      - name: Diagnose USDA dill sugar candidates
+        env:
+          FDC_API_KEY: ${{ secrets.FDC_API_KEY }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request
+
+          api_key = os.environ["FDC_API_KEY"]
+          payload = json.dumps({
+              "query": "dill weed fresh",
+              "pageSize": 20,
+              "dataType": ["Foundation", "SR Legacy", "Survey (FNDDS)"],
+          }).encode("utf-8")
+          search_url = "https://api.nal.usda.gov/fdc/v1/foods/search?api_key=" + urllib.parse.quote(api_key)
+          req = urllib.request.Request(search_url, data=payload, headers={"Content-Type": "application/json"}, method="POST")
+          with urllib.request.urlopen(req, timeout=30) as response:
+              foods = json.load(response).get("foods", [])
+
+          print("DILL SUGAR DIAGNOSTIC — candidates with USDA total sugar (nutrient 2000)")
+          found = 0
+          for candidate in foods:
+              fdc_id = candidate.get("fdcId")
+              url = f"https://api.nal.usda.gov/fdc/v1/food/{fdc_id}?format=full&api_key=" + urllib.parse.quote(api_key)
+              with urllib.request.urlopen(url, timeout=30) as response:
+                  detail = json.load(response)
+              sugar = None
+              for entry in detail.get("foodNutrients", []):
+                  nutrient = entry.get("nutrient", {})
+                  if nutrient.get("id") == 2000 and entry.get("amount") is not None:
+                      sugar = float(entry["amount"])
+                      break
+              if sugar is not None:
+                  found += 1
+                  print(f'FDC {fdc_id} | {candidate.get("dataType")} | {candidate.get("description")} | sugar: {sugar:g} g/100 g')
+          if not found:
+              print("NO REVIEWABLE DILL CANDIDATE RETURNED A TOTAL-SUGAR VALUE.")
+          print("Diagnostic only — no recipe nutrition values were changed.")
+          PY
+
       - name: Calculate reviewed Sunday lunch nutrient subtotal
         env:
           FDC_API_KEY: ${{ secrets.FDC_API_KEY }}

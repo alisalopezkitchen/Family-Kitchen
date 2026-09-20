@@ -3,9 +3,9 @@
 // locations before any price can be verified against that branch.
 
 export const supportedRetailers = {
-  ralphs: { name: "Ralphs", source: "official-store-locator" },
-  sprouts: { name: "Sprouts", source: "official-store-locator" },
-  "seafood-city": { name: "Seafood City", source: "official-store-locator" },
+  ralphs: { name: "Ralphs", source: "official-store-locator", locatorUrl: "https://www.ralphs.com/stores/search" },
+  sprouts: { name: "Sprouts", source: "official-store-locator", locatorUrl: "https://www.sprouts.com/store/" },
+  "seafood-city": { name: "Seafood City", source: "official-store-locator", locatorUrl: "https://www.seafoodcity.com/store-locations/" },
 };
 
 export const normalizeDiscoveredStore = (retailerKey, store) => {

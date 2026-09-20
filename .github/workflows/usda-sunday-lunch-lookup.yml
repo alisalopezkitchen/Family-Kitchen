@@ -111,6 +111,7 @@ jobs:
           nutrient_ids = {
               1003: "protein",
               1004: "fat",
+              1085: "fat",
               1005: "carbs",
               1079: "fiber",
               1093: "sodium",
@@ -137,7 +138,7 @@ jobs:
                   amount = float(amount)
                   if nutrient_id in nutrient_ids:
                       out[nutrient_ids[nutrient_id]] = amount
-                  if nutrient_id == 1008 or (name == "Energy" and unit == "KCAL"):
+                  if nutrient_id in (1008, 2047, 2048) and unit == "KCAL":
                       out["calories"] = amount
                   elif nutrient_id == 1062 or (name == "Energy" and unit == "KJ"):
                       energy_kj = amount
@@ -155,6 +156,26 @@ jobs:
               "feta cheese": {"fiber"},
               "extra-virgin olive oil": {"protein", "carbs", "fiber", "sugar", "sodium"},
           }
+
+          # Reviewed generic counterparts fill only tracking fields omitted by
+          # the selected Foundation record. Provenance is printed for auditability.
+          fallback_foods = {
+              "feta cheese": 173420,
+              "cucumber": 168409,
+              "green cabbage": 169975,
+          }
+
+          def apply_reviewed_fallback(label, values):
+              provenance = {}
+              fallback_id = fallback_foods.get(label)
+              if not fallback_id:
+                  return values, provenance
+              fallback = nutrient_map(details(fallback_id))
+              for metric in ("fiber", "saturatedFat", "sugar"):
+                  if values.get(metric) is None and fallback.get(metric) is not None:
+                      values[metric] = fallback[metric]
+                      provenance[metric] = "SR-Legacy-FDC-" + str(fallback_id)
+              return values, provenance
 
           # Foundation records sometimes omit a directly reported kcal value.
           # Derive energy only when protein/carbohydrate/fat are all present.
@@ -178,7 +199,9 @@ jobs:
           for label, fdc_id, grams in foods:
               food = details(fdc_id)
               per100 = nutrient_map(food)
+              per100, fallback_provenance = apply_reviewed_fallback(label, per100)
               per100, provenance = resolve_missing(label, per100)
+              provenance = {**fallback_provenance, **provenance}
               scaled = {m: per100.get(m) * grams / 100 if per100.get(m) is not None else None for m in metrics}
               for m, value in scaled.items():
                   if value is not None:

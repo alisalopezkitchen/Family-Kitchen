@@ -116,21 +116,22 @@ function sundayPrepItems(week) {
     const label = `Use first: ${s.name} by ${s.useBy.toLocaleDateString("en-US", { month:"short", day:"numeric" })}`;
     if (!prep.includes(label)) prep.unshift(label);
   });
-  plannedSauceIds.forEach((id) => {
-    const sauce = preparedSauces.find((s) => s.recipeId === id);
-    if (sauce?.status === "In Fridge" && id !== "mediterranean-lemon-dill-sauce") {
-      const label = `Use prepared ${sauce.name} from fridge`;
-      if (!prep.includes(label)) prep.push(label);
-    }
-  });
   return prep;
+}
+
+function dayPreparedSauceNote(day) {
+  const ids = Object.values(day.meals).flat().filter((entry) => typeof entry === "string");
+  const notes = ids.map((id) => preparedSauces.find((s) => s.recipeId === id))
+    .filter((s) => s?.status === "In Fridge" && s.recipeId !== "mediterranean-lemon-dill-sauce")
+    .map((s) => `Use prepared ${s.name} from fridge.`);
+  return [...new Set(notes)];
 }
 
 function weekView() {
   const week = activeWeek();
   const displayDays = adjustedDays(week);
   return `<section class="section-shell page">${pageHeader(`${week.label} · ${week.dateRange}`, "This week", "A flexible five-dinner rhythm with two intentional openings for life outside the kitchen.")}${nutritionTargetStrip()}
-    <div class="week-layout"><div class="day-list">${displayDays.map((day) => `<article class="day-card"><div class="day-name"><span>${day.day.slice(0, 3)}</span><h2>${day.day}</h2></div><div class="day-content">${day.theme ? `<p class="tiny-label">${day.theme}</p>` : ""}${["breakfast","lunch","dinner","snack"].map((meal) => `<div class="meal-slot"><p class="tiny-label">${meal}</p>${day.meals[meal].length ? day.meals[meal].map((entry) => typeof entry === "string" ? `<div class="meal-line">${recipeLink(getRecipe(entry))}${meal === "breakfast" || meal === "lunch" || meal === "dinner" ? `<button class="move-meal" data-move-meal data-day="${day.day}" data-meal="${meal}" data-index="${day.meals[meal].indexOf(entry)}">Skipped? Move forward</button>` : ""}</div>` : `<div class="meal-line"><p class="meal-text${entry.leftover ? " leftover" : ""}${entry.open ? " open-meal" : ""}${entry.treat ? " treat-meal" : ""}">${entry.leftover ? '<span class="meal-badge">Leftover</span>' : entry.treat ? '<span class="meal-badge treat">Treat</span>' : entry.rollover ? '<span class="meal-badge">Moved forward</span>' : ""}${escapeHtml(entry.label)}</p>${!entry.open && !entry.rollover && ["breakfast","lunch","dinner"].includes(meal) ? `<button class="move-meal" data-move-meal data-day="${day.day}" data-meal="${meal}" data-index="${day.meals[meal].indexOf(entry)}">Skipped? Move forward</button>` : ""}</div>`).join("") : `<p class="day-note">Open / flexible</p>`}</div>`).join("")}${day.note ? `<p class="day-note">${day.note}</p>` : ""}${dayNutritionTable(day)}</div></article>`).join("")}</div>
+    <div class="week-layout"><div class="day-list">${displayDays.map((day) => `<article class="day-card"><div class="day-name"><span>${day.day.slice(0, 3)}</span><h2>${day.day}</h2></div><div class="day-content">${day.theme ? `<p class="tiny-label">${day.theme}</p>` : ""}${["breakfast","lunch","dinner","snack"].map((meal) => `<div class="meal-slot"><p class="tiny-label">${meal}</p>${day.meals[meal].length ? day.meals[meal].map((entry) => typeof entry === "string" ? `<div class="meal-line">${recipeLink(getRecipe(entry))}${meal === "breakfast" || meal === "lunch" || meal === "dinner" ? `<button class="move-meal" data-move-meal data-day="${day.day}" data-meal="${meal}" data-index="${day.meals[meal].indexOf(entry)}">Skipped? Move forward</button>` : ""}</div>` : `<div class="meal-line"><p class="meal-text${entry.leftover ? " leftover" : ""}${entry.open ? " open-meal" : ""}${entry.treat ? " treat-meal" : ""}">${entry.leftover ? '<span class="meal-badge">Leftover</span>' : entry.treat ? '<span class="meal-badge treat">Treat</span>' : entry.rollover ? '<span class="meal-badge">Moved forward</span>' : ""}${escapeHtml(entry.label)}</p>${!entry.open && !entry.rollover && ["breakfast","lunch","dinner"].includes(meal) ? `<button class="move-meal" data-move-meal data-day="${day.day}" data-meal="${meal}" data-index="${day.meals[meal].indexOf(entry)}">Skipped? Move forward</button>` : ""}</div>`).join("") : `<p class="day-note">Open / flexible</p>`}</div>`).join("")}${day.note ? `<p class="day-note">${day.note}</p>` : ""}${dayPreparedSauceNote(day).map((note) => `<p class="day-note"><strong>Prepared:</strong> ${note}</p>`).join("")}${dayNutritionTable(day)}</div></article>`).join("")}</div>
     <aside class="week-sidebar"><article class="note-card"><span class="number-disc">01</span><p class="tiny-label">Sunday prep</p><h3>A little now, easier later</h3><ul class="clean-list">${sundayPrepItems(week).map((item) => `<li>${item}</li>`).join("")}</ul></article><article class="note-card green"><span class="number-disc">02</span><p class="tiny-label">Wednesday pickup</p><h3>Fresh things, small trip</h3><ul class="clean-list">${week.wednesdayPickup.map((item) => `<li>${item}</li>`).join("")}</ul></article></aside></div></section>`;
 }
 

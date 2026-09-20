@@ -193,6 +193,11 @@ jobs:
           structural_zero = {
               "chicken breast": {"fiber", "sugar"},
               "feta cheese": {"fiber"},
+              # USDA FDC 172233 (fresh dill weed) does not report total sugar, and
+              # the reviewed candidate search found no equivalent fresh-dill record
+              # with nutrient 2000. At the recipe weight (6 g), treat only this
+              # specific omitted field as an explicit documented structural zero.
+              "fresh dill": {"sugar"},
               "extra-virgin olive oil": {"protein", "carbs", "fiber", "sugar", "sodium"},
           }
 

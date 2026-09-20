@@ -56,14 +56,30 @@ export function consolidateShoppingList(week, pantry, extraRecipeIds = []) {
     if (pantryStatus === "Low" && ingredient.pantry !== true) return;
     const n = normalizeIngredient(ingredient);
     const shop = ingredient.pickup === "wednesday" ? "wednesday" : "sunday";
-    const listKey = `${shop}:${ingredient.key}:${n.unitGroup}`;
+    // One shopping row per ingredient key per trip. Recipes may express the same
+    // ingredient in different unit families (for example a whole lemon in one
+    // recipe and measured lemon juice in another). Do not create duplicate rows.
+    const listKey = `${shop}:${ingredient.key}`;
     const existing = consolidated.get(listKey);
-    if (existing) existing.normalizedAmount += n.normalizedAmount;
-    else consolidated.set(listKey, { ...n, shop });
+    if (!existing) consolidated.set(listKey, { ...n, shop, quantityParts: [{ ...n }] });
+    else {
+      const sameUnitPart = existing.quantityParts.find((part) => part.unitGroup === n.unitGroup);
+      if (sameUnitPart) sameUnitPart.normalizedAmount += n.normalizedAmount;
+      else existing.quantityParts.push({ ...n });
+    }
   });
 
-  return [...consolidated.values()].map((item) => ({ ...item, ...displayQuantity(item) }))
-    .sort((a, b) => a.category.localeCompare(b.category) || a.item.localeCompare(b.item));
+  return [...consolidated.values()].map((item) => {
+    const parts = item.quantityParts.map((part) => displayQuantity(part));
+    if (parts.length === 1) return { ...item, ...parts[0] };
+    return {
+      ...item,
+      amount: "",
+      unit: "",
+      displayAmount: parts.map((part) => part.displayAmount).filter(Boolean).join(" + "),
+      mixedUnits: true,
+    };
+  }).sort((a, b) => a.category.localeCompare(b.category) || a.item.localeCompare(b.item));
 }
 
 export function groupShoppingList(items) {

@@ -18,6 +18,8 @@ let shoppingStoreFilter = "all";
 let recipeFilter = "all";
 let recipeCategoryFilter = "all";
 let recipePreferences = store.get("fk-recipe-preferences", { alisa: {}, mom: {} });
+let personalNutritionTargets = store.get("fk-nutrition-targets", { alisa: { ...nutritionTargets }, mom: null });
+function activeNutritionTargets(person = "alisa") { return personalNutritionTargets[person] || (person === "alisa" ? nutritionTargets : null); }
 function recipePreference(recipeId, person = "alisa") { return recipePreferences[person]?.[recipeId] || "want-to-try"; }
 function setRecipePreference(recipeId, status, person = "alisa") {
   recipePreferences = { ...recipePreferences, [person]: { ...(recipePreferences[person] || {}), [recipeId]: status } };
@@ -255,7 +257,25 @@ function pantryView() {
 }
 
 function progressView() {
-  return `<section class="section-shell page">${pageHeader("A gentle record", "Progress", "Planning patterns, not calorie targets. MyFitnessPal remains the home for actual food logging.")}<div class="progress-grid"><article class="progress-feature"><p class="eyebrow">Week 1 intention</p><h2>Cook five flexible dinners and use the good leftovers.</h2><div class="progress-stats"><div><strong>5</strong><span>planned dinners</span></div><div><strong>2</strong><span>open evenings</span></div><div><strong>1</strong><span>use-it-up night</span></div></div></article><article class="detail-card"><p class="tiny-label">Coming later</p><h3>Useful, low-pressure trends</h3><ul class="clean-list"><li>Recipes cooked and repeated</li><li>Weekly planning consistency</li><li>Pantry ingredients used first</li><li>Personal notes on what worked</li></ul></article></div><div class="empty-progress"><span class="icon-disc">${icons.leaf}</span><h2>Your kitchen history starts here.</h2><p>Future weeks can add a simple reflection without turning dinner into a score.</p></div></section>`;
+  const targets = activeNutritionTargets("alisa");
+  return `<section class="section-shell page">${pageHeader("Nutrition settings", "Progress", "Your planning targets. These drive future portion optimization; Mom's targets remain separate.")}
+    <div class="progress-grid">
+      <article class="progress-feature">
+        <p class="eyebrow">Alisa · active targets</p>
+        <h2>Adjust the plan without rewriting the recipes.</h2>
+        <form data-nutrition-target-form>
+          <div class="progress-stats">
+            <label><strong><input type="number" name="calories" min="1000" max="4000" step="25" value="${targets.calories}"></strong><span>calories / day</span></label>
+            <label><strong><input type="number" name="protein" min="40" max="250" step="5" value="${targets.protein}"></strong><span>protein minimum (g)</span></label>
+            <label><strong><input type="number" name="fiber" min="10" max="60" step="1" value="${targets.fiber}"></strong><span>fiber minimum (g)</span></label>
+            <label><strong><input type="number" name="saturatedFatMax" min="5" max="40" step="1" value="${targets.saturatedFatMax}"></strong><span>saturated fat max (g)</span></label>
+          </div>
+          <div class="button-row"><button class="primary-button" type="submit">Save targets</button><button class="secondary-button" type="button" data-reset-nutrition-targets>Reset defaults</button></div>
+        </form>
+      </article>
+      <article class="detail-card"><p class="tiny-label">Planning rule</p><h3>Targets are person-specific</h3><p>Changing Alisa's calories or nutrition targets will not change Mom's portions. Recipes keep their flavor ratios; the portion optimizer changes serving amounts only after a recipe is fully quantified.</p></article>
+    </div>
+  </section>`;
 }
 
 function render(options = {}) {
@@ -278,6 +298,8 @@ function updateShoppingCount() { const count = consolidateShoppingList(activeWee
 function ingredientsText(recipe) { return `${recipe.name}\n${recipe.servings} servings\n\n${recipe.ingredients.map((i) => `${formatAmount(i.amount)} ${i.unit} ${i.item}`.replace(/\s+/g, " ").trim()).join("\n")}`; }
 
 document.addEventListener("click", async (event) => {
+  const resetTargets = event.target.closest("[data-reset-nutrition-targets]");
+  if (resetTargets) { personalNutritionTargets.alisa = { ...nutritionTargets }; store.set("fk-nutrition-targets", personalNutritionTargets); render({ preserveScroll: true }); showToast("Nutrition targets reset"); return; }
   const moveMeal = event.target.closest("[data-move-meal]");
   if (moveMeal) { mealMoves.push({ day: moveMeal.dataset.day, meal: moveMeal.dataset.meal, index: Number(moveMeal.dataset.index) }); store.set("fk-meal-moves", mealMoves); render(); showToast("Meal moved to the next open slot"); return; }
   const copy = event.target.closest("[data-copy-ingredients]");
@@ -309,6 +331,24 @@ document.addEventListener("click", async (event) => {
   const recipeFilterButton = event.target.closest("[data-recipe-filter]");
   if (recipeFilterButton) { recipeFilter = recipeFilterButton.dataset.recipeFilter; render({ preserveScroll: true }); return; }
   const chip = event.target.closest("[data-filter]"); if (chip) { document.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c === chip)); document.querySelectorAll(".recipe-card").forEach((card) => { card.hidden = chip.dataset.filter !== "all" && card.dataset.kind !== chip.dataset.filter; }); }
+});
+document.addEventListener("submit", (event) => {
+  if (!event.target.matches("[data-nutrition-target-form]")) return;
+  event.preventDefault();
+  const form = new FormData(event.target);
+  const current = activeNutritionTargets("alisa");
+  personalNutritionTargets.alisa = {
+    ...current,
+    calories: Number(form.get("calories")),
+    protein: Number(form.get("protein")),
+    proteinUpper: Number(form.get("protein")) + 5,
+    fiber: Number(form.get("fiber")),
+    fiberUpper: Math.max(Number(form.get("fiber")) + 5, current.fiberUpper || 30),
+    saturatedFatMax: Number(form.get("saturatedFatMax")),
+  };
+  store.set("fk-nutrition-targets", personalNutritionTargets);
+  render({ preserveScroll: true });
+  showToast("Alisa's nutrition targets saved");
 });
 document.addEventListener("change", (event) => {
   if (event.target.matches("[data-sauce-date]")) { preparedSauces = preparedSauces.map((item) => item.key === event.target.dataset.sauceDate ? { ...item, madeOn: event.target.value } : item); store.set("fk-prepared-sauces", preparedSauces); render({ preserveScroll: true }); return; }

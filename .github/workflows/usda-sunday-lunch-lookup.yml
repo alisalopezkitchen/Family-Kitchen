@@ -1,0 +1,83 @@
+name: USDA Sunday lunch ingredient lookup
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lookup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify FDC_API_KEY is configured
+        env:
+          FDC_API_KEY: ${{ secrets.FDC_API_KEY }}
+        run: |
+          if [ -z "$FDC_API_KEY" ]; then
+            echo "::error::FDC_API_KEY repository secret is not configured."
+            exit 1
+          fi
+
+      - name: Find USDA candidates for Sunday lunch
+        env:
+          FDC_API_KEY: ${{ secrets.FDC_API_KEY }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request
+
+          api_key = os.environ["FDC_API_KEY"]
+
+          # Search only. Nothing from this workflow is automatically accepted
+          # as the recipe's nutrient source.
+          ingredients = [
+              ("chicken breast", "chicken breast raw boneless skinless"),
+              ("feta cheese", "cheese feta"),
+              ("cucumber", "cucumber with peel raw"),
+              ("carrot", "carrots raw"),
+              ("flat-leaf parsley", "parsley fresh"),
+              ("fresh dill", "dill weed fresh"),
+              ("lemon juice", "lemon juice raw"),
+              ("extra-virgin olive oil", "olive oil"),
+              ("sourdough bread", "bread sourdough"),
+          ]
+
+          allowed_types = ["Foundation", "SR Legacy", "Survey (FNDDS)"]
+
+          def search(query):
+              payload = json.dumps({
+                  "query": query,
+                  "pageSize": 5,
+                  "dataType": allowed_types,
+              }).encode("utf-8")
+              url = "https://api.nal.usda.gov/fdc/v1/foods/search?api_key=" + urllib.parse.quote(api_key)
+              req = urllib.request.Request(
+                  url,
+                  data=payload,
+                  headers={"Content-Type": "application/json"},
+                  method="POST",
+              )
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  return json.load(response)
+
+          for label, query in ingredients:
+              data = search(query)
+              foods = data.get("foods", [])
+              print("")
+              print("=" * 72)
+              print(f"{label.upper()} | query: {query}")
+              print("=" * 72)
+              if not foods:
+                  print("NO CANDIDATES RETURNED")
+                  continue
+              for food in foods:
+                  print(
+                      f'FDC {food.get("fdcId")} | '
+                      f'{food.get("dataType")} | '
+                      f'{food.get("description")}'
+                  )
+
+          print("")
+          print("REVIEW REQUIRED: These are candidates only. No FDC record was")
+          print("assigned to the Family Kitchen recipe by this workflow.")
+          PY

@@ -133,7 +133,7 @@ function prepView() {
     { group: "Protein", task: "Bake chicken-feta meatballs", quantity: "___ meatballs · ___ lb chicken", recipes: ["greek-chicken-feta-meatballs"] },
     { group: "Grain", task: "Cook basmati rice", quantity: "___ cups dry → ___ cups cooked", recipes: ["greek-chicken-feta-meatballs"] },
     { group: "Vegetables", task: "Wash and prep sturdy cucumber, carrots and herbs", quantity: "___ cucumbers · ___ carrots · ___ bunches herbs", recipes: ["cucumber-carrot-herb-salad", "sesame-tahini-ribbon-salad", "vietnamese-chicken-cabbage-salad"] },
-    { group: "Sauce", task: "Check Mediterranean lemon-dill sauce; use the fridge batch before making more", quantity: "___ tablespoons / ___ batch", recipes: ["mediterranean-lemon-dill-sauce"] }
+    { group: "Sauce", task: "Check Mediterranean lemon-dill sauce", helper: "Use the fridge batch before making more", quantity: "___ tablespoons / ___ batch", recipes: ["mediterranean-lemon-dill-sauce"] }
   ];
   const wednesdayTasks = [
     { group: "Fresh protein", task: "Pick up sushi-grade ahi and salmon", quantity: "___ oz ahi · ___ oz salmon", recipes: ["sushi-style-rice-bowl", "brown-sugar-mayo-salmon"] },
@@ -141,7 +141,7 @@ function prepView() {
     { group: "Flavor", task: "Refresh ginger and any herbs running low", quantity: "___ ginger · ___ bunches herbs", recipes: ["japanese-ginger-sesame-sauce"] },
     { group: "Inventory", task: "Check prepared sauces and use-by dates before making another batch", quantity: "Use existing fridge amounts first", recipes: ["japanese-ginger-sesame-sauce"] }
   ];
-  const taskList = (tasks) => `<div class="prep-task-list">${tasks.map((item) => `<div class="prep-task"><p class="tiny-label">${item.group}</p><h3>${item.task}</h3><p><strong>Quantity:</strong> ${item.quantity}</p><p><strong>Recipes:</strong> ${item.recipes.map((id) => recipeLink(getRecipe(id), true)).join("")}</p></div>`).join("")}</div>`;
+  const taskList = (tasks) => `<div class="prep-task-list">${tasks.map((item) => `<div class="prep-task"><p class="tiny-label">${item.group}</p><h3>${item.task}</h3>${item.helper ? `<p class="prep-task-helper">${item.helper}</p>` : ""}<p><strong>Quantity:</strong> ${item.quantity}</p><p><strong>Recipes:</strong> ${item.recipes.map((id) => recipeLink(getRecipe(id), true)).join("")}</p></div>`).join("")}</div>`;
   return `<section class="section-shell page">${pageHeader(`${week.label} · ${week.dateRange}`, "Prep", "Prep only what has a job this week. Each task shows which meals it supports so leftovers and fresh ingredients are intentional.")}
     <div id="sunday-prep" class="prep-session"><div class="panel-heading"><span class="number-disc">01</span><div><p class="tiny-label">Sunday prep</p><h2>Set up Sunday through Tuesday</h2></div></div>${taskList(sundayTasks)}</div>
     <div id="wednesday-refresh" class="prep-session"><div class="panel-heading"><span class="number-disc">02</span><div><p class="tiny-label">Wednesday refresh</p><h2>Set up Thursday through Saturday</h2></div></div>${taskList(wednesdayTasks)}</div>

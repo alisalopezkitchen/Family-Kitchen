@@ -103,6 +103,24 @@ export const recipes = [
     instructions: ["Slice cucumbers and shave carrots into ribbons.", "Toss with rice vinegar and sesame oil; finish with sesame seeds just before serving."], portions: { alisa: "1 cup", mom: "1 cup" }, storage: "Best the day it is made; refrigerate undressed vegetables for up to 2 days.", nutrition: nutritionPending,
   },
   {
+    id: "mediterranean-chicken-feta-chopped-salad", name: "Mediterranean chicken-feta chopped salad + sourdough", description: "A crisp Mediterranean lunch with chicken, feta, herbs, vegetables, lemon-Dijon dressing, and sourdough.", servings: 2, servingSize: "Target-generated portion", prepTime: "20 minutes", cookTime: "15 minutes", tags: ["Mediterranean", "Lunch", "High protein"],
+    ingredients: [
+      { key: "chicken-breast", item: "boneless skinless chicken breast", amount: 0.75, unit: "lb", category: "Protein", quantification: { status: "needs-usda-match" } },
+      { key: "cucumber", item: "Persian cucumbers", amount: 2, unit: "", category: "Produce", quantification: { status: "needs-standard-edible-grams" } },
+      { key: "carrots", item: "carrot", amount: 1, unit: "", category: "Produce", quantification: { status: "needs-standard-edible-grams" } },
+      { key: "cabbage", item: "green cabbage", amount: 2, unit: "cup", category: "Produce", quantification: { status: "needs-standard-edible-grams" } },
+      { key: "feta", item: "feta cheese", amount: 2, unit: "oz", category: "Dairy", quantification: { status: "needs-usda-match" } },
+      { key: "dill", item: "fresh dill", amount: 2, unit: "tbsp", category: "Herbs", quantification: { status: "needs-standard-grams" } },
+      { key: "parsley", item: "flat-leaf parsley", amount: 2, unit: "tbsp", category: "Herbs", quantification: { status: "needs-standard-grams" } },
+      { key: "lemon-juice", item: "fresh lemon juice", amount: 2, unit: "tbsp", grams: 30, category: "Produce" },
+      { key: "dijon", item: "Dijon mustard", amount: 1, unit: "tsp", category: "Pantry", pantry: true, quantification: { status: "needs-standard-grams" } },
+      { key: "olive-oil", item: "extra-virgin olive oil", amount: 1, unit: "tbsp", grams: 13.5, category: "Pantry", pantry: true },
+      { key: "sourdough", item: "sourdough bread", amount: 2, unit: "slice", category: "Bakery", quantification: { status: "needs-standard-grams-or-product" } }
+    ],
+    instructions: ["Cook the chicken until browned and cooked through, then rest and slice.", "Whisk lemon juice, Dijon, and olive oil for the dressing.", "Chop the cucumber, carrot, cabbage, dill, and parsley; toss with the dressing.", "Top with sliced chicken and feta and serve with sourdough."],
+    portions: { alisa: "Generated from Alisa's active nutrition target", mom: "Generated separately from Mom's nutrition target" }, portionStrategy: { mode: "nutrition-target", fixedServing: false }, storage: "Keep chicken, chopped vegetables, dressing, and bread separate until serving.", nutrition: nutritionPending,
+  },
+  {
     id: "sesame-tahini-ribbon-salad", name: "Cucumber & ribbon carrots with sesame-tahini dressing",
     description: "Crisp cucumber and carrot ribbons with a creamy sesame-tahini dressing.",
     servings: 2, servingSize: "about 1½ cups", prepTime: "10 minutes", cookTime: "0 minutes", tags: ["Fresh", "Snack", "Vegetarian"],
@@ -129,7 +147,7 @@ export const weeks = [{
   wednesdayPickup: ["Sushi-grade ahi tuna", "Salmon", "Avocado and sprouts", "Fresh cucumbers and ginger"],
   treats: [{ key: "grapefruit-juice", item: "fresh grapefruit juice", amount: 2, unit: "servings", category: "Produce", pickup: "wednesday", shoppingOptions: "2–3 fresh grapefruit OR one small bottle 100% grapefruit juice", note: "4–6 oz per serving; planned later in the week." }],
   days: [
-    { day: "Sunday", meals: { breakfast: ["jammy-eggs-sourdough-avocado"], lunch: [{ label: "Mediterranean chicken-feta chopped salad + sourdough", nutrition: { calories: 450, protein: 38, fiber: 7, saturatedFat: 5 } }], dinner: ["greek-chicken-feta-meatballs", "cucumber-carrot-herb-salad", "mediterranean-lemon-dill-sauce"], snack: ["sesame-tahini-ribbon-salad"] }, theme: "Mediterranean table", note: "Serve dinner with basmati rice." },
+    { day: "Sunday", meals: { breakfast: ["jammy-eggs-sourdough-avocado"], lunch: ["mediterranean-chicken-feta-chopped-salad"], dinner: ["greek-chicken-feta-meatballs", "cucumber-carrot-herb-salad", "mediterranean-lemon-dill-sauce"], snack: ["sesame-tahini-ribbon-salad"] }, theme: "Mediterranean table", note: "Serve dinner with basmati rice." },
     { day: "Monday", meals: { breakfast: [{ label: "Greek yogurt + kiwi + basil seeds + walnuts" }], lunch: [{ label: "Leftover Greek chicken-feta meatballs + basmati rice + cucumber-carrot salad", leftover: true }], dinner: [{ label: "Open / flexible", open: true }], snack: ["sesame-tahini-ribbon-salad"] }, note: "Dinner intentionally open — dinner out or choose something easy." },
     { day: "Tuesday", meals: { breakfast: [{ label: "Goat cheese + jam + prosciutto on sourdough" }], lunch: [{ label: "Leftover Greek chicken-feta meatballs + chopped herb salad", leftover: true }], dinner: ["vietnamese-chicken-cabbage-salad"], snack: [{ label: "Greek yogurt + kiwi + basil seeds" }] }, theme: "Crisp & herb-filled" },
     { day: "Wednesday", meals: { breakfast: [{ label: "Avocado toast + poached eggs + dill" }], lunch: [{ label: "Leftover Vietnamese chicken cabbage salad", leftover: true }], dinner: [{ label: "Open / flexible", open: true }], snack: [{ label: "Kiwi + basil seeds" }] }, note: "Dinner intentionally open + quick fresh-food pickup." },

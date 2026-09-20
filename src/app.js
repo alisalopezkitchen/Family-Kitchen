@@ -3,7 +3,7 @@ import { consolidateShoppingList, formatAmount, groupShoppingList } from "./shop
 import { optimizeDayPortions } from "./portion-optimizer.js";
 import { bestVerifiedGroceryPrice } from "./grocery-pricing.js";
 import { loadUserProfile, saveUserProfile } from "./user-profile.js";
-import { supportedRetailers, exactStoreFor } from "./store-discovery.js";
+import { supportedRetailers, exactStoreFor, normalizeDiscoveredStore, selectExactStore } from "./store-discovery.js";
 
 const app = document.querySelector("#app");
 const toast = document.querySelector("#toast");
@@ -300,7 +300,7 @@ function progressView() {
     saturatedFat: sum.saturatedFat + Number(entry.saturatedFat || 0),
   }), { calories: 0, protein: 0, fiber: 0, saturatedFat: 0 });
   const alisaTargets = activeNutritionTargets("alisa");
-  return `<section class="section-shell page">${pageHeader("Nutrition & progress", "Progress", "Family Kitchen is your food log, nutrition tracker, and portion-planning app.")}\n    <article class="detail-card"><p class="eyebrow">My kitchen</p><h2>Location & shopping</h2><p>Your ZIP code will determine which local store catalogs can verify grocery prices. It does not change the shared recipe catalogue.</p><form data-profile-location-form><div class="progress-stats"><label><span>ZIP code</span><input name="postalCode" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="91910" value="${escapeHtml(userProfile.postalCode || "")}" required></label></div><button class="primary-button" type="submit">Save shopping ZIP</button></form>${userProfile.postalCode ? `<p class="muted">Shopping area: ${escapeHtml(userProfile.postalCode)}</p><div class="shopping-groups">${Object.entries(supportedRetailers).map(([key, retailer]) => { const selected = exactStoreFor(userProfile, key); return `<div class="shopping-row"><span><strong>${retailer.name}</strong><small>${selected ? `${escapeHtml(selected.name)} · ${escapeHtml(selected.address || selected.postalCode)}` : "Exact branch not selected"}</small></span><button class="secondary-button" type="button" data-find-store="${key}">${selected ? "Change" : "Find nearby"}</button></div>`; }).join("")}</div><p class="muted">Nearby branch results will come from official store-locator sources; Family Kitchen will not guess a branch from ZIP alone.</p>` : `<p class="muted">Add a ZIP code to personalize grocery stores and weekly prices.</p>`}</article>
+  return `<section class="section-shell page">${pageHeader("Nutrition & progress", "Progress", "Family Kitchen is your food log, nutrition tracker, and portion-planning app.")}\n    <article class="detail-card"><p class="eyebrow">My kitchen</p><h2>Location & shopping</h2><p>Your ZIP code will determine which local store catalogs can verify grocery prices. It does not change the shared recipe catalogue.</p><form data-profile-location-form><div class="progress-stats"><label><span>ZIP code</span><input name="postalCode" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" placeholder="91910" value="${escapeHtml(userProfile.postalCode || "")}" required></label></div><button class="primary-button" type="submit">Save shopping ZIP</button></form>${userProfile.postalCode ? `<p class="muted">Shopping area: ${escapeHtml(userProfile.postalCode)}</p><div class="shopping-groups">${Object.entries(supportedRetailers).map(([key, retailer]) => { const selected = exactStoreFor(userProfile, key); return `<div class="shopping-row"><span><strong>${retailer.name}</strong><small>${selected ? `${escapeHtml(selected.name)} · ${escapeHtml(selected.address || selected.postalCode)}` : "Exact branch not selected"}</small></span><button class="secondary-button" type="button" data-find-store="${key}">${selected ? "Change" : "Find nearby"}</button><button class="secondary-button" type="button" data-save-store="${key}">Enter branch</button></div>`; }).join("")}</div><p class="muted">Nearby branch results will come from official store-locator sources; Family Kitchen will not guess a branch from ZIP alone.</p>` : `<p class="muted">Add a ZIP code to personalize grocery stores and weekly prices.</p>`}</article>
     <article class="detail-card"><p class="eyebrow">Today's food log</p><h2>${Math.round(totals.calories)} / ${alisaTargets.calories} calories</h2>
       <div class="progress-stats"><div><strong>${Math.round(totals.protein)}g</strong><span>protein · goal ${alisaTargets.protein}g+</span></div><div><strong>${Math.round(totals.fiber)}g</strong><span>fiber · goal ${alisaTargets.fiber}g+</span></div><div><strong>${Math.round(totals.saturatedFat)}g</strong><span>sat fat · max ${alisaTargets.saturatedFatMax}g</span></div></div>
       <form data-food-log-form><div class="progress-stats"><label><span>Food / meal</span><input name="name" required placeholder="What did you eat?"></label><label><span>Calories</span><input type="number" name="calories" min="0" step="1" required></label><label><span>Protein (g)</span><input type="number" name="protein" min="0" step="0.1" value="0"></label><label><span>Fiber (g)</span><input type="number" name="fiber" min="0" step="0.1" value="0"></label><label><span>Sat fat (g)</span><input type="number" name="saturatedFat" min="0" step="0.1" value="0"></label></div><button class="primary-button" type="submit">Log food</button></form>
@@ -334,6 +334,21 @@ function updateShoppingCount() { const count = consolidateShoppingList(activeWee
 function ingredientsText(recipe) { return `${recipe.name}\n${recipe.servings} servings\n\n${recipe.ingredients.map((i) => `${formatAmount(i.amount)} ${i.unit} ${i.item}`.replace(/\s+/g, " ").trim()).join("\n")}`; }
 
 document.addEventListener("click", async (event) => {
+  const saveStore = event.target.closest("[data-save-store]");
+  if (saveStore) {
+    const retailerKey = saveStore.dataset.saveStore;
+    const retailer = supportedRetailers[retailerKey];
+    const name = prompt(`Enter the exact ${retailer?.name || "store"} branch name`);
+    if (!name) return;
+    const id = prompt("Enter the store ID shown by the retailer");
+    if (!id) return;
+    const address = prompt("Enter the store address") || "";
+    const postalCode = (address.match(/\b\d{5}\b/) || [userProfile.postalCode])[0];
+    const selected = normalizeDiscoveredStore(retailerKey, { id, name, address, postalCode, sourceUrl: retailer?.locatorUrl || "" });
+    if (!selected) { showToast("Store details are incomplete"); return; }
+    userProfile = saveUserProfile(selectExactStore(userProfile, selected));
+    render({ preserveScroll: true }); showToast(`${retailer.name} branch saved`); return;
+  }
   const findStore = event.target.closest("[data-find-store]");
   if (findStore) {
     const retailer = supportedRetailers[findStore.dataset.findStore];

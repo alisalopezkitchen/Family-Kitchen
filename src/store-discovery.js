@@ -36,15 +36,19 @@ export const selectExactStore = (profile, store) => ({
 
 export const exactStoreFor = (profile, retailerKey) => profile?.shopping?.exactStores?.[retailerKey] || null;
 
-export const needsStoreDiscovery = (profile) =>
-  /^\d{5}$/.test(profile?.postalCode || "") &&
-  (profile.shopping?.preferredStores || []).some((key) => !exactStoreFor(profile, key));
+const validPostalCode = (value) => /^\d{5}$/.test(String(value || "").trim());
 
+const preferredRetailerKeys = (profile) =>
+  (profile?.shopping?.preferredStores || []).filter((key) => supportedRetailers[key]);
+
+export const needsStoreDiscovery = (profile) =>
+  validPostalCode(profile?.postalCode) &&
+  preferredRetailerKeys(profile).some((key) => !exactStoreFor(profile, key));
 
 export const storeDiscoveryRequest = (profile) => {
   const postalCode = String(profile?.postalCode || "").trim();
-  if (!/^\d{5}$/.test(postalCode)) return { status: "invalid-zip", stores: [] };
-  const retailerKeys = profile.shopping?.preferredStores?.filter((key) => supportedRetailers[key]) || [];
+  if (!validPostalCode(postalCode)) return { status: "invalid-zip", postalCode, retailerKeys: [], stores: [] };
+  const retailerKeys = preferredRetailerKeys(profile);
   return {
     status: retailerKeys.length ? "ready" : "no-retailers",
     postalCode,
@@ -65,7 +69,6 @@ export const storeDiscoverySummary = (profile) => {
   return { ...request, selectedCount: selected, pendingCount: request.stores.length - selected };
 };
 
-
 export const retailerLocatorAdapters = new Map();
 
 export const registerRetailerLocatorAdapter = (retailerKey, adapter) => {
@@ -78,14 +81,21 @@ export const discoverNearbyStores = async (profile, options = {}) => {
   const request = storeDiscoveryRequest(profile);
   if (request.status !== "ready") return { ...request, results: [], pendingRetailers: request.retailerKeys || [] };
 
-  const radiusMiles = Number(options.radiusMiles || profile.shopping?.radiusMiles || 10);
+  const requestedRadius = Number(options.radiusMiles ?? profile?.shopping?.radiusMiles ?? 10);
+  const radiusMiles = Number.isFinite(requestedRadius) && requestedRadius > 0 ? requestedRadius : 10;
   const results = [];
   const pendingRetailers = [];
 
   for (const retailerKey of request.retailerKeys) {
     const adapter = retailerLocatorAdapters.get(retailerKey);
     if (!adapter) { pendingRetailers.push(retailerKey); continue; }
-    const rawStores = await adapter({ postalCode: request.postalCode, radiusMiles, retailer: supportedRetailers[retailerKey] });
+    let rawStores = [];
+    try {
+      rawStores = await adapter({ postalCode: request.postalCode, radiusMiles, retailer: supportedRetailers[retailerKey] });
+    } catch {
+      pendingRetailers.push(retailerKey);
+      continue;
+    }
     const normalized = (Array.isArray(rawStores) ? rawStores : [])
       .map((store) => normalizeDiscoveredStore(retailerKey, store))
       .filter(Boolean);

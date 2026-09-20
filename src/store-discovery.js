@@ -39,3 +39,28 @@ export const exactStoreFor = (profile, retailerKey) => profile?.shopping?.exactS
 export const needsStoreDiscovery = (profile) =>
   /^\d{5}$/.test(profile?.postalCode || "") &&
   (profile.shopping?.preferredStores || []).some((key) => !exactStoreFor(profile, key));
+
+
+export const storeDiscoveryRequest = (profile) => {
+  const postalCode = String(profile?.postalCode || "").trim();
+  if (!/^\d{5}$/.test(postalCode)) return { status: "invalid-zip", stores: [] };
+  const retailerKeys = profile.shopping?.preferredStores?.filter((key) => supportedRetailers[key]) || [];
+  return {
+    status: retailerKeys.length ? "ready" : "no-retailers",
+    postalCode,
+    retailerKeys,
+    stores: retailerKeys.map((retailerKey) => ({
+      retailerKey,
+      retailerName: supportedRetailers[retailerKey].name,
+      locatorUrl: supportedRetailers[retailerKey].locatorUrl,
+      selected: exactStoreFor(profile, retailerKey),
+    })),
+  };
+};
+
+export const storeDiscoverySummary = (profile) => {
+  const request = storeDiscoveryRequest(profile);
+  if (request.status !== "ready") return request;
+  const selected = request.stores.filter((item) => item.selected).length;
+  return { ...request, selectedCount: selected, pendingCount: request.stores.length - selected };
+};

@@ -163,6 +163,7 @@ jobs:
               "feta cheese": 173420,
               "cucumber": 168409,
               "green cabbage": 169975,
+              "fresh dill": 172233,
           }
 
           def apply_reviewed_fallback(label, values):

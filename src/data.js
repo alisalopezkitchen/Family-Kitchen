@@ -41,6 +41,72 @@ export const nutritionComponents = {
 
 export const recipes = [
   {
+    id: "dirty-cabbage", name: "Dirty Cabbage",
+    proteinType: "flexible",
+    description: "Previously shared East Coast Kitchen recipe restored to the Family Kitchen recipe library.",
+    category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Previously Shared", "Want to Try"], sourceRecipe: { source: "East Coast Kitchen", url: "https://theeastcoastkitchen.com/dirty-cabbage-recipe-easy-one-pot-dinner/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Family Kitchen standardization will preserve the recipe’s flavor before nutrition calculation."],
+    portions: { alisa: "Pending standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Restored source recipe. Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized." }
+  },
+  {
+    id: "tuna-rice-bowl", name: "Tuna Rice Bowl",
+    proteinType: "ahi-tuna",
+    description: "Previously shared East Coast Kitchen recipe restored to the Family Kitchen recipe library.",
+    category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Previously Shared", "Want to Try"], sourceRecipe: { source: "East Coast Kitchen", url: "https://theeastcoastkitchen.com/tuna-rice-bowl-canned-tuna-sushi-vibe-hack/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Family Kitchen standardization will preserve the recipe’s flavor before nutrition calculation."],
+    portions: { alisa: "Pending standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Restored source recipe. Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized." }
+  },
+  {
+    id: "salmon-rice-bowl", name: "Salmon Rice Bowl",
+    proteinType: "salmon",
+    description: "Previously shared East Coast Kitchen recipe restored to the Family Kitchen recipe library.",
+    category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Previously Shared", "Want to Try"], sourceRecipe: { source: "East Coast Kitchen", url: "https://theeastcoastkitchen.com/salmon-rice-bowl-one-pan-big-flavor/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Family Kitchen standardization will preserve the recipe’s flavor before nutrition calculation."],
+    portions: { alisa: "Pending standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Restored source recipe. Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized." }
+  },
+  {
+    id: "spicy-salmon-cucumber-boats", name: "Spicy Salmon Cucumber Boats",
+    proteinType: "salmon",
+    description: "Previously shared East Coast Kitchen recipe restored to the Family Kitchen recipe library.",
+    category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Previously Shared", "Want to Try"], sourceRecipe: { source: "East Coast Kitchen", url: "https://theeastcoastkitchen.com/spicy-salmon-cucumber-boats-using-leftover-ingredients/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Family Kitchen standardization will preserve the recipe’s flavor before nutrition calculation."],
+    portions: { alisa: "Pending standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Restored source recipe. Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized." }
+  },
+  {
+    id: "no-grill-chicken-kebab", name: "No-Grill Chicken Kebab",
+    proteinType: "chicken",
+    description: "Previously shared East Coast Kitchen recipe restored to the Family Kitchen recipe library.",
+    category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Previously Shared", "Want to Try"], sourceRecipe: { source: "East Coast Kitchen", url: "https://theeastcoastkitchen.com/chicken-kebab-without-a-grill-in-30-minutes/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Family Kitchen standardization will preserve the recipe’s flavor before nutrition calculation."],
+    portions: { alisa: "Pending standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Restored source recipe. Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized." }
+  },
+  {
+    id: "greek-chicken", name: "Greek Chicken",
+    proteinType: "chicken",
+    description: "Previously shared East Coast Kitchen recipe restored to the Family Kitchen recipe library.",
+    category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Previously Shared", "Want to Try"], sourceRecipe: { source: "East Coast Kitchen", url: "https://theeastcoastkitchen.com/greek-chicken-the-easiest-dinner-youll-make/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Family Kitchen standardization will preserve the recipe’s flavor before nutrition calculation."],
+    portions: { alisa: "Pending standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Restored source recipe. Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized." }
+  },
+  {
     id: "kibbeh-spiced-lamb-skewers", name: "Kibbeh-Spiced Lamb Skewers", description: "Lebanese-inspired spiced lamb skewers with tenderizing onion and bright citrus notes.",
     proteinType: "lamb",
     category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",

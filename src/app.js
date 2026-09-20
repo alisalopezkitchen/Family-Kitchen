@@ -1,5 +1,6 @@
 import { getActiveWeek, getPastWeeks, getRecipe, initialPantry, initialPreparedSauces, preparedSauceStatuses, nutritionSource, nutritionTargets, pantryStatuses, recipes } from "./data.js";
 import { consolidateShoppingList, formatAmount, groupShoppingList } from "./shopping.js";
+import { optimizeDayPortions } from "./portion-optimizer.js";
 
 const app = document.querySelector("#app");
 const toast = document.querySelector("#toast");
@@ -20,6 +21,11 @@ let recipeCategoryFilter = "all";
 let recipePreferences = store.get("fk-recipe-preferences", { alisa: {}, mom: {} });
 let personalNutritionTargets = store.get("fk-nutrition-targets", { alisa: { ...nutritionTargets }, mom: null });
 function activeNutritionTargets(person = "alisa") { return personalNutritionTargets[person] || (person === "alisa" ? nutritionTargets : null); }
+function optimizeForPerson({ person = "alisa", recipes: plannedRecipes, fixedItems = [], scaleRange } = {}) {
+  const targets = activeNutritionTargets(person);
+  if (!targets) return { status: "incomplete", reason: `No nutrition targets configured for ${person}.` };
+  return optimizeDayPortions({ recipes: plannedRecipes, fixedItems, targets, scaleRange });
+}
 function recipePreference(recipeId, person = "alisa") { return recipePreferences[person]?.[recipeId] || "want-to-try"; }
 function setRecipePreference(recipeId, status, person = "alisa") {
   recipePreferences = { ...recipePreferences, [person]: { ...(recipePreferences[person] || {}), [recipeId]: status } };
@@ -271,6 +277,7 @@ function progressView() {
             <label><strong><input type="number" name="saturatedFatMax" min="5" max="40" step="1" value="${targets.saturatedFatMax}"></strong><span>saturated fat max (g)</span></label>
           </div>
           <div class="button-row"><button class="primary-button" type="submit">Save targets</button><button class="secondary-button" type="button" data-reset-nutrition-targets>Reset defaults</button></div>
+          <p class="tiny-label">Optimizer connection</p><p>Saved values are now the targets used by Alisa's portion optimizer. Calculation-ready recipes will recalculate against these settings automatically when a plan is optimized.</p>
         </form>
       </article>
       <article class="detail-card"><p class="tiny-label">Planning rule</p><h3>Targets are person-specific</h3><p>Changing Alisa's calories or nutrition targets will not change Mom's portions. Recipes keep their flavor ratios; the portion optimizer changes serving amounts only after a recipe is fully quantified.</p></article>

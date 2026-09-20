@@ -39,6 +39,16 @@ const comparableUnitPrice = (observation) => {
   return price / quantity;
 };
 
+export const observationsForProfile = (profile, observations = groceryPriceObservations) => {
+  const selected = Object.entries(profile?.shopping?.exactStores || {});
+  if (!selected.length) return [];
+  const allowed = new Map(selected.map(([retailerKey, store]) => [retailerKey, String(store.id)]));
+  return observations.filter((item) => {
+    const selectedStoreId = allowed.get(item.store);
+    return selectedStoreId && String(item.storeId || "") === selectedStoreId;
+  });
+};
+
 export const bestVerifiedGroceryPrice = (ingredientKey, observations = groceryPriceObservations) => {
   const candidates = observations
     .filter((item) => item.ingredientKey === ingredientKey && item.verified === true && priceObservationIsFresh(item))
@@ -67,6 +77,7 @@ export const groceryPriceObservationShape = {
   ingredientKey: "canonical recipe/shopping ingredient key",
   productName: "exact listed product",
   store: "ralphs | sprouts | seafood-city",
+  storeId: "exact retailer branch ID selected in the user profile",
   price: "listed shelf/cart price",
   packageQuantity: "numeric package size",
   packageUnit: "oz | fl-oz | lb | count | each",

@@ -62,8 +62,8 @@ export const recipes = [
     id: "mediterranean-lemon-dill-sauce", name: "Mediterranean lemon-dill Dijon sauce", description: "A cool, bright yogurt sauce with dill and Dijon for meatballs, salads, and Friday’s use-it-up bowl.", servings: 1, servingSize: "Target-generated portion from measured batch", prepTime: "10 minutes", cookTime: "0 minutes", tags: ["Mediterranean", "Sauce", "Vegetarian"],
     ingredients: [
       { key: "greek-yogurt", item: "plain Greek yogurt", amount: 0.5, unit: "cup", category: "Dairy", nutritionRole: "variable-fat-dairy", nutritionOptions: [{ label: "nonfat", fatPercent: 0, lookupQuery: "Greek yogurt plain nonfat" }, { label: "2%", fatPercent: 2, lookupQuery: "Greek yogurt plain lowfat 2%" }, { label: "whole milk", fatPercent: 5, lookupQuery: "Greek yogurt plain whole milk" }], selectionRule: "Choose yogurt fat percentage from the full-day nutrition target rather than using a fixed default." },
-      { key: "olive-oil", item: "extra-virgin olive oil", amount: 1, unit: "tbsp", grams: 13.5, category: "Pantry", pantry: true },
-      { key: "lemon-juice", item: "fresh lemon juice", amount: 2, unit: "tbsp", grams: 30, category: "Produce" },
+      { key: "olive-oil", item: "extra-virgin olive oil", amount: 1, unit: "tbsp", grams: 13.5, category: "Pantry", pantry: true, nutritionLookup: { source: "USDA FoodData Central", query: "olive oil", fdcId: 748608, dataType: "Foundation", status: "matched" } },
+      { key: "lemon-juice", item: "fresh lemon juice", amount: 2, unit: "tbsp", grams: 30, category: "Produce", nutritionLookup: { source: "USDA FoodData Central", query: "lemon juice raw", fdcId: 167747, dataType: "SR Legacy", status: "matched" } },
       { key: "dill", item: "fresh dill, finely chopped", amount: 2, unit: "tbsp", category: "Herbs", quantification: { status: "needs-standard-grams" } },
       { key: "dijon", item: "Dijon mustard", amount: 1, unit: "tsp", category: "Pantry", pantry: true, quantification: { status: "needs-standard-grams" } },
       { key: "garlic-oil", item: "garlic-infused olive oil", amount: 1, unit: "tsp", grams: 4.5, category: "Pantry", pantry: true },
@@ -105,17 +105,17 @@ export const recipes = [
   {
     id: "mediterranean-chicken-feta-chopped-salad", name: "Mediterranean chicken-feta chopped salad + sourdough", description: "A crisp Mediterranean lunch with chicken, feta, herbs, vegetables, lemon-Dijon dressing, and sourdough.", servings: 2, servingSize: "Target-generated portion", prepTime: "20 minutes", cookTime: "15 minutes", tags: ["Mediterranean", "Lunch", "High protein"],
     ingredients: [
-      { key: "chicken-breast", item: "boneless skinless chicken breast", amount: 0.75, unit: "lb", category: "Protein", quantification: { status: "needs-usda-match" } },
-      { key: "cucumber", item: "Persian cucumbers", amount: 2, unit: "", category: "Produce", quantification: { status: "needs-standard-edible-grams" } },
-      { key: "carrots", item: "carrot", amount: 1, unit: "", category: "Produce", quantification: { status: "needs-standard-edible-grams" } },
+      { key: "chicken-breast", item: "boneless skinless chicken breast", amount: 0.75, unit: "lb", category: "Protein", nutritionLookup: { source: "USDA FoodData Central", query: "chicken breast raw boneless skinless", fdcId: 2646170, dataType: "Foundation", status: "matched" } },
+      { key: "cucumber", item: "Persian cucumbers", amount: 2, unit: "", category: "Produce", nutritionLookup: { source: "USDA FoodData Central", query: "cucumber with peel raw", fdcId: 2346406, dataType: "Foundation", status: "matched" }, quantification: { status: "needs-standard-edible-grams" } },
+      { key: "carrots", item: "carrot", amount: 1, unit: "", category: "Produce", nutritionLookup: { source: "USDA FoodData Central", query: "carrots raw", fdcId: 170393, dataType: "SR Legacy", status: "matched" }, quantification: { status: "needs-standard-edible-grams" } },
       { key: "cabbage", item: "green cabbage", amount: 2, unit: "cup", category: "Produce", quantification: { status: "needs-standard-edible-grams" } },
-      { key: "feta", item: "feta cheese", amount: 2, unit: "oz", category: "Dairy", quantification: { status: "needs-usda-match" } },
-      { key: "dill", item: "fresh dill", amount: 2, unit: "tbsp", category: "Herbs", quantification: { status: "needs-standard-grams" } },
-      { key: "parsley", item: "flat-leaf parsley", amount: 2, unit: "tbsp", category: "Herbs", quantification: { status: "needs-standard-grams" } },
+      { key: "feta", item: "feta cheese", amount: 2, unit: "oz", category: "Dairy", nutritionLookup: { source: "USDA FoodData Central", query: "cheese feta", fdcId: 2259796, dataType: "Foundation", status: "matched" } },
+      { key: "dill", item: "fresh dill", amount: 2, unit: "tbsp", category: "Herbs", nutritionLookup: { source: "USDA FoodData Central", query: "dill weed fresh", fdcId: 172233, dataType: "SR Legacy", status: "matched" }, quantification: { status: "needs-standard-grams" } },
+      { key: "parsley", item: "flat-leaf parsley", amount: 2, unit: "tbsp", category: "Herbs", nutritionLookup: { source: "USDA FoodData Central", query: "parsley fresh", fdcId: 170416, dataType: "SR Legacy", status: "matched" }, quantification: { status: "needs-standard-grams" } },
       { key: "lemon-juice", item: "fresh lemon juice", amount: 2, unit: "tbsp", grams: 30, category: "Produce" },
       { key: "dijon", item: "Dijon mustard", amount: 1, unit: "tsp", category: "Pantry", pantry: true, quantification: { status: "needs-standard-grams" } },
       { key: "olive-oil", item: "extra-virgin olive oil", amount: 1, unit: "tbsp", grams: 13.5, category: "Pantry", pantry: true },
-      { key: "sourdough", item: "sourdough bread", amount: 2, unit: "slice", category: "Bakery", quantification: { status: "needs-standard-grams-or-product" } }
+      { key: "sourdough", item: "sourdough bread", amount: 2, unit: "slice", category: "Bakery", nutritionLookup: { source: "USDA FoodData Central", query: "bread sourdough", status: "pending", note: "Candidate FDC 172675 groups French/Vienna bread with sourdough and is not specific enough to accept." }, quantification: { status: "needs-standard-grams-or-product" } }
     ],
     instructions: ["Cook the chicken until browned and cooked through, then rest and slice.", "Whisk lemon juice, Dijon, and olive oil for the dressing.", "Chop the cucumber, carrot, cabbage, dill, and parsley; toss with the dressing.", "Top with sliced chicken and feta and serve with sourdough."],
     portions: { alisa: "Generated from Alisa's active nutrition target", mom: "Generated separately from Mom's nutrition target" }, portionStrategy: { mode: "nutrition-target", fixedServing: false }, storage: "Keep chicken, chopped vegetables, dressing, and bread separate until serving.", nutrition: nutritionPending,

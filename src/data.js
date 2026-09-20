@@ -1,3 +1,5 @@
+export const nutritionTargets = { calories: 1750, protein: 125, proteinUpper: 130, fiber: 25, fiberUpper: 30, saturatedFatMax: 15 };
+
 const nutritionPending = {
   calories: "To be calculated",
   protein: "To be calculated",

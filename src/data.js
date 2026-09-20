@@ -11,14 +11,14 @@ export const recipes = [
     tags: ["Breakfast", "Protein", "Savory"],
     ingredients: [
       { key: "egg", item: "large eggs", amount: 2, unit: "", grams: 100, category: "Protein", nutritionLookup: { source: "USDA FoodData Central", query: "Egg, whole, raw, fresh", status: "pending-match" } },
-      { key: "sourdough", item: "sourdough bread", amount: 2, unit: "slices", grams: 70, category: "Bakery", nutritionLookup: { source: "USDA FoodData Central", query: "Bread, sourdough", status: "pending-match" } },
+      { key: "sourdough", item: "sourdough bread", amount: 1, unit: "small slice", grams: 35, category: "Bakery", nutritionLookup: { source: "USDA FoodData Central", query: "Bread, sourdough", status: "pending-match" } },
       { key: "avocado", item: "avocado", amount: 0.5, unit: "medium", grams: 75, category: "Produce", nutritionLookup: { source: "USDA FoodData Central", query: "Avocados, raw, all commercial varieties", status: "pending-match" } }
     ],
     instructions: ["Cook the eggs until the whites are set and the yolks remain jammy.", "Toast the sourdough.", "Serve with measured avocado; season to taste."],
-    portions: { alisa: "2 large eggs + 2 slices (70 g) sourdough + 75 g avocado", mom: "Adjust separately when planned" },
+    portions: { alisa: "2 large eggs + 1 small slice sourdough toast + ½ medium avocado", mom: "Adjust separately when planned" },
     storage: "Best prepared fresh.",
     nutrition: nutritionPending,
-    quantification: { status: "usda-match-ready", calculationBasis: "grams", requiredNutrients: ["calories","protein","carbs","fat","fiber","saturatedFat","sugar","sodium"], note: "Ingredient weights and USDA search identities are defined. Nutrition remains pending until each search identity is resolved to a reviewed FDC ID; the engine will then calculate nutrients from grams." }
+    quantification: { status: "usda-match-ready", displaySystem: "US customary kitchen measures", calculationBasis: "USDA gram-equivalent weights stored behind the scenes", requiredNutrients: ["calories","protein","carbs","fat","fiber","saturatedFat","sugar","sodium"], note: "Recipes display familiar kitchen portions first. Internal gram-equivalent weights exist only for USDA nutrient calculations. Nutrition remains pending until each search identity is resolved to a reviewed FDC ID." }
   },
   {
     id: "greek-chicken-feta-meatballs", name: "Greek chicken-feta meatballs",

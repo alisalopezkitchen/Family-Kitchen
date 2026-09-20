@@ -19,8 +19,10 @@ let shoppingStoreFilter = "all";
 let recipeFilter = "all";
 let recipeCategoryFilter = "all";
 let recipePreferences = store.get("fk-recipe-preferences", { alisa: {}, mom: {} });
-let personalNutritionTargets = store.get("fk-nutrition-targets", { alisa: { ...nutritionTargets }, mom: null });
-function activeNutritionTargets(person = "alisa") { return personalNutritionTargets[person] || (person === "alisa" ? nutritionTargets : null); }
+const momDefaultNutritionTargets = { ...nutritionTargets, calories: 1550, protein: 105, proteinUpper: 115, fiber: 25, fiberUpper: 30, saturatedFatMax: 15 };
+let personalNutritionTargets = store.get("fk-nutrition-targets", { alisa: { ...nutritionTargets }, mom: { ...momDefaultNutritionTargets } });
+if (!personalNutritionTargets.mom) personalNutritionTargets.mom = { ...momDefaultNutritionTargets };
+function activeNutritionTargets(person = "alisa") { return personalNutritionTargets[person] || (person === "alisa" ? nutritionTargets : momDefaultNutritionTargets); }
 function optimizeForPerson({ person = "alisa", recipes: plannedRecipes, fixedItems = [], scaleRange } = {}) {
   const targets = activeNutritionTargets(person);
   if (!targets) return { status: "incomplete", reason: `No nutrition targets configured for ${person}.` };
@@ -263,25 +265,28 @@ function pantryView() {
 }
 
 function progressView() {
-  const targets = activeNutritionTargets("alisa");
-  return `<section class="section-shell page">${pageHeader("Nutrition settings", "Progress", "Your planning targets. These drive future portion optimization; Mom's targets remain separate.")}
+  const targetCard = (person, label, defaults) => {
+    const targets = activeNutritionTargets(person);
+    return `<article class="${person === "alisa" ? "progress-feature" : "detail-card"}">
+      <p class="eyebrow">${label} · active targets</p>
+      <h2>${person === "alisa" ? "Adjust the plan without rewriting the recipes." : "Mom's portions are calculated separately."}</h2>
+      <form data-nutrition-target-form data-person="${person}">
+        <div class="progress-stats">
+          <label><strong><input type="number" name="calories" min="1000" max="4000" step="25" value="${targets.calories}"></strong><span>calories / day</span></label>
+          <label><strong><input type="number" name="protein" min="40" max="250" step="5" value="${targets.protein}"></strong><span>protein minimum (g)</span></label>
+          <label><strong><input type="number" name="fiber" min="10" max="60" step="1" value="${targets.fiber}"></strong><span>fiber minimum (g)</span></label>
+          <label><strong><input type="number" name="saturatedFatMax" min="5" max="40" step="1" value="${targets.saturatedFatMax}"></strong><span>saturated fat max (g)</span></label>
+        </div>
+        <div class="button-row"><button class="primary-button" type="submit">Save ${label}'s targets</button><button class="secondary-button" type="button" data-reset-nutrition-targets="${person}">Reset defaults</button></div>
+      </form>
+    </article>`;
+  };
+  return `<section class="section-shell page">${pageHeader("Nutrition settings", "Progress", "Separate planning targets for each person. Shared recipes can produce different serving sizes.")}
     <div class="progress-grid">
-      <article class="progress-feature">
-        <p class="eyebrow">Alisa · active targets</p>
-        <h2>Adjust the plan without rewriting the recipes.</h2>
-        <form data-nutrition-target-form>
-          <div class="progress-stats">
-            <label><strong><input type="number" name="calories" min="1000" max="4000" step="25" value="${targets.calories}"></strong><span>calories / day</span></label>
-            <label><strong><input type="number" name="protein" min="40" max="250" step="5" value="${targets.protein}"></strong><span>protein minimum (g)</span></label>
-            <label><strong><input type="number" name="fiber" min="10" max="60" step="1" value="${targets.fiber}"></strong><span>fiber minimum (g)</span></label>
-            <label><strong><input type="number" name="saturatedFatMax" min="5" max="40" step="1" value="${targets.saturatedFatMax}"></strong><span>saturated fat max (g)</span></label>
-          </div>
-          <div class="button-row"><button class="primary-button" type="submit">Save targets</button><button class="secondary-button" type="button" data-reset-nutrition-targets>Reset defaults</button></div>
-          <p class="tiny-label">Optimizer connection</p><p>Saved values are now the targets used by Alisa's portion optimizer. Calculation-ready recipes will recalculate against these settings automatically when a plan is optimized.</p>
-        </form>
-      </article>
-      <article class="detail-card"><p class="tiny-label">Planning rule</p><h3>Targets are person-specific</h3><p>Changing Alisa's calories or nutrition targets will not change Mom's portions. Recipes keep their flavor ratios; the portion optimizer changes serving amounts only after a recipe is fully quantified.</p></article>
+      ${targetCard("alisa", "Alisa", nutritionTargets)}
+      ${targetCard("mom", "Mom", momDefaultNutritionTargets)}
     </div>
+    <article class="detail-card"><p class="tiny-label">Optimizer connection</p><h3>Same dinner, separate portions</h3><p>Each person's saved targets are passed to the optimizer independently. Changing one profile never changes the other person's targets or calculated serving size.</p></article>
   </section>`;
 }
 
@@ -306,7 +311,7 @@ function ingredientsText(recipe) { return `${recipe.name}\n${recipe.servings} se
 
 document.addEventListener("click", async (event) => {
   const resetTargets = event.target.closest("[data-reset-nutrition-targets]");
-  if (resetTargets) { personalNutritionTargets.alisa = { ...nutritionTargets }; store.set("fk-nutrition-targets", personalNutritionTargets); render({ preserveScroll: true }); showToast("Nutrition targets reset"); return; }
+  if (resetTargets) { const person = resetTargets.dataset.resetNutritionTargets; personalNutritionTargets[person] = { ...(person === "alisa" ? nutritionTargets : momDefaultNutritionTargets) }; store.set("fk-nutrition-targets", personalNutritionTargets); render({ preserveScroll: true }); showToast(`${person === "alisa" ? "Alisa" : "Mom"}'s nutrition targets reset`); return; }
   const moveMeal = event.target.closest("[data-move-meal]");
   if (moveMeal) { mealMoves.push({ day: moveMeal.dataset.day, meal: moveMeal.dataset.meal, index: Number(moveMeal.dataset.index) }); store.set("fk-meal-moves", mealMoves); render(); showToast("Meal moved to the next open slot"); return; }
   const copy = event.target.closest("[data-copy-ingredients]");
@@ -343,8 +348,9 @@ document.addEventListener("submit", (event) => {
   if (!event.target.matches("[data-nutrition-target-form]")) return;
   event.preventDefault();
   const form = new FormData(event.target);
-  const current = activeNutritionTargets("alisa");
-  personalNutritionTargets.alisa = {
+  const person = event.target.dataset.person || "alisa";
+  const current = activeNutritionTargets(person);
+  personalNutritionTargets[person] = {
     ...current,
     calories: Number(form.get("calories")),
     protein: Number(form.get("protein")),
@@ -355,7 +361,7 @@ document.addEventListener("submit", (event) => {
   };
   store.set("fk-nutrition-targets", personalNutritionTargets);
   render({ preserveScroll: true });
-  showToast("Alisa's nutrition targets saved");
+  showToast(`${person === "alisa" ? "Alisa" : "Mom"}'s nutrition targets saved`);
 });
 document.addEventListener("change", (event) => {
   if (event.target.matches("[data-sauce-date]")) { preparedSauces = preparedSauces.map((item) => item.key === event.target.dataset.sauceDate ? { ...item, madeOn: event.target.value } : item); store.set("fk-prepared-sauces", preparedSauces); render({ preserveScroll: true }); return; }

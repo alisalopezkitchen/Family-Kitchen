@@ -39,3 +39,28 @@ export const exactStoreFor = (profile, retailerKey) => profile?.shopping?.exactS
 export const needsStoreDiscovery = (profile) =>
   /^\d{5}$/.test(profile?.postalCode || "") &&
   (profile.shopping?.preferredStores || []).some((key) => !exactStoreFor(profile, key));
+
+
+export const storeDiscoveryRequest = (profile) => {
+  const postalCode = String(profile?.postalCode || "");
+  if (!/^\d{5}$/.test(postalCode)) return null;
+  const preferred = profile.shopping?.preferredStores?.length
+    ? profile.shopping.preferredStores
+    : Object.keys(supportedRetailers);
+  return {
+    postalCode,
+    retailers: preferred.filter((key) => supportedRetailers[key]),
+    selectedStoreIds: Object.fromEntries(Object.entries(profile.shopping?.exactStores || {}).map(([key, store]) => [key, String(store.id)])),
+  };
+};
+
+export const normalizeStoreDiscoveryResults = (request, results = {}) => {
+  if (!request) return {};
+  return Object.fromEntries(request.retailers.map((retailerKey) => [
+    retailerKey,
+    (results[retailerKey] || [])
+      .map((store) => normalizeDiscoveredStore(retailerKey, store))
+      .filter(Boolean)
+      .filter((store) => store.postalCode === request.postalCode || store.distanceMiles !== undefined)
+  ]));
+};

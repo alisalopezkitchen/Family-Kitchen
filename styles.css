@@ -45,3 +45,11 @@ footer { min-height:78px; padding:0 max(1.5rem,calc((100vw - 1180px)/2)); border
 .archive-card p:last-child { color:var(--muted); font-size:13px; }
 @media (max-width:900px) { .archive-grid { grid-template-columns:1fr 1fr; } }
 @media (max-width:620px) { .archive-grid { grid-template-columns:1fr; } }
+
+.nutrition-target-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin:-1.5rem 0 2.5rem; border:1px solid var(--line); background:var(--paper); }
+.nutrition-target-strip > div { padding:1rem 1.2rem; border-right:1px solid var(--line); }
+.nutrition-target-strip > div:nth-child(4) { border-right:0; }
+.nutrition-target-strip span { display:block; color:var(--muted); font-size:9px; text-transform:uppercase; letter-spacing:.12em; }
+.nutrition-target-strip strong { display:block; margin-top:.2rem; font-size:14px; }
+.nutrition-target-strip p { grid-column:1/-1; margin:0; padding:.7rem 1.2rem; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+@media (max-width:620px) { .nutrition-target-strip { grid-template-columns:1fr 1fr; } .nutrition-target-strip > div { border-bottom:1px solid var(--line); } .nutrition-target-strip > div:nth-child(2n) { border-right:0; } }

@@ -18,6 +18,10 @@ export const defaultUserProfile = {
     market: null,
     preferredStores: ["ralphs", "sprouts", "seafood-city"],
     exactStores: {},
+    radiusMiles: 10,
+    optimizationMode: "fewest-trips",
+    meaningfulSavings: 5,
+    maxTrips: 2,
   },
   preferences: {
     recipeStates: {},

@@ -1,3 +1,5 @@
+import { canVerifyLocalPrice } from "./local-stores.js";
+
 // Store lookup adapter contract.
 // Each adapter must return observations in the grocery-pricing schema.
 // Do not mark an observation verified unless the product, package size,
@@ -46,5 +48,6 @@ export const validatePriceObservation = (observation) => {
 
 export const verifiedObservation = (observation) => {
   const validation = validatePriceObservation(observation);
-  return { ...observation, verified: validation.valid, validation };
+  const localStoreMatched = canVerifyLocalPrice(observation?.store);
+  return { ...observation, verified: validation.valid && localStoreMatched, validation: { ...validation, localStoreMatched } };
 };

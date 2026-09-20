@@ -10,6 +10,15 @@ export const groceryStores = {
 
 export const groceryPriceObservations = [];
 
+export const PRICE_FRESHNESS_HOURS = 24;
+
+export const priceObservationIsFresh = (observation, now = new Date()) => {
+  const checked = new Date(observation?.checkedAt);
+  if (Number.isNaN(checked.getTime())) return false;
+  const ageMs = now.getTime() - checked.getTime();
+  return ageMs >= 0 && ageMs <= PRICE_FRESHNESS_HOURS * 60 * 60 * 1000;
+};
+
 const comparableUnitPrice = (observation) => {
   const price = Number(observation.price);
   const quantity = Number(observation.packageQuantity);
@@ -19,11 +28,14 @@ const comparableUnitPrice = (observation) => {
 
 export const bestVerifiedGroceryPrice = (ingredientKey, observations = groceryPriceObservations) => {
   const candidates = observations
-    .filter((item) => item.ingredientKey === ingredientKey && item.verified === true)
+    .filter((item) => item.ingredientKey === ingredientKey && item.verified === true && priceObservationIsFresh(item))
     .map((item) => ({ ...item, unitPrice: comparableUnitPrice(item) }))
     .filter((item) => item.unitPrice !== null);
 
-  if (!candidates.length) return { status: "no-verified-price", ingredientKey };
+  if (!candidates.length) {
+    const hasStale = observations.some((item) => item.ingredientKey === ingredientKey && item.verified === true);
+    return { status: hasStale ? "stale-price" : "no-verified-price", ingredientKey };
+  }
 
   // Compare only like-for-like package units. We do not pretend ounces, counts,
   // pounds, or fluid ounces are interchangeable without a verified conversion.

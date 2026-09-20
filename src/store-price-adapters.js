@@ -4,9 +4,35 @@
 // current price, store, and source listing were all matched.
 
 export const storePriceAdapters = {
-  ralphs: { id: "ralphs", status: "source-needed" },
-  sprouts: { id: "sprouts", status: "source-needed" },
-  "seafood-city": { id: "seafood-city", status: "source-needed" },
+  ralphs: {
+    id: "ralphs",
+    status: "official-source-identified",
+    sourceType: "official-weekly-ad",
+    sourceUrl: "https://www.ralphs.com/weeklyad",
+    locationRequired: true,
+  },
+  sprouts: {
+    id: "sprouts",
+    status: "official-source-identified",
+    sourceType: "official-online-catalog",
+    sourceUrl: "https://shop.sprouts.com/store/sprouts/",
+    locationRequired: true,
+  },
+  "seafood-city": {
+    id: "seafood-city",
+    status: "official-source-identified",
+    sourceType: "official-online-store",
+    sourceUrl: "https://www.seafoodcity.com/",
+    locationRequired: true,
+  },
+};
+
+export const storePriceSourcePolicy = {
+  requireOfficialSource: true,
+  requireSelectedStore: true,
+  rejectSearchSnippetAsVerification: true,
+  rejectUnmatchedLocation: true,
+  notes: "Price verification must use the selected local store/catalog. Public search results may discover a listing but cannot by themselves verify a local price.",
 };
 
 export const validatePriceObservation = (observation) => {

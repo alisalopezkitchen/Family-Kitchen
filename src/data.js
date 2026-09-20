@@ -41,6 +41,159 @@ export const nutritionComponents = {
 
 export const recipes = [
   {
+    id: "kibbeh-spiced-lamb-skewers", name: "Kibbeh-Spiced Lamb Skewers", description: "Lebanese-inspired spiced lamb skewers with tenderizing onion and bright citrus notes.",
+    category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Delish", url: "https://www.delish.com/cooking/recipe-ideas/a60129910/kibbeh-spiced-lamb-skewers-recipe/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "harissa-grilled-chicken", name: "Harissa Grilled Chicken", description: "Harissa-marinated grilled chicken with bold North African-inspired flavor.",
+    category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Delish", url: "https://www.delish.com/cooking/recipe-ideas/a40208036/harissa-grilled-chicken-recipe/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "greek-lemon-potatoes", name: "Greek Lemon Potatoes", description: "Lemony Greek-style potatoes for pairing with chicken, fish, or other mains.",
+    category: "side", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Delish", url: "https://www.delish.com/cooking/recipe-ideas/a39440405/greek-lemon-potatoes-recipe/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "halloumi-salad", name: "Halloumi Salad", description: "A substantial salad built around savory halloumi and fresh vegetables.",
+    category: "meal-salad", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Delish", url: "https://www.delish.com/cooking/recipe-ideas/a36321546/halloumi-salad-recipe/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "pasta-alla-norma", name: "Pasta alla Norma", description: "Sicilian-style pasta with eggplant, tomato, basil, and cheese.",
+    category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Delish", url: "https://www.delish.com/cooking/recipe-ideas/a34151085/pasta-alla-norma-recipe/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "skordalia", name: "Skordalia", description: "A garlicky Greek potato dip or side for Mediterranean plates.",
+    category: "side", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Delish", url: "https://www.delish.com/cooking/recipe-ideas/a30778443/skordalia-recipe/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "tahini-date-banana-shake", name: "Tahini Date Banana Shake", description: "A creamy tahini, date, and banana shake reserved as an intentional treat.",
+    category: "treat", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "The Mediterranean Dish", url: "https://www.themediterraneandish.com/tahini-date-banana-shake/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "sweet-potato-hash", name: "Sweet Potato Hash", description: "A savory sweet-potato hash candidate for breakfast or brunch.",
+    category: "breakfast", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "The Mediterranean Dish", url: "https://www.themediterraneandish.com/sweet-potato-hash-recipe/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "roasted-branzino", name: "Roasted Branzino", description: "Whole roasted branzino for a fresh Mediterranean seafood meal.",
+    category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "The Mediterranean Dish", url: "https://www.themediterraneandish.com/roasted-branzino-recipe/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "baked-cod-lemon-garlic", name: "Baked Cod with Lemon & Garlic", description: "Baked white fish with lemon and garlic for a lighter seafood main.",
+    category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "The Mediterranean Dish", url: "https://www.themediterraneandish.com/baked-cod-recipe-lemon-garlic/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "mediterranean-lettuce-salad", name: "Mediterranean Lettuce Salad", description: "A fresh lettuce-based side salad for balancing richer mains.",
+    category: "side", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "The Mediterranean Dish", url: "https://www.themediterraneandish.com/lettuce-salad-recipe/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "mediterranean-quinoa-salad", name: "Mediterranean Quinoa Salad", description: "Quinoa salad candidate adapted for this kitchen without scallions or onions.",
+    category: "side", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "The Mediterranean Dish", url: "https://www.themediterraneandish.com/quinoa-salad/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "baba-ganoush", name: "Baba Ganoush", description: "Smoky eggplant dip for vegetables, rice-paper crisps, or Mediterranean plates.",
+    category: "side", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Serious Eats", url: "https://www.seriouseats.com/the-best-baba-ganoush-recipe", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "watermelon-cucumber-feta-salad", name: "Watermelon Cucumber Feta Salad", description: "Fresh watermelon, cucumber, and feta salad for warm-weather meals.",
+    category: "side", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "The Mediterranean Dish", url: "https://www.themediterraneandish.com/watermelon-salad-with-cucumber-feta/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "preserved-lemons", name: "Preserved Lemons", description: "A make-ahead preserved-lemon pantry project for future sauces, marinades, and meals.",
+    category: "pantry-prep", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Serious Eats", url: "https://www.seriouseats.com/how-to-make-preserved-lemons", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "bun-thit-nuong", name: "Bún Thịt Nướng", description: "Vietnamese grilled pork vermicelli bowl with fresh herbs and vegetables.",
+    category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "Cooking Therapy", url: "https://www.cooking-therapy.com/bun-thit-nuong/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
+    id: "vietnamese-pork-noodle-bowls", name: "Vietnamese Pork Noodle Bowls", description: "Vietnamese-style pork noodle bowls with fresh vegetables, herbs, and a punchy dressing.",
+    category: "main", servings: "Source recipe", servingSize: "Pending quantification", prepTime: "See source", cookTime: "See source",
+    tags: ["Candidate", "Want to Try"], sourceRecipe: { source: "RecipeTin Eats", url: "https://www.recipetineats.com/vietnamese-pork-noodle-bowls/", status: "candidate-not-yet-standardized" },
+    ingredients: [], instructions: ["Open the source recipe for the original method. Standardized Family Kitchen ingredients and adapted instructions will be added before nutrition calculation."],
+    portions: { alisa: "Pending recipe standardization and nutrition engine", mom: "Generated separately after standardization" },
+    storage: "Pending recipe review.", nutrition: { ...nutritionPending },
+    quantification: { status: "candidate", note: "Do not use for exact Prep, Shopping, or nutrition totals until ingredients are standardized and nutrition is calculated." }
+  },
+  {
     id: "ericas-pasta-sauce", name: "Erica’s Pasta Sauce",
     description: "Erica’s long-simmered tomato sauce with red bell pepper, basil, garlic, onion, and deli Salamino Piccante. Preserved as the original family/friend recipe; nutrition quantities will be standardized before calculation.",
     category: "main",

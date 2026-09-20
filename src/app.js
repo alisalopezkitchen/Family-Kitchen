@@ -2,6 +2,7 @@ import { getActiveWeek, getPastWeeks, getRecipe, initialPantry, initialPreparedS
 import { consolidateShoppingList, formatAmount, groupShoppingList } from "./shopping.js";
 import { optimizeDayPortions } from "./portion-optimizer.js";
 import { bestVerifiedGroceryPrice } from "./grocery-pricing.js";
+import { loadUserProfile, saveUserProfile } from "./user-profile.js";
 
 const app = document.querySelector("#app");
 const toast = document.querySelector("#toast");
@@ -23,9 +24,11 @@ let recipeCategoryFilter = "all";
 let recipeReadinessFilter = "all";
 let recipePreferences = store.get("fk-recipe-preferences", { alisa: {}, mom: {} });
 const momDefaultNutritionTargets = { ...nutritionTargets, calories: 1550, protein: 105, proteinUpper: 115, fiber: 25, fiberUpper: 30, saturatedFatMax: 15 };
+let userProfile = loadUserProfile();
 let personalNutritionTargets = store.get("fk-nutrition-targets", { alisa: { ...nutritionTargets }, mom: { ...momDefaultNutritionTargets } });
 if (!personalNutritionTargets.mom) personalNutritionTargets.mom = { ...momDefaultNutritionTargets };
-function activeNutritionTargets(person = "alisa") { return personalNutritionTargets[person] || (person === "alisa" ? nutritionTargets : momDefaultNutritionTargets); }
+if (!localStorage.getItem("fk-user-profile") && personalNutritionTargets.alisa) userProfile = saveUserProfile({ ...userProfile, nutritionTargets: { ...userProfile.nutritionTargets, ...personalNutritionTargets.alisa } });
+function activeNutritionTargets(person = "alisa") { return person === "alisa" ? userProfile.nutritionTargets : (personalNutritionTargets[person] || momDefaultNutritionTargets); }
 function optimizeForPerson({ person = "alisa", recipes: plannedRecipes, fixedItems = [], scaleRange } = {}) {
   const targets = activeNutritionTargets(person);
   if (!targets) return { status: "incomplete", reason: `No nutrition targets configured for ${person}.` };
@@ -380,7 +383,7 @@ document.addEventListener("submit", (event) => {
   const form = new FormData(event.target);
   const person = event.target.dataset.person || "alisa";
   const current = activeNutritionTargets(person);
-  personalNutritionTargets[person] = {
+  const nextTargets = {
     ...current,
     calories: Number(form.get("calories")),
     protein: Number(form.get("protein")),
@@ -389,6 +392,8 @@ document.addEventListener("submit", (event) => {
     fiberUpper: Math.max(Number(form.get("fiber")) + 5, current.fiberUpper || 30),
     saturatedFatMax: Number(form.get("saturatedFatMax")),
   };
+  if (person === "alisa") userProfile = saveUserProfile({ ...userProfile, nutritionTargets: nextTargets });
+  personalNutritionTargets[person] = nextTargets;
   store.set("fk-nutrition-targets", personalNutritionTargets);
   render({ preserveScroll: true });
   showToast(`${person === "alisa" ? "Alisa" : "Mom"}'s nutrition targets saved`);

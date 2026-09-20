@@ -1,4 +1,5 @@
 import { groceryPriceRefreshPolicy, groceryStores } from "../src/grocery-pricing.js";
+import { storePriceAdapters } from "../src/store-price-adapters.js";
 
 const stores = groceryPriceRefreshPolicy.stores;
 const unknownStores = stores.filter((store) => !groceryStores[store]);
@@ -10,4 +11,8 @@ if (unknownStores.length) {
 console.log(`Weekly grocery price refresh: ${new Date().toISOString()}`);
 console.log(`Trigger: ${groceryPriceRefreshPolicy.trigger}`);
 console.log(`Stores: ${stores.map((store) => groceryStores[store].name).join(", ")}`);
-console.log("Lookup adapters pending: workflow is scheduled and ready for verified store-source connectors.");
+for (const store of stores) {
+  const adapter = storePriceAdapters[store];
+  console.log(`${groceryStores[store].name}: ${adapter?.status || "missing-adapter"}`);
+}
+console.log("Store adapter contract ready. Source-specific retrieval remains blocked until a reliable store listing/feed is connected.");

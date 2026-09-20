@@ -3,6 +3,15 @@ export const nutritionSource = { primary: "USDA FoodData Central", tracking: "My
 
 const nutritionPending = { calories:"To be calculated", protein:"To be calculated", carbs:"To be calculated", fat:"To be calculated", fiber:"To be calculated", saturatedFat:"To be calculated", sugar:"To be calculated", sodium:"To be calculated", status:"pending", source:"USDA FoodData Central", mfpStatus:"not checked" };
 
+export const nutritionComponents = {
+  "basmati-rice": {
+    id: "basmati-rice", name: "Basmati rice", category: "Grain",
+    shoppingBasis: "dry grams", servingBasis: "cooked grams",
+    portionStrategy: { mode: "nutrition-target", fixedCupServing: false },
+    quantification: { status: "needs-usda-match-and-cooked-yield", note: "Prep converts total cooked grams required by household portions into dry grams for cooking and shopping." }
+  }
+};
+
 export const recipes = [
   {
     id: "jammy-eggs-sourdough-avocado", name: "Jammy eggs + sourdough + avocado",
@@ -23,10 +32,10 @@ export const recipes = [
   {
     id: "greek-chicken-feta-meatballs", name: "Greek chicken-feta meatballs",
     description: "Tender, herb-filled chicken meatballs with feta and lemon—built for Sunday dinner and flexible leftovers.",
-    servings: 4, servingSize: "4–5 meatballs", prepTime: "20 minutes", cookTime: "20 minutes",
+    servings: 4, servingSize: "Target-generated portion", prepTime: "20 minutes", cookTime: "20 minutes",
     tags: ["Greek-inspired", "Protein", "Meal prep"],
     ingredients: [
-      { key: "ground-chicken", item: "ground chicken", amount: 1.25, unit: "lb", category: "Protein" },
+      { key: "ground-chicken", item: "ground chicken", amount: 1.25, unit: "lb", grams: 567, category: "Protein", nutritionRole: "variable-protein", nutritionOptions: [{ label: "extra lean", leanFatRatio: "98/2", lookupQuery: "ground chicken 98% lean 2% fat" }, { label: "lean", leanFatRatio: "93/7", lookupQuery: "ground chicken 93% lean 7% fat" }], selectionRule: "Choose the lean/fat ratio from the full-day nutrition target; do not assume a default ratio." },
       { key: "feta", item: "feta cheese", amount: 4, unit: "oz", category: "Dairy" },
       { key: "egg", item: "egg", amount: 1, unit: "", category: "Dairy" },
       { key: "panko", item: "panko breadcrumbs", amount: 0.5, unit: "cup", category: "Pantry" },
@@ -36,22 +45,32 @@ export const recipes = [
       { key: "olive-oil", item: "olive oil", amount: 1, unit: "tbsp", category: "Pantry", pantry: true },
     ],
     instructions: ["Heat the oven to 425°F and line a sheet pan.", "Gently mix all ingredients except the olive oil; shape into evenly sized meatballs.", "Brush with olive oil and bake until browned and cooked through, about 16–20 minutes.", "Rest for 5 minutes and finish with lemon."],
-    portions: { alisa: "4 meatballs with ¾ cup rice and salad", mom: "3 meatballs with ½ cup rice and extra salad" },
+    portions: { alisa: "Generated from Alisa's active nutrition target", mom: "Generated separately from Mom's nutrition target" },
+    portionStrategy: { mode: "nutrition-target", fixedMeatballCount: false, wastePriority: "After nutrition targets are satisfied, size the batch and portions to minimize planned leftovers." },
     storage: "Refrigerate in a sealed container for up to 4 days. Reheat gently or serve at room temperature.", nutrition: nutritionPending,
   },
   {
     id: "cucumber-carrot-herb-salad", name: "Cucumber, carrot & herb salad", description: "A crisp lemony side that carries fresh herbs across the week.", servings: 4, servingSize: "about 1 cup", prepTime: "15 minutes", cookTime: "0 minutes", tags: ["Mediterranean", "Fresh", "Vegetarian"],
     ingredients: [
-      { key: "cucumber", item: "Persian cucumbers", amount: 4, unit: "", category: "Produce" }, { key: "carrots", item: "carrots", amount: 3, unit: "", category: "Produce" },
-      { key: "parsley", item: "flat-leaf parsley", amount: 0.5, unit: "bunch", category: "Herbs" }, { key: "dill", item: "fresh dill", amount: 0.5, unit: "bunch", category: "Herbs" },
-      { key: "lemon", item: "lemon", amount: 1, unit: "", category: "Produce" }, { key: "olive-oil", item: "olive oil", amount: 2, unit: "tbsp", category: "Pantry", pantry: true },
+      { key: "cucumber", item: "Persian cucumbers", amount: 4, unit: "", category: "Produce", quantification: { status: "needs-standard-edible-grams", reason: "Produce count varies by size; retain count for shopping and use edible grams for nutrition." } }, { key: "carrots", item: "carrots", amount: 3, unit: "", category: "Produce", quantification: { status: "needs-standard-edible-grams" } },
+      { key: "parsley", item: "flat-leaf parsley", amount: 0.5, unit: "bunch", category: "Herbs", quantification: { status: "needs-standard-edible-grams" } }, { key: "dill", item: "fresh dill", amount: 0.5, unit: "bunch", category: "Herbs", quantification: { status: "needs-standard-edible-grams" } },
+      { key: "lemon", item: "lemon", amount: 1, unit: "", category: "Produce", quantification: { status: "needs-juice-grams" } }, { key: "olive-oil", item: "olive oil", amount: 2, unit: "tbsp", grams: 27, category: "Pantry", pantry: true },
     ], instructions: ["Slice the cucumbers and shave the carrots into ribbons.", "Toss with chopped herbs, lemon juice, olive oil, salt, and pepper just before serving."],
-    portions: { alisa: "1 generous cup", mom: "1 generous cup" }, storage: "Keep vegetables and dressing separate for up to 3 days.", nutrition: nutritionPending,
+    portions: { alisa: "Generated from Alisa's active nutrition target", mom: "Generated separately from Mom's nutrition target" }, portionStrategy: { mode: "nutrition-target", fixedCupServing: false }, storage: "Keep vegetables and dressing separate for up to 3 days.", nutrition: nutritionPending,
   },
   {
-    id: "mediterranean-lemon-dill-sauce", name: "Mediterranean lemon-dill sauce", description: "A cool, bright yogurt sauce for meatballs, salads, and Friday’s use-it-up bowl.", servings: 6, servingSize: "2 tablespoons", prepTime: "10 minutes", cookTime: "0 minutes", tags: ["Mediterranean", "Sauce", "Vegetarian"],
-    ingredients: [ { key: "greek-yogurt", item: "plain Greek yogurt", amount: 1, unit: "cup", category: "Dairy" }, { key: "dill", item: "fresh dill", amount: 0.5, unit: "bunch", category: "Herbs" }, { key: "lemon", item: "lemon", amount: 1, unit: "", category: "Produce" }, { key: "garlic-oil", item: "garlic-infused olive oil", amount: 1, unit: "tbsp", category: "Pantry", pantry: true } ],
-    instructions: ["Stir the yogurt, finely chopped dill, lemon zest and juice, and garlic oil together.", "Season to taste and chill for 15 minutes before serving."], portions: { alisa: "2 tablespoons", mom: "2 tablespoons" }, storage: "Refrigerate for up to 4 days; stir before serving.", nutrition: nutritionPending,
+    id: "mediterranean-lemon-dill-sauce", name: "Mediterranean lemon-dill Dijon sauce", description: "A cool, bright yogurt sauce with dill and Dijon for meatballs, salads, and Friday’s use-it-up bowl.", servings: 1, servingSize: "Target-generated portion from measured batch", prepTime: "10 minutes", cookTime: "0 minutes", tags: ["Mediterranean", "Sauce", "Vegetarian"],
+    ingredients: [
+      { key: "greek-yogurt", item: "plain Greek yogurt", amount: 0.5, unit: "cup", category: "Dairy", nutritionRole: "variable-fat-dairy", nutritionOptions: [{ label: "nonfat", fatPercent: 0, lookupQuery: "Greek yogurt plain nonfat" }, { label: "2%", fatPercent: 2, lookupQuery: "Greek yogurt plain lowfat 2%" }, { label: "whole milk", fatPercent: 5, lookupQuery: "Greek yogurt plain whole milk" }], selectionRule: "Choose yogurt fat percentage from the full-day nutrition target rather than using a fixed default." },
+      { key: "olive-oil", item: "extra-virgin olive oil", amount: 1, unit: "tbsp", grams: 13.5, category: "Pantry", pantry: true },
+      { key: "lemon-juice", item: "fresh lemon juice", amount: 2, unit: "tbsp", grams: 30, category: "Produce" },
+      { key: "dill", item: "fresh dill, finely chopped", amount: 2, unit: "tbsp", category: "Herbs", quantification: { status: "needs-standard-grams" } },
+      { key: "dijon", item: "Dijon mustard", amount: 1, unit: "tsp", category: "Pantry", pantry: true, quantification: { status: "needs-standard-grams" } },
+      { key: "garlic-oil", item: "garlic-infused olive oil", amount: 1, unit: "tsp", grams: 4.5, category: "Pantry", pantry: true },
+      { key: "black-pepper", item: "black pepper", amount: 1, unit: "to taste", category: "Pantry", pantry: true },
+      { key: "salt", item: "salt", amount: 1, unit: "small pinch", category: "Pantry", pantry: true }
+    ],
+    instructions: ["Stir the yogurt, olive oil, lemon juice, finely chopped dill, Dijon, and garlic-infused oil together.", "Season with black pepper and a small pinch of salt; chill for 15 minutes before serving."], portions: { alisa: "Generated from Alisa's active nutrition target", mom: "Generated separately from Mom's nutrition target" }, portionStrategy: { mode: "nutrition-target", fixedTablespoonServing: false, batchMeasurement: "Store final batch weight in grams before assigning portions." }, storage: "Refrigerate for up to 4 days; stir before serving.", nutrition: nutritionPending,
   },
   {
     id: "vietnamese-chicken-cabbage-salad", name: "Vietnamese chicken cabbage salad", description: "Crunchy cabbage, tender chicken, herbs, and a lively lime-fish sauce dressing.", servings: 4, servingSize: "about 2 cups", prepTime: "25 minutes", cookTime: "15 minutes", tags: ["Vietnamese-inspired", "Salad", "High protein"],

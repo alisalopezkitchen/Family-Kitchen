@@ -35,6 +35,7 @@ jobs:
               ("feta cheese", "cheese feta"),
               ("cucumber", "cucumber with peel raw"),
               ("carrot", "carrots raw"),
+              ("green cabbage", "cabbage green raw"),
               ("flat-leaf parsley", "parsley fresh"),
               ("fresh dill", "dill weed fresh"),
               ("lemon juice", "lemon juice raw"),
